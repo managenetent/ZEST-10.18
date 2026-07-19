@@ -1,0 +1,59 @@
+SHARED-OPS-MANIFEST - registry of canonical "shared op" source locations,
+consumed by sync_shared_op.sh (this same directory). Replaces the OLDER
+model of every project's own build.sh referencing shared-ops/ files
+directly at build time (a live cross-directory dependency - a project
+couldn't be zipped up and shipped on its own without shared-ops/ coming
+along with it). Under THIS model, every project keeps its OWN real,
+local copy of each file it uses (compiled from that local copy, no
+cross-directory build.sh reference at all - fully self-contained/solo
+shippable) - this manifest + the sync script exist ONLY to propagate an
+update to the canonical source out to whichever projects' own local
+copies need it, run explicitly, not automatically at build time.
+
+Format: one entry per line, `<op_name> | <path relative to this file's
+own directory>`. Blank lines and lines starting with # are ignored.
+
+# system-level daemons/VM (compiled to system/<name> in each consumer)
+prisc+x           | shared-ops/prisc+x.c
+keyboard_input     | shared-ops/keyboard_input.c
+chtpm_parser_pal   | shared-ops/chtpm_parser_pal.c
+chtpm_rgb_render   | shared-ops/chtpm_rgb_render.c
+
+# ops (compiled to ops/+x/<name>.+x in each consumer)
+pdl_reader   | shared-ops/pdl_reader.c
+move_entity  | shared-ops/move_entity.c
+xlector_input| shared-ops/xlector_input.c
+pet_export   | shared-ops/pet_export.c
+pet_import   | shared-ops/pet_import.c
+dump_rgb_png | shared-ops/dump_rgb_png.c
+
+# supporting headers (a directory, not a single file - sync_shared_op.sh
+# copies it recursively)
+lib | shared-ops/lib
+
+CONSUMERS AS OF 2026-07-18 (which project's own build.sh referenced
+which entry BEFORE the migration to local copies - kept here as a record
+of what to re-sync if the canonical source changes, not as something a
+build.sh should read):
+  mutaclsym:            prisc+x, keyboard_input, chtpm_parser_pal,
+                         chtpm_rgb_render, dump_rgb_png (+lib), pdl_reader
+  zoo_0000:              prisc+x, keyboard_input, chtpm_parser_pal,
+                         chtpm_rgb_render, xlector_input, move_entity,
+                         pdl_reader, pet_export, pet_import,
+                         dump_rgb_png (+lib)
+  wsr-pal:               prisc+x, chtpm_parser_pal, chtpm_rgb_render,
+                         dump_rgb_png (+lib)
+                         (keyboard_input is wsr-pal's own local fork,
+                         NOT synced from here - see pal-standards.txt
+                         sec. 1c's own "genuinely different, patch
+                         locally" principle)
+  muchipal-editor-0.0:   prisc+x, keyboard_input, chtpm_parser_pal,
+                         pdl_reader
+  egg-pals-13:           chtpm_parser_pal
+                         (prisc+x/keyboard_input are egg-pals' own local
+                         forks - real Win32 support neither shared
+                         version has, see pal-standards.txt sec. 1c)
+
+To re-sync a project after a canonical source change:
+  bash sync_shared_op.sh <op_name> <target_project_dir>
+e.g.: bash sync_shared_op.sh chtpm_parser_pal ../../y0.mutaclsym+06.01/mutaclsym/system

@@ -1,0 +1,8 @@
+# Custom operations for muchi-evo-pal's prisc+x program.
+# Format: name type handler {description}
+halt void builtin_halt {stop execution}
+bot_tick_idle void ops/+x/bot_tick_idle.+x {idle -> deciding}
+bot_choose void ops/+x/bot_choose.+x {deciding -> eating|evolving, per decision_mode}
+bot_eat void ops/+x/bot_eat.+x {eating -> idle, +1 ep}
+bot_evolve void ops/+x/bot_evolve.+x {evolving -> idle, spend 3 ep for a body part}
+bot_set_human_decision void ops/+x/bot_set_human_decision.+x {queue a manual eat/evolve choice - not called from .pal, invoked directly by button.sh choose}

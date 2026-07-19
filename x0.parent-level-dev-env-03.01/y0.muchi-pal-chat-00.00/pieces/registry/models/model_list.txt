@@ -1,0 +1,36 @@
+# Model registry - what /model <id> switches between.
+# Format: id|provider_kind|api_url|model_name
+#
+# gemma-lan|ollama|... - added 2026-07-16, the LAN Mac's small
+# gemma3:270m ollama model (pulled specifically for this purpose - see
+# yz.muchiverse/2.muchi-verse/muchi-evo-pal/EVO-DESIGN.txt). Meant for
+# high-volume distillation/corpus-generation calls (generate_corpus.c),
+# NOT general tool-calling chat - it has no tools[] schema wired and is
+# far smaller than groq-tool-use-mac. Verified live: ~935ms round trip
+# over the LAN, vs. groq-tool-use's much larger/slower 8B model.
+# Preferred over localhost per direct instruction: this machine's own
+# CPU is slow and corpuses here are small, so the LAN Mac's GPU-backed
+# ollama is strictly better for this workload, not just a policy
+# preference - see the "no parallel/no localhost" memory note.
+#
+# provider_kind must be exactly one of: ollama, gemini, llamacpp, iqabod -
+# these are the only four send_message.c/check_response.c know how to
+# build a request for / parse a response from (see send_message.c's own
+# header comment for which proven TPMOS fix each one ports).
+#
+# For provider_kind=iqabod, the same two fields are reused for different
+# meanings (no schema change): api_url = IQABOD's own project root
+# (absolute path - it's a separate project, not shelled to over a
+# network), model_name = curriculum file path relative to that root
+# (e.g. curriculum/guess_the_word/guess_the_word.txt). See
+# ROADMAP-models.txt §4 for why the example curricula shipped with
+# IQABOD are narrow game/test corpora, not general conversation - expect
+# mostly <UNK> output against them until a real conversational curriculum
+# is trained.
+
+groq-tool-use-mac|ollama|http://10.0.0.144:11434|llama3-groq-tool-use:8b
+gemma-lan|ollama|http://10.0.0.144:11434|gemma3:270m
+gemini-flash|gemini|https://generativelanguage.googleapis.com|gemini-2.5-flash
+cpp-llm-mac|llamacpp|http://10.0.0.144:8080|unused
+iqabod-test|iqabod|/home/no/Desktop/🤖️🪤️🏠️/🚽️🧻️/🚽️🥡️-00.00/ZEST-10.00/x0.parent-level-dev-env-03.00/#.ref/^.IQABOD-llm-06.00|curriculum/test/test.txt
+iqabod-daily-life|iqabod|/home/no/Desktop/🤖️🪤️🏠️/🚽️🧻️/🚽️🥡️-00.00/ZEST-10.00/x0.parent-level-dev-env-03.00/#.ref/^.IQABOD-llm-06.00|curriculum/daily_life/daily_life.txt

@@ -1,0 +1,2 @@
+overlay_w=640
+overlay_h=256

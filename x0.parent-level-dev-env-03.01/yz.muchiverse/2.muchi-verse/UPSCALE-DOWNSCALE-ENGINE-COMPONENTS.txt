@@ -1,0 +1,184 @@
+UPSCALE/DOWNSCALE — which pieces built this session are real, portable
+game-engine components (drop into AI or other games), vs. project-
+specific business logic that stays where it is
+================================================================================
+Status: PLANNING DOCUMENT, written per direct request. Answers: "you
+should beable to write a real architectural upscale downscale type
+document and explain how peices of this can be dropped into ai, or
+other games as parts of the game engine etc." Every component named
+below is either ALREADY proven portable this session (cited directly)
+or explicitly marked as not-yet-proven/aspirational - no claims made
+without a real anchor.
+
+================================================================================
+0. THE CORE IDEA
+================================================================================
+"Upscale/downscale" is the SAME idea `wrai-dust-fable` §14 and
+`COMPOSABLE-MATERIALS-ARCHITECTURE.md`'s granularity axis already
+established for per-entity compute cost, applied one level up - to
+MODULE SCALE instead of decision cost. A genuinely portable component
+should work identically whether a game drops it in at toy scale (one
+shop, two items) or full scale (wsr-pal's real 50 corporations/7
+governments) - the component doesn't change, only how much of the
+registry it's pointed at does. This document sorts what's been built
+this session into "actually is that" vs. "isn't, and shouldn't
+pretend to be."
+
+================================================================================
+1. ALREADY PROVEN PORTABLE (real evidence this session, not aspiration)
+================================================================================
+**`system/prisc+x.c`/`connect_op.c`/`json_parser.c`** - copied verbatim
+across muchi-pal-chat, muchi-evo-pal, and wsr-pal this session, zero
+project-specific changes beyond the calling project's own ops. The
+most-proven drop-in component in this whole family, by direct count.
+
+**`gl_mirror.c`** (not built this session, but reconfirmed this
+session) - copied from mutaclsym into `piececraft-3d-pal`, per that
+project's own `button.sh` header comment, unmodified except WIDTH/
+HEIGHT constants. Direct proof of `GRAND-ARCHITECTURE.md` §0's "one
+shared rendering daemon, every project gets a mirror for free" claim,
+independently confirmed a second time.
+
+**The dynamic-discovery multi-entity tick driver** (`tick_all.sh`'s
+shape - scan a directory for `<type>_*` pieces, dispatch by prefix and
+`current_state`) - genuinely game-agnostic. Nothing in it is about
+corporations or governments specifically; it's "given a directory of
+same-shaped pieces and a small set of per-type ops, tick all of them."
+Directly portable to: mutaclsym ticking multiple monster pieces once
+its own FSM layer exists (its own architecture doc already names this
+exact gap), any future population of NPCs/creatures/agents in any
+project in this family.
+
+**The `decision_mode` chassis itself** (`preset|weighted|rl|llm|human`)
+- proven across TWO genuinely different domains this session with the
+SAME dispatch shape and the same 5 tiers: muchi-evo-pal's eat/evolve
+choice and wsr-pal's trade/policy choice. Nothing about the chassis
+knows or cares what the decision is ABOUT - `corp_decide.c` and
+`bot_choose.c` differ only in their leaf logic per tier, not in the
+tier structure or dispatch mechanism. This is the single most reusable
+idea in the whole family: any new agent type in any future project
+gets AI "for free" by adopting this same 5-field shape
+(`current_state`/`decision_mode`/a fallback preset/a real weighted
+formula/a human-override path), governed uniformly by
+`GAME-AI-SPEED-DOCTRINE.txt`.
+
+**`craft.c`'s recipe/`composed_of` mechanism** - reused FIVE separate
+times across this document family now (mutaclsym's own item crafting,
+`MUCHICIVO_BIBLE.txt` §4's tech trees, `EVO-DESIGN.txt` §2's ecosystem
+population aggregation, §3's creature body-part evolution, and
+`SOCIETY-ECONOMY-ARCHITECTURE.txt` §4's manufacturing) - the most-
+reused single mechanism in this entire family, proof by repetition that
+"consume N inputs, produce 1 output, check requirements first" is a
+genuinely universal game primitive, not economics- or crafting-
+specific.
+
+================================================================================
+1.5 PIECE.PDL METHOD-TABLE-DRIVEN MENUS - genuinely portable, real
+    precedent found and adopted this session (wsr-pal)
+================================================================================
+Researched directly against real TPMOS per direct instruction, not
+guessed: `pieces/chtpm/plugins/chtpm_parser.c`'s `load_dynamic_methods()`
+reads a piece's own `piece.pdl` METHOD table (real live example:
+`projects/fuzz-op/pieces/xlector/piece.pdl`'s `METHOD | scan |
+pieces/apps/playrm/ops/+x/scan_op.+x xlector` rows) and turns it
+directly into a rendered menu - the METHOD table IS the menu, no
+separate definition anywhere. `wsr-pal` adopted a small, PAL-native
+equivalent of this exact idea (NOT a port of `chtpm_parser.c`'s full
+3000+ lines, which carry a lot of wraith-alpha-desktop-specific
+complexity no other project needs): a generic `load_menu_items()`
+parses METHOD rows from any piece.pdl, a generic renderer/dispatcher
+pair (`wsr_menu_input.c`/`wsr_compose_frame.c`) works against WHICHEVER
+piece.pdl is currently active, and screen-to-screen navigation is a
+`GOTO:<piece_id>` command value in a METHOD row.
+**This is the single most portable pattern in this whole document** -
+completely game-agnostic (nothing about it knows what a "corporation"
+or a "menu option" specifically means), directly reusable by ANY
+project in this family that needs more than a handful of menu options:
+copy the two generic ops verbatim, author new screens as plain
+piece.pdl files, done. Muchi-evo-pal's own much simpler step/choose
+interface doesn't need this yet (2-3 real options), but any FUTURE
+menu-heavy screen in ANY project should start here, not with hardcoded
+C option arrays - confirmed the hard way this session, after building
+hardcoded arrays first and having to rebuild once the real pattern was
+researched.
+
+================================================================================
+2. THE LEDGER/BULLETIN-BOARD MARKETPLACE - portable pattern, NOT yet
+   built (design only, `SOCIETY-ECONOMY-ARCHITECTURE.txt` §6)
+================================================================================
+Worth calling out separately because it's a strong portability
+candidate even before being built: "post a request/offer as a plain
+file in a shared directory, other entities dynamic-discovery-scan it
+each tick, their own `decision_mode` logic decides whether to
+respond" has ZERO wsr-pal-specific content in its mechanism - only the
+POST CONTENT (`kind=loan_request`/`kind=sell_offer`) is domain-
+specific. The exact same shape would serve: a crafting-trade board in
+mutaclsym (players/NPCs posting "have X, want Y"), a quest-bounty board
+in any RPG-shaped project, a matchmaking board for `muchi-civ-pal`
+diplomacy offers. Worth building it ONCE, generically (a shared
+`ledger_post`/`ledger_scan` op pair taking a `kind` value as data, not
+hardcoded per domain), when it actually gets built - not scoped yet,
+named here so the FIRST implementation is written portable from day
+one rather than wsr-pal-specific and needing a later rewrite.
+
+================================================================================
+3. PROJECT-SPECIFIC BUSINESS LOGIC - real, valuable, but NOT portable
+   as-is (the honest other half of this document)
+================================================================================
+**`corp_decide.c`'s `fundamental_value()` formula** - genuinely wsr-pal
+-specific (book value, market cap, debt/equity, risk_bias - a real
+ported finance formula from `analysis_loop.c`). The SHAPE (a weighted
+tier reads a few named numeric fields and blends them into a score) is
+the portable part per §1 above; the specific formula and its input
+fields are not - a game about, say, restaurant management would need
+its own different weighted formula (ingredient freshness, staff
+morale, etc.), same chassis, different math.
+
+**`gov_decide.c`'s fiscal-policy heuristic** - same story, wsr-pal/
+economic-sim specific content on a portable chassis.
+
+**The real corporation/government seed DATA** (50 corps, 7 governments,
+real balance sheets) - obviously not portable to another game as data,
+though the MIGRATION SCRIPT PATTERN (`ensure_entities.sh`: parse real
+source text, idempotently generate pieces, default to `weighted`) is a
+reusable technique for any project bootstrapping pieces from an
+external real-world-flavored dataset.
+
+**`EVO-DESIGN.txt`'s eat/evolve body-part pool, `BODY_PART_POOL`** -
+evo-specific content; the aggregate-vs-individual population mechanism
+UNDER it (§2 there) is the portable part, already reused conceptually
+in `SOCIETY-ECONOMY-ARCHITECTURE.txt` §2's human population pool - see
+§12 there for that reuse made explicit.
+
+================================================================================
+4. A CONCRETE DROP-IN CHECKLIST (what a new project actually does)
+================================================================================
+Grounded in what ACTUALLY happened when `piececraft-3d-pal` adopted
+`gl_mirror.c` and when `wsr-pal`/`muchi-evo-pal` adopted `prisc+x.c`
+this session - not a hypothetical process:
+  1. Copy the relevant `.c` file(s) verbatim into the new project's own
+     `system/`/`ops/` directory (no shared header, no library - this
+     family's own "duplicate freely" doctrine, already the norm every
+     time this happened this session).
+  2. Register any needed custom ops in the new project's own
+     `default_op.txt` (a few lines, same format everywhere).
+  3. For the `decision_mode` chassis specifically: write ONE new
+     `<domain>_decide.c` with the SAME 5-branch dispatch shape
+     (`corp_decide.c`/`bot_choose.c` as the two existing references),
+     swap in domain-specific leaf logic per tier.
+  4. Seed the new domain's pieces (by hand for a handful, or via an
+     `ensure_entities.sh`-style migration script for many, per §3's
+     migration-pattern note).
+No step here required inventing anything new - every step is "do what
+already happened this session, again, in a new project."
+
+================================================================================
+5. WHAT THIS DOCUMENT DOES NOT CLAIM
+================================================================================
+GOAP/BT (per `GAME-AI-SPEED-DOCTRINE.txt` §2) are NOT yet built
+anywhere, so there's nothing to claim as portable there yet - when
+either gets built, this document should be updated with a real §1
+entry, not before. The ledger (§2 above) is a portability CLAIM about
+an unbuilt design, clearly marked as such - don't treat it as proven
+until it actually exists and gets reused a second time, matching this
+whole family's own "prove it once, then call it portable" discipline.

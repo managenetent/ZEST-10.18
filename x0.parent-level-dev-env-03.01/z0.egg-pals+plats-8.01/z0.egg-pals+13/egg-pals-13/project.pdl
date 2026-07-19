@@ -1,0 +1,14 @@
+SECTION      | KEY                | VALUE
+----------------------------------------
+META         | project_id         | egg-pals
+META         | version            | 0.1
+META         | author              | uhogs
+
+STATE        | starting_world     | world_01
+STATE        | starting_map       | map_lobby
+STATE        | title              | EGG-PALS
+
+EVENT_IN     | project_start      | void
+
+RESPONSE     | project_start      | egg-pals initialized.
+RESPONSE     | default            | *waiting...*

@@ -1,0 +1,5 @@
+screen=pet_detail
+cursor=2
+last_message=
+selected_pet=egg_1
+digit_accum=0

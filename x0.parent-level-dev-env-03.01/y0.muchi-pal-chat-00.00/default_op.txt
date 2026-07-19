@@ -1,0 +1,12 @@
+# Custom Operations for muchi-pal-chat's prisc+x program
+# Format: name type handler {description}
+
+out void builtin_out {print register to stdout}
+halt void builtin_halt {stop execution}
+buffer_key void ops/+x/buffer_key.+x {apply a keycode to the live input buffer}
+send_message void ops/+x/send_message.+x {Enter handler - send a chat message, run a /model command, or answer a pending y/n}
+check_response void ops/+x/check_response.+x {poll for a completed API response and parse it}
+execute_tool void ops/+x/execute_tool.+x {run the pending tool call after user approval}
+deny_tool void ops/+x/deny_tool.+x {record a denied tool call}
+switch_model void ops/+x/switch_model.+x {look up a model id in the registry and switch to it}
+compose_frame void ops/+x/compose_frame.+x {render the conversation tail + input line + status into current_frame.txt}

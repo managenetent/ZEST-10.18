@@ -1,0 +1,679 @@
+PORTING CHTPM LAYOUTS TO PAL - a modular design, not a monolith port
+========================================================================
+
+STATUS UPDATE (supersedes §3 below - read this first): after this plan
+was written, direct empirical testing (compiled real chtpm_parser.c
+completely unmodified, ran it against a hand-authored .chtpm file in an
+empty scratch dir) proved the modular-ops rewrite in §3 was NOT
+necessary. The real binary already parses/renders/dispatches correctly
+with zero source changes. What actually shipped instead (see
+shared-ops/chtpm_parser_pal.c and shared-ops/keyboard_input.c):
+
+- `shared-ops/chtpm_parser_pal.c` - a TRACKED FORK of real
+  chtpm_parser.c with exactly 2 patches (see that file's own top-of-
+  file comment for the precise sites): (1) is_modern_layout() detects
+  a pal-native project via the real PRISC_PROJECT_ID env var instead
+  of guessing from the layout's own path substring; (2)
+  inject_command() routes onClick-dispatched commands to a dedicated
+  pieces/display/pending_command.txt instead of the same file
+  prisc+x's own OP_READ_HISTORY reads - CRITICAL, not style: confirmed
+  by reading prisc+x.c directly that OP_READ_HISTORY's fscanf("%d")
+  never advances its cursor register past a non-numeric line, so it
+  would get PERMANENTLY STUCK re-reading the same offset forever if a
+  "COMMAND: ..." line ever landed in that file. The file's own
+  input-reading code is untouched, still reads its real, native
+  pieces/keyboard/history.txt in "KEY_PRESSED: N" format, unmodified.
+- `shared-ops/keyboard_input.c` (moved here from being independently
+  copied across all 3 projects, confirmed byte-identical first) -
+  append_key() now dual-writes: the original bare-int line to
+  pieces/apps/player_app/history.txt (unchanged, zero risk to any
+  existing pal script's own read_history calls) AND a second
+  "KEY_PRESSED: N" line to pieces/keyboard/history.txt for
+  chtpm_parser_pal.c to read. This keeps the bridge in a small,
+  already-shared file instead of inside the 3000-line fork - smaller,
+  more auditable diff against real upstream.
+- Runs as a PERSISTENT process (like system/renderer.c/gl_mirror.c
+  already do), not a one-shot op - built into muchipal-editor-0.0 as
+  system/chtpm_parser_pal (needs -Wno-unused-result
+  -Wno-stringop-truncation on this one compile line - ~20 pre-existing
+  real-upstream warnings, none touched by either patch, confirmed via
+  test build this reaches zero warnings with those two flags).
+- PROVEN END-TO-END, live, not just compiled: real keyboard_input
+  binary piped real keystrokes, real dual-write confirmed in both
+  history files, real chtpm_parser_pal.c processed a digit+Enter
+  sequence through a hand-authored test .chtpm layout inside
+  muchipal-editor-0.0's own directory, dispatched the onClick command
+  to pending_command.txt, and player_app/history.txt was confirmed
+  afterward to contain ONLY bare integers - zero pollution.
+
+The modular §3 design below is NOT being built now - kept as a
+documented fallback if/when this fork+patch approach is ever actually
+outgrown, not as the active plan.
+========================================================================
+
+Written per direct instruction, before touching any code. Context: the
+shared-ops refactor (see `shared-ops-refactor-plan.txt`) surfaced a real
+question - "what about using the chtpm layout files with pal? i
+thought we were doing that the whole time... that was a good
+convention we invented... we were just trying to port it to pure pal
+but instead it seems we lost it?"
+
+Investigated first, not assumed. Finding: NOT silently lost. Only ONE
+piece of chtpm_parser.c ever got ported to the pure-pal family
+(mutaclsym/zoo_0000/muchipal-editor-0.0): `load_dynamic_methods()` -
+reading a piece's own piece.pdl METHOD table as the menu, which IS
+real, shipped, everywhere (`pdl_reader.c`, see
+[[feedback_menus_as_piece_pdl_method_tables]]). The actual DECLARATIVE
+LAYOUT FILE format - `<panel>`/`<text>`/`<button onClick= href=>`,
+`${var}` interpolation, screens as data instead of hardcoded C - never
+got ported. This was explicitly named and deferred, not forgotten:
+mutaclsym's own `dox/03-menu-parser-and-interact-mode.txt` §4 lists "A
+genuine PAL-native chtpm_parser port, as real ops" as an open blank for
+a future agent. egg-pals explicitly declined the markup engine on
+purpose (`dox/02-editor-and-modularity.md`: "does not adopt .chtpm
+markup... hand-printed text instead"). wsr-pal built a smaller
+PAL-native equivalent (METHOD tables + `GOTO:<piece_id>`) as the
+closest existing proof-of-concept.
+
+THE REAL GOAL (direct user framing, keep this in view for every design
+choice below): layouts should be human-readable/editable, HTML/JS-like,
+because they need to be convertible later into a real browser's own
+DOM/markup - this whole "pure pal" family (mutaclsym, zoo_0000,
+muchipal-editor-0.0, egg-pals, wsr-pal, ...) was built AS SCAFFOLDING
+toward eventually rewriting TPMOS itself in pal (pal predates
+"chtpm"'s own invention - TPMOS was built freestyle before pal existed
+as a formal ops/VM paradigm). The long arc: pal ~ RISC-V, chtpm layouts
+~ HTML/DOM, RGB/wraith-style rendering ~ the browser's own visual
+layer - eventually a from-scratch browser kernel in RISC-V/pal, using
+chtpm-style layouts as its markup. Every project so far is a rung on
+that ladder, not a finished destination in itself.
+
+THE USER'S OWN CONSTRAINT ON SCOPE: chtpm_parser.c is ~3000 lines, but
+"everything it does is bare bones basic and necessary" - don't cut
+features to shrink it. Instead: split it into real, separate, focused
+PAL ops (matching this family's one-verb-one-binary convention already
+used everywhere), so the SAME total feature set exists but no single
+file is a monolith.
+
+------------------------------------------------------------------------
+1. FULL FEATURE INVENTORY (read chtpm_parser.c in full before writing
+   this - 3031 lines, confirmed via direct read, not summarized from
+   memory)
+------------------------------------------------------------------------
+- Tokenizer: XML-lite tag/text stream -> tokens (open/close/self-close
+  tags + text runs).
+- Tree builder (`parse_chtm`): tokens -> a flat array of UIElement
+  (type/label/href/onClick/id/target_id/parent_index/children[],
+  visibility_expr/fg_expr/bg_expr, source_expr+prefix+suffix for
+  <grid>, input_buffer for <cli_io>, is_folded for [+]/[-] accordions).
+- `${var}` substitution: two passes - `substitute_vars_naked` (skips
+  inside tags, run once at parse time over raw text nodes) and
+  `substitute_vars` (run per-render over attribute expressions like
+  fg/bg/visibility, since those must re-evaluate every frame, not just
+  once at parse time).
+- State loading (`load_vars`): rebuilds the ENTIRE var table from
+  scratch every frame, reading multiple state.txt/gui_state.txt files
+  based on which layout is active - in real 1.TPMOS this includes a lot
+  of implicit, convention-guessing logic (is_modern_layout() string
+  matching, project_id extracted by parsing the layout's own path,
+  wraith-alpha special-casing). `load_dynamic_methods()` lives here -
+  ALREADY PORTED, keep as-is.
+- Persistence: `gui_state.txt` per project (fold state, active nav
+  index, cli_io input keyed by target_id).
+- Rendering (`render_element`/`compose_frame`): walks the tree,
+  box-drawing/ANSI-color text output, `[n]` numbering for navigable
+  elements, accordion folding, a nested `<grid>` sub-format (its own
+  tiny declarative GRID/CELL board format for embedding a tilemap
+  inline), and building `hit_zones[]` (byte-offset ranges mapped to
+  element index, for mouse click hit-testing against the rendered
+  text).
+- Input (`process_key`): digit-accumulator jump-to-nth-navigable-element
+  (same pattern as every pal project's own menu dispatch already),
+  Enter = activate (dispatch onClick, follow href, toggle fold, enter
+  cli_io edit mode), arrows = cycle focus, '9'/Escape = BACK.
+- Mouse (`handle_mouse`): hit-zone lookup, same activation dispatch as
+  Enter.
+- Command dispatch (`send_command`): a long, ad-hoc prefix-checking
+  chain (KEY:n, LOAD_PROJECT:, LAUNCH:, SET_*/OP:/MP3:, then
+  PROJECT_ACTION:/SETTINGS_PAGE:/PROJECT_PAGE: - each added later, one
+  at a time, as its own real bugfix commit, per the file's own comments
+  citing "Pitfall #99: commands without one of these exact prefixes are
+  SILENTLY DROPPED"), BACK, RELEASE.
+- Process launching (`launch_module`/`cleanup_module`): fork+exec a
+  separate long-running C "module" binary as a layout's live content
+  provider, registers it with a process manager - this is real
+  1.TPMOS's actual multi-process desktop-OS mechanism (embedding other
+  running programs as live windows).
+- Main loop: polls ONE shared history.txt for KEY_PRESSED:/MOUSE_EVENT:
+  lines, dispatches to process_key/handle_mouse, watches several
+  "marker" files (frame_changed.txt-style) to decide whether to
+  recompose - explicitly marker-driven, NOT "recompose on every event,"
+  per the file's own large warning comment ("triple-rendering" bug this
+  fixed).
+
+------------------------------------------------------------------------
+2. THE KEY REALIZATION: chtpm_parser.c IS ALREADY STATELESS-PER-FRAME
+------------------------------------------------------------------------
+Despite being one long-running process, `main()` calls `parse_chtm()`
+(full re-tokenize + re-substitute + rebuild the ENTIRE element tree from
+the layout file on disk) and `compose_frame()` (full re-render) FROM
+SCRATCH every single time something changes - it never incrementally
+patches the in-memory tree. The only things that persist ACROSS calls
+are small scalars (focus_index, active_index, digit_accum) and
+whatever's already durably written to gui_state.txt/state.txt. This
+means the whole design already matches prisc+x's own one-shot-process-
+per-tick model far more closely than it first appears - splitting it
+into N separate one-shot ops that each re-read/re-write flat files is
+NOT fighting the grain of the original design, it's making explicit
+something that was already implicitly true. This is the same
+"if it's not in a file, it's a lie" doctrine already governing every
+other pal project in this family.
+
+------------------------------------------------------------------------
+3. THE MODULAR OP BREAKDOWN (shared-ops/, since none of this is
+   project-specific - same bar as §1b of pal-standards.txt)
+------------------------------------------------------------------------
+
+`layout_parse.c` - tokenizer + tree builder + naked var substitution.
+  Input: a `.chtpm` layout file path (KEEPING the real `.chtpm`
+  extension and tag vocabulary - this is a literal reuse, not "inspired
+  by," matching the same "don't re-type a working format" principle
+  behind the shared-ops refactor itself) + a project-named list of
+  state files to load (see §4 on why this replaces load_vars()'s
+  guessing). Output: a flattened, line-oriented dump of the whole
+  element tree to `pieces/display/layout_tree.txt` (one line per
+  element: idx|type|label|href|onClick|id|target_id|parent_idx|
+  children_csv|visibility_expr|fg_expr|bg_expr|source_expr|prefix|
+  suffix|is_folded|input_buffer) - this file IS the "elements[]" array,
+  just durable instead of in-memory, exactly like every other pal
+  project already persists its own working state to a flat file
+  between ticks.
+
+`layout_render_ascii.c` / `layout_render_rgb.c` - TWO renderer ops
+  reading the SAME `layout_tree.txt`, matching this family's own
+  already-proven dual-renderer split (mutaclsym's/zoo_0000's own
+  compose_frame.c + compose_rgb_frame.c pairs) instead of inventing a
+  new pattern. Each re-substitutes fg/bg/visibility expressions
+  per-frame (these must re-evaluate live, unlike text-node content
+  which was already baked in at parse time), does box-drawing/`[n]`
+  numbering/accordion folding, and - ascii renderer only - writes
+  `hit_zones.txt` (element_idx|offset_start|offset_end) for mouse
+  support. This directly answers "these projects are no different than
+  wraith and ascii, they use both" - the layout engine follows the
+  IDENTICAL split already proven for game maps, not a new one invented
+  for UI specifically.
+
+`layout_grid.c` - the nested `<grid>` GRID/CELL sub-format, kept
+  SEPARATE from the two renderers above rather than folded into them,
+  since it's a genuinely distinct concern (reading an embedded tilemap
+  board and turning CELL rows into inline sub-frame text) - this is
+  exactly the kind of thing that turns a renderer op into its own
+  mini-monolith if left inline.
+
+`layout_input.c` - reads a keypress + `layout_tree.txt` +
+  `layout_nav_state.txt` (focus_index/active_index/digit_accum,
+  persisted the same way every other pal project already persists
+  digit-accumulator state in a piece's own state.txt). Digit-accumulate,
+  Enter-activate, fold-toggle, cli_io buffer edit, arrow-cycle,
+  '9'/Escape = BACK - all real, all kept (see §1). On activation:
+  - `href` present: write the new layout path to `current_layout.txt`
+    (a project's own pal script checks this and re-invokes
+    `layout_parse` against it next tick - same self-filtering-by-state-
+    file convention `editor_state.txt`'s own `screen` field already
+    uses in muchipal-editor-0.0).
+  - `onClick` present: write the RAW string to `pending_command.txt`,
+    UNINTERPRETED. Deliberately does NOT try to know what the string
+    means (see §4 for why).
+
+`layout_mouse.c` - reads `hit_zones.txt` + a mouse event, same
+  activation dispatch as `layout_input.c`'s Enter handling (factor the
+  shared "activate element idx N" logic into one small internal
+  helper both ops call, matching how `xlector_input.c`'s own move/
+  select logic is already one file used by both keyboard driving code
+  in this family).
+
+------------------------------------------------------------------------
+4. WHAT DELIBERATELY STAYS OUT (named, not silently dropped)
+------------------------------------------------------------------------
+- `send_command()`'s own giant, ad-hoc verb-prefix chain is NOT ported
+  as a single generic dispatcher op. Real 1.TPMOS's own comments show
+  this list only grew because it's a real, working desktop OS serving
+  MANY unrelated project types through one shared relay path - every
+  new prefix (PROJECT_ACTION:, SETTINGS_PAGE:, PROJECT_PAGE:) was a
+  real bug where a command silently vanished because it didn't match
+  one of the exact prefixes already hardcoded ("Pitfall #99," in the
+  file's own words). Building ONE universal pal op that tries to
+  anticipate every future project's verb vocabulary reproduces that
+  exact failure mode by design. Instead: `layout_input.c` writes the
+  onClick string verbatim to `pending_command.txt`; EACH PROJECT'S OWN
+  pal script reads that file and does its own small, closed if/else
+  over only the verbs THAT project actually uses (a muchipal-editor-0.0
+  screen might only ever need `SET_TAB:*`, a game might only need
+  `GOTO:<piece_id>` - wsr-pal's own precedent). Small, closed,
+  reviewable per project - the actual "modular, not monolith" property
+  asked for, and it can never silently swallow an unrecognized command
+  the way the universal version repeatedly did in real 1.TPMOS.
+- `launch_module()`'s fork/exec-a-persistent-child-and-register-with-a-
+  process-manager mechanism - this is real 1.TPMOS's actual multi-
+  process desktop-OS architecture (embedding independently-running
+  programs as live windows inside wraith-alpha). Nothing in the pure-
+  pal family works this way yet (the closest existing analogue,
+  `zoo_window.c`'s own X11 window, already solves "a separate live
+  window" a different way). Not needed unless/until this family builds
+  its own equivalent of a multi-process desktop shell - a real, bigger,
+  separate future step, not bundled in here.
+- wraith-alpha-specific relay verbs (PROJECT_ACTION:/SETTINGS_PAGE:/
+  PROJECT_PAGE:) and the `cli_buffers.txt` username/password/answer-
+  prefix login-form convenience - both genuinely specific to that one
+  real project's own architecture; a pure-pal project needing durable
+  cli_io text already has the more general target_id-keyed
+  gui_state.txt mechanism (which chtpm_parser.c's OWN comments already
+  call the correct, newer mechanism superseding cli_buffers.txt).
+
+------------------------------------------------------------------------
+5. THE BROWSER-CONVERTIBILITY CHOICE (cheap to do now, expensive to
+   retrofit later - do this from the first layout file written)
+------------------------------------------------------------------------
+Keep the tag vocabulary as close to real HTML as sensibly possible
+starting NOW, specifically because the user's stated reason for wanting
+this format at all is future conversion into a real browser's own
+DOM/markup: `<panel>` reads as `<div>`, `<text>` as `<span>`, `<button
+onClick= href=>` is already an `<a>`/`<button>` hybrid, `<menu>` maps
+cleanly to `<details>`, and `${var}` is one regex away from
+`{{var}}`-style template interpolation. Don't invent new tag names or
+attribute shapes that would need a real rewrite (not just a mechanical
+find-replace) when that conversion eventually happens.
+
+------------------------------------------------------------------------
+6. WHERE TO BUILD THIS FIRST
+------------------------------------------------------------------------
+muchipal-editor-0.0 - it's the one project whose entire job is being an
+editor, currently hardcodes every screen directly in C
+(compose_title_frame.c/project_browser.c/map_edit_input.c), and has no
+shipped/tested screens yet that a rewrite would put at risk (unlike
+mutaclsym, a real working game). Converting its own 6 screens
+(title/projects/project_menu/pieces/piece_detail/map_edit) to real
+`.chtpm` layout files is also the most direct, honest test of whether
+this design actually works before touching mutaclsym or zoo_0000 at
+all.
+
+------------------------------------------------------------------------
+7. VERIFICATION PLAN
+------------------------------------------------------------------------
+Same bar as every other change in this family (pal-standards.txt §5):
+zero compiler warnings, tested through the real playable interface
+(keycodes into history.txt, checked against the rendered frame and
+`layout_nav_state.txt`/`pending_command.txt`, never CLI-op-only). Add a
+concrete regression: hand-author one `.chtpm` file exercising EVERY
+element type this design claims to support (panel/text/button/menu/
+cli_io/grid, an href, an onClick, a [+]/[-] fold, a `${var}`) and
+confirm `layout_parse.c` + both renderers handle all of it correctly
+before converting any real screen.
+
+========================================================================
+8. THE INTERACT + MODULE PATTERN - REAL GAME-MAP CONTROL HANDOFF
+   (direct user priority: "this is a big deal to me" - not yet built,
+   but the mechanism is ALREADY FULLY PRESENT, UNPATCHED, in
+   chtpm_parser_pal.c - this section is entirely about wiring a
+   pal-native project onto it, not about touching the fork again)
+========================================================================
+
+Investigated on direct request, with exact code, not guessed: real
+1.TPMOS's fuzz-op/op-ed/wraith-alpha all use ONE real pattern to get
+from "chtpm menu nav" into "arrow/number keys drive an actual live game
+map" and back. Every piece of this pattern already exists, completely
+untouched, in `shared-ops/chtpm_parser_pal.c` - `parse_chtm()`'s
+`<module>`/`<interact>` tag handling, `process_key()`'s
+`onClick=="INTERACT"` branch, `launch_module()`, and `load_vars()`'s
+GENERIC VIEW LOADING section were never patched, never even inspected
+for pal-native compatibility until now. The entire remaining task is
+wiring a pal-native project's own layout/state/ops onto this existing
+machinery - zero further changes to the fork itself are anticipated.
+
+8.1 THE REAL MECHANISM, EXACTLY (confirmed via direct code reads of
+    `projects/fuzz-op/manager/fuzz-op_manager.c` and
+    `projects/fuzz-op/layouts/fuzz-op.chtpm`, both under
+    `1.TPMOS_c_+rmmp.0102.0028/`)
+------------------------------------------------------------------------
+The real layout (`fuzz-op.chtpm`, lines 1-4, 18-19) declares three
+things together:
+```
+<panel time_reactive="true">
+    <module>${module_path}</module>
+    <interact src="pieces/apps/player_app/history.txt" />
+    ...
+    <button label="Control Map" onClick="INTERACT" />
+    <text label="${game_map}" /><br/>
+```
+
+- `<module>${module_path}</module>` - `parse_chtm()` resolves
+  `${module_path}` (a var, set elsewhere - see 8.2) and `launch_module()`
+  forks/execs it as a SEPARATE, PERSISTENT process running in parallel
+  to chtpm_parser_pal.c itself, for as long as this layout stays
+  active. For fuzz-op this is `fuzz-op_manager.c` - a real 1.TPMOS
+  monolithic C manager. For a pal-native project, this is where OUR OWN
+  `system/prisc+x <project>/pal/game_loop.pal` (plus that project's own
+  ops) belongs instead - "here it would be a new prisc + ops," exactly
+  as directly requested. No manager.c to write; the module IS a second
+  prisc+x instance running that project's own real game pal script.
+- `<interact src="pieces/apps/player_app/history.txt" />` - sets the
+  global `interact_history_path`. `inject_raw_key()`/`inject_command()`
+  check this FIRST, before any other destination.
+- `onClick="INTERACT"` on the "Control Map" button - when focused and
+  activated (Enter), sets `active_index` to this element.
+  `process_key()`'s `active_index != -1` branch then finds
+  `strcmp(el->onClick, "INTERACT") == 0` and, for EVERY subsequent key
+  (until ESC), re-codes arrows to 1000-1003/joystick to 2000+ and calls
+  `inject_raw_key(eff)` - relaying the raw key to `interact_history_path`
+  INSTEAD of chtpm's own arrow-cycle-focus/digit-jump/Enter-activate UI
+  nav. This is the literal mechanism behind "in interact the game takes
+  arrow and number nav control" - chtpm's own top-level nav is fully
+  suspended for as long as `active_index` points at this element. ESC
+  (checked first, unconditionally, in the Active-mode branch) always
+  exits back to normal chtpm nav - same "ESC/9 checked first" priority
+  already established in this family's own xlector standard
+  ([[project_zoo_0000_and_xlector_standard]]).
+
+The receiving end (fuzz-op_manager.c, confirmed via direct read):
+- `input_thread()` (lines 877-890) tails `history_path` - which
+  defaults to the LITERAL SAME STRING the layout's own `<interact src>`
+  names, `pieces/apps/player_app/history.txt` (manager.c line 60) -
+  via `fseek`+`fscanf(hf, "%d", &key)` in a loop, calling
+  `route_input(key)` for every bare integer found. This is EXACTLY the
+  format `inject_raw_key()` writes AND, not incidentally, the EXACT
+  SAME format/file prisc+x's own `OP_READ_HISTORY` already reads
+  natively - meaning for a pal-native project, the module-side "read
+  the relayed keys" step needs ZERO new code at all. A pal-native
+  project's own `pal/game_loop.pal` just does `read_history x2, x1`
+  exactly like every other pal script in this family already does.
+- `trigger_render()` (line 489) forks a small op, `render_map.+x`,
+  which writes `pieces/apps/player_app/view.txt` (confirmed at
+  `render_map.c:516`). This path matches one of `load_vars()`'s own
+  GENERIC VIEW LOADING candidates verbatim, which is how `${game_map}`
+  on line 19 of the layout gets the manager's live game state.
+  `trigger_render()` is called after every state-mutating key.
+
+wraith-alpha's own version (`wraith-alpha_manager.c`,
+`alpha-shell.chtpm`) confirms the same wiring at larger scale (module =
+`projects/wraith-alpha/manager/+x/wraith-alpha_manager.+x`, interact
+src = `projects/wraith-alpha/session/history.txt`, matched exactly by
+the manager's own read path) and also documents (comment, manager.c
+lines 6529-6561) a real, known LIMITATION of this mechanism: a layout
+only has ONE `<interact src>` tag, scoped to whatever file it names -
+an embedded/nested project (wraith-alpha's own multi-window desktop
+shell) needs its own manual forwarding step
+(`append_project_history()`/`run_active_project_input_op()`) to relay
+into a DIFFERENT embedded project's own history file. Not relevant to
+a single-map pal-native project (no nested embedded windows exist in
+this family), but worth remembering if this pattern is ever extended
+to something wraith-alpha-shell-like.
+
+8.2 MAPPING ONTO A PAL-NATIVE PROJECT, PIECE BY PIECE
+------------------------------------------------------------------------
+CORRECTED BY §8.4 BELOW (read that section too, not just this one):
+`<interact src>` must NOT point at the same file
+`shared-ops/keyboard_input.c` already writes to directly
+(`pieces/apps/player_app/history.txt`) - doing so double-dispatches
+every interact-mode keypress. Everything else below still holds.
+- THE MODULE = a second `system/prisc+x <own-game-pal-script>.pal`
+  process, launched by `launch_module()` exactly like any other module
+  - real 1.TPMOS has no concept of "a module IS just another VM
+  instance," this is the pal-native family's own natural equivalent,
+  matching the "rewrite TPMOS in pal, eventually" arc named directly by
+  the user. Runs in parallel to chtpm_parser_pal.c for as long as the
+  layout is active - same "the world keeps simulating even while you're
+  in a menu" property real fuzz-op/wraith-alpha already have (the
+  manager process is NOT killed when interact mode is exited via ESC,
+  only when a DIFFERENT module is launched or the whole session ends).
+- THE VIEW BRIDGE = NOT a new op. A project's own EXISTING
+  `compose_frame.c`-equivalent (mutaclsym's/zoo_0000's own ASCII
+  renderer, already computing exactly this content every tick) just
+  needs to ALSO write its output to `pieces/apps/player_app/view.txt`
+  - the same low-risk "additive dual-write" pattern already used for
+  `keyboard_input.c`'s own chtpm bridge. No `render_map.c`-style
+  separate op needed; the content already exists, it just needs a
+  second destination.
+- `${module_path}`/`interact src` RESOLUTION: real 1.TPMOS's own
+  `load_vars()` auto-constructs `module_path` via
+  `projects/%s/manager/+x/%s_manager.+x` IF a `project_id` var is set -
+  a convention that doesn't apply to any pal-native project (none uses
+  the `projects/<id>/` layout). Rather than patching chtpm_parser_pal.c
+  a 3rd time, the simplest, zero-patch path: a pal-native project's own
+  `pieces/apps/player_app/state.txt` (already read unconditionally for
+  any modern/pal-native layout - see the base bridge's own §"WHAT'S
+  DELIBERATELY UNCHANGED") just sets `module_path=` and whatever else
+  is needed directly, as plain key=value - `load_vars()`'s own
+  GENERIC PROJECT RESOLUTION block only runs
+  `if (strlen(get_var("module_path")) == 0 ...)`, so pre-setting it
+  ourselves bypasses that whole real-1.TPMOS-specific block entirely,
+  no patch required.
+- ONCLICK VERB: "Control Map" (or whatever label) needs
+  `onClick="INTERACT"` verbatim - `process_key()` checks for this EXACT
+  string, it is not one of the `SET_`/`OP:`/`MP3:`-prefixed verbs §6's
+  own "recognized prefix" gotcha applies to; `INTERACT` is checked
+  directly, on its own, both in the normal-nav Enter-activate dispatch
+  and in the Active-mode branch.
+
+8.3 WHAT THIS ACTUALLY BUYS (why it's worth the real weight the user is
+    giving it)
+------------------------------------------------------------------------
+Real separation of duty, not just code reuse: chtpm_parser_pal.c owns
+ONLY the UI shell (menus, the "Control Map" button, chrome around the
+game view) and never needs to know anything about a specific project's
+own game logic. The module (a second prisc+x + that project's own real
+pal script/ops) owns ONLY the live game simulation and never needs to
+know anything about menu chrome, digit-accumulator nav, or `${var}`
+substitution. This is the actual, real, load-bearing modularity/reuse
+property the whole chtpm port was chased for in the first place - not
+merely "one shared file instead of four copies" (§1-6 of this doc) but
+"the menu-shell engine and the game engine are two genuinely
+independent processes that don't need to know about each other's
+internals at all," communicating only through two plain files
+(a history file, a view file) - matching this whole family's own
+"if it's not in a file, it's a lie" doctrine at the architecture level,
+not just the state-persistence level.
+
+8.4 BUILT AND LIVE-VERIFIED IN zoo_0000 (2026-07-17) - one real
+    correctness bug found ONLY by testing, corrected here
+------------------------------------------------------------------------
+Built exactly as §8.2 originally planned, with ONE real, load-bearing
+correction discovered only by live-testing, not by reading the code
+first - kept here so the next project (mutaclsym is the obvious next
+target) doesn't re-discover it the hard way.
+
+THE BUG: §8.2's original assumption was that a pal-native module could
+just read the SAME file `<interact src>` names for its own
+`read_history` call, exactly like real fuzz-op's own `history_path`
+default matches its own layout's `<interact src>` verbatim. This is
+WRONG for a pal-native project specifically, because
+`shared-ops/keyboard_input.c` ALREADY writes every real keystroke to
+`pieces/apps/player_app/history.txt` UNCONDITIONALLY, for the
+project's own regular "run" mode (which knows nothing about chtpm).
+Pointing `<interact src>` at that SAME file meant every key relayed by
+chtpm_parser_pal's own `inject_raw_key()` landed in a file that ALREADY
+held that exact keystroke from keyboard_input's own direct write -
+double-dispatching every single interact-mode keypress. Confirmed live:
+2 right-arrows + 1 down-arrow moved xlector 4 rights (2 correctly
+blocked by a wall, matching 4 real attempts) + 2 downs - not 2 rights +
+1 down.
+
+THE FIX (on the pal-native side, NOT chtpm_parser_pal.c - direct user
+guidance both times this session, "prisc is newer," don't touch the
+fork again if the pal side can be fixed instead):
+- `<interact src>` now points at a genuinely SEPARATE file,
+  `pieces/apps/player_app/interact_relay.txt`, written ONLY by
+  chtpm_parser_pal's own relay, never touched by keyboard_input.c's
+  direct writes.
+- The module reads that file via `read_history`'s literal-path form -
+  which itself needed a REAL fix first: `shared-ops/prisc+x.c`'s own
+  literal-path parsing used to capture only a destination register,
+  silently defaulting the position/cursor register to register 0 -
+  which this VM's own main loop resets to 0 every single instruction
+  (RISC-V-style hardwired zero), permanently breaking incremental
+  reads for any literal-path call (it would re-read only the first
+  entry, forever). Fixed by adding a real 3-argument form,
+  `read_history <path> xD, xS` (path + destination reg + a genuine,
+  separate position reg), parsed BEFORE the old broken 1-register
+  fallback so every existing pal script's own `read_history xD, xS`
+  (no path) is completely untouched. `shared-ops/prisc+x.c` itself was
+  moved here from being independently copied across all 4 projects
+  (confirmed byte-identical first, same pattern as
+  `keyboard_input.c`'s own earlier move) - a real, needed VM fix
+  belongs in one place, edited once, not four.
+- zoo_0000's own `pal/main_loop_chtpm.pal` is a NEW, separate pal
+  script - byte-identical to the real, unmodified, already-working
+  `pal/main_loop.pal` except that one `read_history` line, now pointed
+  at `interact_relay.txt` via the fixed literal-path form. The
+  project's own regular `run` mode still uses the original
+  `main_loop.pal`, completely untouched, reading the default history
+  file exactly as before - zero risk to the already-proven gameplay
+  path. `chtpm`/`menu` (a NEW, separate `button.sh` action - not a
+  replacement for `run`) sets `module_path=system/prisc+x
+  pal/main_loop_chtpm.pal` in `player_app/state.txt` and launches
+  `chtpm_parser_pal` against a real `pieces/chtpm/layouts/zoo.chtpm`.
+
+LIVE-VERIFIED, full round-trip, through the real playable interface
+(keycodes via keyboard_input, not CLI-op-only): launched
+`./button.sh chtpm` - real chtpm menu shell rendered with the live
+embedded `${game_map}` already showing zoo_0000's real state; confirmed
+both `chtpm_parser_pal` and the separately-launched
+`main_loop_chtpm.pal` module running as genuinely independent
+processes; entered interact mode (Enter on "Control Zoo"); sent 2
+right-arrows + 1 down-arrow - confirmed EXACTLY 3 entries in
+`interact_relay.txt` (no duplicates) and the REAL `xlector/state.txt`
+moved exactly as expected (2 rights correctly blocked by the map's
+right wall, 1 down succeeded); exited via ESC back to normal chtpm nav
+(confirmed frame showed `[>]`/`Nav >`, not `[^]`/`Active`); confirmed
+the module process was STILL ALIVE after exiting interact mode (the
+world keeps simulating, matching real fuzz-op/wraith-alpha's own
+property); quit cleanly via 'q' with zero orphaned processes (relying
+on `button.sh`'s own explicit `pkill -f "system/prisc\+x"` in its exit
+trap, since `chtpm_parser_pal`'s own plain `exit(0)` on 'q' does NOT
+run its own `cleanup_module()` - that only fires on SIGINT - a real,
+noted gap, not silently assumed safe).
+
+8.5 BUILT AND LIVE-VERIFIED IN mutaclsym AND egg-pals TOO
+------------------------------------------------------------------------
+Same corrected pattern from §8.4, applied to two more projects:
+
+MUTACLSYM: `pieces/chtpm/layouts/game.chtpm` ("Control Hero"),
+`pal/main_loop_chtpm.pal` (boots straight into gameplay, skipping the
+title_loop entirely - the title/New-Game/Load flow stays real 1.TPMOS-
+style C, not modeled in chtpm yet, out of scope for this pass), view.txt
+dual-write added to `ops/compose_frame.c`. Live-verified: real hero
+movement (single right-arrow → exact single-step real state.txt
+change), ESC back to normal nav, module still alive afterward.
+
+EGG-PALS (`z0.egg-pals+13/egg-pals/`, a project not previously touched
+by ANY of this session's shared-ops work): a genuinely different case -
+purely digit-menu-driven (no map/movement at all), and its own
+`prisc+x.c`/`keyboard_input.c` are NOT switched to shared-ops (real,
+meaningful differences: genuine Windows/MinGW support + a documented
+ftell()-on-text-mode bug fix neither shared version has - see
+pal-standards.txt §1c on when not to force-share). The SAME literal-
+path `read_history` bug existed in its own local `prisc+x.c` copy
+(confirmed via direct read: identical broken parsing, `regs[0] = 0`
+reset every instruction) - patched there directly, matching the
+"genuinely different, patch locally" precedent wsr-pal's own
+`keyboard_input.c` already established. `onClick="INTERACT"` here
+relays DIGIT keys (not arrows) straight through to `menu_input.c`'s
+own real dispatch - the same mechanism, applied to a menu-driven game
+instead of a movement-driven one. Live-verified: pressing '8'+Enter
+(the real "Back" menu option) in interact mode produced exactly 2
+relay entries and correctly navigated `menu_state.txt` from
+`pet_detail` back to `pets` - no double-dispatch.
+
+All 4 pal-native projects (mutaclsym, zoo_0000, muchipal-editor-0.0 -
+base bridge only, no interact+module screen yet - and now egg-pals)
+have the base chtpm bridge; 3 of them (mutaclsym, zoo_0000, egg-pals)
+now have the full interact+module pattern live-verified.
+`inject_raw_key()`'s pal-native behavior for onClick="KEY:n" (separate
+from the interact-mode relay covered here) remains undecided, per §6's
+own note. wsr-pal doesn't have the interact+module pattern wired up
+yet (it has the base bridge only) - the natural next target if this
+continues further.
+
+8.6 REAL BUG FOUND+FIXED, USER-REPORTED: the module must not own a
+    quit path of its own
+------------------------------------------------------------------------
+Every `main_loop_chtpm.pal` originally kept the real `main_loop.pal`'s
+own `beq x2, x9, quit` ('q' halts the process). While chtpm's own
+`onClick="INTERACT"` is engaged, it relays EVERY key through -
+including 'q' - so a player instinctively pressing 'q' while
+controlling the hero/pets (reasonable - 'q' IS the real quit key in
+regular gameplay) halted the MODULE specifically. chtpm itself has no
+way to notice its own spawned module exited and reset `active_index`
+back to normal nav on its own, so it kept relaying every further
+keypress into a file nothing was reading anymore - a real "stuck, no
+input response" report from live use, not a guess.
+
+Fixed by removing the quit path from all 3 `main_loop_chtpm.pal`
+variants (mutaclsym/zoo_0000/egg-pals) entirely - the module no longer
+owns any quit decision; 'q' now just flows through as an unrecognized
+key to whatever op already ignores it (move_player.c/choice.c,
+xlector_input.c, menu_input.c all already no-op on keys they don't
+recognize). Quitting the WHOLE session is chtpm's own job alone
+(top-level 'q' when NOT in interact mode - checked only in
+`process_key()`'s `active_index == -1` branch - or via
+`system/keyboard_input`'s own unconditional exit-on-'q', which takes
+the whole session down together regardless of chtpm's own internal
+state, confirmed via a real re-test after the fix: Enter into control,
+move, then 'q' - the whole session exits cleanly together, no
+orphaned module).
+
+NOTE, follow-up honesty: the SPECIFIC "stuck" instance originally
+reported was most likely actually caused by a verification test run
+in parallel with the user's own live session (same class of mistake as
+[[feedback_no_parallel_tpmos_managers]] warns against) - re-checking
+`ps aux` before running any test session is the real preventive fix,
+not just this pal-script change. The pal-script fix above is still a
+real, independent correctness improvement (the module architecturally
+should not own a quit path while chtpm is driving it) and is kept
+regardless of what actually caused that one specific report.
+
+8.7 REAL BUG FOUND+FIXED, USER-REPORTED (SECOND ONE): `chtpm` actions
+    never reset `quit_flag.txt`
+------------------------------------------------------------------------
+After §8.6's fix, the user reported the SAME "unresponsive ascii, no
+GL window" symptom persisting. Diagnosed via direct key injection (see
+§9.3 of pal-standards.txt for the method itself, added at the user's
+own request since it's what actually found this) rather than another
+FIFO-simulated test: launched `system/renderer` +
+`system/chtpm_parser_pal` directly (no `keyboard_input`, no FIFO) and
+found `system/renderer` exited within about a second of starting,
+confirmed via `ps aux` showing it simply gone.
+
+Root cause: `system/renderer.c`'s own loop is
+`while (!quit_requested())`, where `quit_requested()` checks whether
+`pieces/system/quit_flag.txt` is non-empty - written by
+`keyboard_input.c` on EVERY session exit, "run" or "chtpm" alike. The
+real `run` action in every project already resets this file
+(`: > pieces/system/quit_flag.txt`) at its own top - the NEW `chtpm`
+actions never did. Once ANY session anywhere had ever been quit via
+'q' (near-certain after all the live testing already done in this
+family), this file stayed non-empty - so the very NEXT "chtpm" launch's
+own renderer saw `quit_requested()==true` before its own `while` loop
+even started: it ran the one unconditional `render_frame()` call
+right before the loop (which is why the FIRST frame always looked
+correct), then returned immediately. `chtpm_parser_pal`, its module,
+and `keyboard_input` all kept running perfectly fine underneath,
+correctly updating `current_frame.txt` on every real keypress - but
+with the renderer gone, nothing was left to print any of it to the
+terminal. From the user's own seat, this is indistinguishable from
+total unresponsiveness, even though every actual input was being
+processed correctly.
+
+Also found in the same pass, unrelated to chtpm specifically: zoo_0000's
+own real `run` action never had this reset AT ALL, a genuine
+pre-existing gap (not something this session introduced) - fixed at
+the same time.
+
+Fixed: `: > pieces/system/quit_flag.txt` added to all 3 `chtpm`
+actions (mutaclsym/zoo_0000/egg-pals) and to zoo_0000's own `run`
+action. Live-reverified in mutaclsym via direct key injection after
+the fix: `system/renderer` stays alive indefinitely, Enter into
+control + an arrow moved the real hero exactly one step, 'q' while
+controlling did NOT kill the module (confirming §8.6's own fix still
+holds), and a further arrow afterward still moved the hero correctly -
+full round-trip, fully responsive, this time confirmed via a
+deterministic test method rather than a flaky one.

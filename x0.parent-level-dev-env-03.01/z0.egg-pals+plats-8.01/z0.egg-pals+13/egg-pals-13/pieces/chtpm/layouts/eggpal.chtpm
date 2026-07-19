@@ -1,0 +1,12 @@
+<panel time_reactive="true">
+    <module>${module_path}</module>
+    <interact src="pieces/apps/player_app/interact_relay.txt" />
+    <text label="+============================================================+" /><br/>
+    <text label="|                     E G G - P A L S                       |" /><br/>
+    <text label="+============================================================+" /><br/>
+    <button label="Control Pets" onClick="INTERACT" /><br/>
+    <text label="+============================================================+" /><br/>
+    <text label="${game_map}" /><br/>
+    <text label="+============================================================+" /><br/>
+    <text label=" [enter] Control Pets  [esc, while controlling] Back to Menu  [q] Quit" /><br/>
+</panel>

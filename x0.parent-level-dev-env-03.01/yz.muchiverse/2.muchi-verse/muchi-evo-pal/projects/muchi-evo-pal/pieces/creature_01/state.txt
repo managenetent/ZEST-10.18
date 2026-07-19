@@ -1,0 +1,5 @@
+current_state=0
+decision_mode=1
+ep=0
+body_parts=
+last_choice=

@@ -1,0 +1,1174 @@
+[2026-07-14 17:11:38] StateChange: egg_1 tick hunger=3 energy=98 poop_count=0 asleep=0 move_dx=2 move_dy=-5 | Trigger: tick_pets
+[2026-07-14 17:11:38] StateChange: egg_1 tick hunger=6 energy=96 poop_count=0 asleep=0 move_dx=-4 move_dy=8 | Trigger: tick_pets
+[2026-07-14 17:11:48] StateChange: egg_1 hunger 0 | Trigger: feed_pet
+[2026-07-14 17:11:48] StateChange: egg_1 poop_count 0 | Trigger: clean_pet
+[2026-07-14 17:11:48] StateChange: egg_1 asleep 1 | Trigger: toggle_sleep
+[2026-07-14 17:11:48] StateChange: egg_1 asleep 0 | Trigger: toggle_sleep
+[2026-07-14 17:11:48] StateChange: egg_1 energy 76 | Trigger: train_pet
+[2026-07-14 17:11:48] StateChange: egg_1 xp 10 | Trigger: train_pet
+[2026-07-14 17:11:48] StateChange: egg_1 energy 56 | Trigger: train_pet
+[2026-07-14 17:11:48] StateChange: egg_1 xp 10 | Trigger: train_pet
+[2026-07-14 17:11:48] StateChange: egg_1 energy 36 | Trigger: train_pet
+[2026-07-14 17:11:48] StateChange: egg_1 xp 10 | Trigger: train_pet
+[2026-07-14 17:11:48] StateChange: egg_1 energy 16 | Trigger: train_pet
+[2026-07-14 17:11:48] StateChange: egg_1 xp 10 | Trigger: train_pet
+[2026-07-14 17:13:02] StateChange: egg_1 tick hunger=3 energy=14 poop_count=0 asleep=0 move_dx=4 move_dy=3 | Trigger: tick_pets
+[2026-07-14 17:13:02] StateChange: egg_1 tick hunger=6 energy=12 poop_count=0 asleep=0 move_dx=12 move_dy=-4 | Trigger: tick_pets
+[2026-07-14 17:13:02] StateChange: egg_1 tick hunger=9 energy=10 poop_count=0 asleep=0 move_dx=-10 move_dy=-5 | Trigger: tick_pets
+[2026-07-14 17:13:02] StateChange: egg_1 tick hunger=12 energy=8 poop_count=0 asleep=0 move_dx=2 move_dy=0 | Trigger: tick_pets
+[2026-07-14 17:13:02] StateChange: egg_1 tick hunger=15 energy=6 poop_count=0 asleep=0 move_dx=-4 move_dy=3 | Trigger: tick_pets
+[2026-07-14 17:13:02] StateChange: egg_1 tick hunger=18 energy=4 poop_count=0 asleep=0 move_dx=-6 move_dy=-9 | Trigger: tick_pets
+[2026-07-14 17:13:02] StateChange: egg_1 tick hunger=21 energy=2 poop_count=0 asleep=0 move_dx=7 move_dy=2 | Trigger: tick_pets
+[2026-07-14 17:13:02] StateChange: egg_1 tick hunger=24 energy=0 poop_count=0 asleep=1 move_dx=7 move_dy=2 | Trigger: tick_pets
+[2026-07-14 17:13:02] StateChange: egg_1 tick hunger=25 energy=8 poop_count=0 asleep=1 move_dx=0 move_dy=0 | Trigger: tick_pets
+[2026-07-14 17:13:02] StateChange: egg_1 tick hunger=26 energy=16 poop_count=1 asleep=1 move_dx=0 move_dy=0 | Trigger: tick_pets
+[2026-07-14 17:13:11] StateChange: egg_1 asleep 0 | Trigger: toggle_sleep
+[2026-07-14 17:13:11] StateChange: egg_1 tick hunger=29 energy=14 poop_count=1 asleep=0 move_dx=-1 move_dy=7 | Trigger: tick_pets
+[2026-07-14 17:13:11] StateChange: egg_1 tick hunger=32 energy=12 poop_count=1 asleep=0 move_dx=8 move_dy=5 | Trigger: tick_pets
+[2026-07-14 17:13:11] StateChange: egg_1 tick hunger=35 energy=10 poop_count=1 asleep=0 move_dx=-10 move_dy=-11 | Trigger: tick_pets
+[2026-07-14 17:13:11] StateChange: egg_1 tick hunger=38 energy=8 poop_count=1 asleep=0 move_dx=0 move_dy=-5 | Trigger: tick_pets
+[2026-07-14 17:13:11] StateChange: egg_1 tick hunger=41 energy=6 poop_count=1 asleep=0 move_dx=-6 move_dy=11 | Trigger: tick_pets
+[2026-07-14 17:13:11] StateChange: egg_1 tick hunger=44 energy=4 poop_count=1 asleep=0 move_dx=9 move_dy=1 | Trigger: tick_pets
+[2026-07-14 17:13:11] StateChange: egg_1 tick hunger=47 energy=2 poop_count=1 asleep=0 move_dx=2 move_dy=-7 | Trigger: tick_pets
+[2026-07-14 17:13:11] StateChange: egg_1 tick hunger=50 energy=0 poop_count=1 asleep=1 move_dx=-10 move_dy=6 | Trigger: tick_pets
+[2026-07-14 17:13:11] StateChange: egg_1 tick hunger=51 energy=8 poop_count=1 asleep=1 move_dx=0 move_dy=0 | Trigger: tick_pets
+[2026-07-14 17:13:11] StateChange: egg_1 tick hunger=52 energy=16 poop_count=1 asleep=1 move_dx=0 move_dy=0 | Trigger: tick_pets
+[2026-07-14 17:13:11] StateChange: egg_1 tick hunger=53 energy=24 poop_count=1 asleep=1 move_dx=0 move_dy=0 | Trigger: tick_pets
+[2026-07-14 17:13:11] StateChange: egg_1 tick hunger=54 energy=32 poop_count=2 asleep=1 move_dx=0 move_dy=0 | Trigger: tick_pets
+[2026-07-14 17:13:11] StateChange: egg_1 asleep 0 | Trigger: toggle_sleep
+[2026-07-14 17:13:11] StateChange: egg_1 energy 12 | Trigger: train_pet
+[2026-07-14 17:13:11] StateChange: egg_1 xp 10 | Trigger: train_pet
+[2026-07-14 17:13:59] StateChange: egg_1 asleep 1 | Trigger: toggle_sleep
+[2026-07-14 17:13:59] StateChange: egg_1 tick hunger=55 energy=20 poop_count=2 asleep=1 move_dx=0 move_dy=0 | Trigger: tick_pets
+[2026-07-14 17:13:59] StateChange: egg_1 tick hunger=56 energy=28 poop_count=2 asleep=1 move_dx=0 move_dy=0 | Trigger: tick_pets
+[2026-07-14 17:13:59] StateChange: egg_1 tick hunger=57 energy=36 poop_count=2 asleep=1 move_dx=0 move_dy=0 | Trigger: tick_pets
+[2026-07-14 17:13:59] StateChange: egg_1 tick hunger=58 energy=44 poop_count=2 asleep=1 move_dx=0 move_dy=0 | Trigger: tick_pets
+[2026-07-14 17:13:59] StateChange: egg_1 tick hunger=59 energy=52 poop_count=2 asleep=1 move_dx=0 move_dy=0 | Trigger: tick_pets
+[2026-07-14 17:13:59] StateChange: egg_1 tick hunger=60 energy=60 poop_count=2 asleep=1 move_dx=0 move_dy=0 | Trigger: tick_pets
+[2026-07-14 17:13:59] StateChange: egg_1 asleep 0 | Trigger: toggle_sleep
+[2026-07-14 17:13:59] StateChange: egg_1 energy 40 | Trigger: train_pet
+[2026-07-14 17:13:59] StateChange: egg_1 xp 0 | Trigger: train_pet
+[2026-07-14 17:13:59] StateChange: egg_1 level 2 | Trigger: train_pet
+[2026-07-14 17:13:59] StateChange: egg_1 skills peck,scratch | Trigger: train_pet
+[2026-07-14 17:14:13] StateChange: egg_1 card_status issued | Trigger: export_card
+[2026-07-14 17:14:13] StateChange: egg_1 card_serial 1 | Trigger: export_card
+[2026-07-14 17:14:13] StateChange: egg_1 card_id egg_1-1 | Trigger: export_card
+[2026-07-14 17:14:19] StateChange: egg_1 card_status destroyed | Trigger: destroy_card
+[2026-07-14 17:14:19] StateChange: egg_1 card_status issued | Trigger: export_card
+[2026-07-14 17:14:19] StateChange: egg_1 card_serial 2 | Trigger: export_card
+[2026-07-14 17:14:19] StateChange: egg_1 card_id egg_1-2 | Trigger: export_card
+[2026-07-14 17:14:43] StateChange: egg_1 tick hunger=63 energy=38 poop_count=2 asleep=0 move_dx=-3 move_dy=10 | Trigger: tick_pets
+[2026-07-14 17:16:07] StateChange: egg_1 tick hunger=66 energy=36 poop_count=2 asleep=0 move_dx=0 move_dy=-5 | Trigger: tick_pets
+[2026-07-14 17:16:08] StateChange: egg_1 hunger 36 | Trigger: feed_pet
+[2026-07-14 17:17:02] StateChange: egg_1 tick hunger=39 energy=34 poop_count=2 asleep=0 move_dx=-10 move_dy=3 | Trigger: tick_pets
+[2026-07-14 17:17:25] StateChange: egg_1 tick hunger=42 energy=32 poop_count=2 asleep=0 move_dx=-7 move_dy=4 | Trigger: tick_pets
+[2026-07-14 17:18:10] StateChange: egg_1 tick hunger=45 energy=30 poop_count=2 asleep=0 move_dx=5 move_dy=5 | Trigger: tick_pets
+[2026-07-14 17:18:11] StateChange: egg_1 tick hunger=48 energy=28 poop_count=3 asleep=0 move_dx=5 move_dy=9 | Trigger: tick_pets
+[2026-07-14 17:18:12] StateChange: egg_1 tick hunger=51 energy=26 poop_count=3 asleep=0 move_dx=-7 move_dy=-2 | Trigger: tick_pets
+[2026-07-14 17:29:31] StateChange: egg_1 tick hunger=54 energy=24 poop_count=3 asleep=0 grid_step_x=1 grid_step_y=1 facing=right | Trigger: tick_pets
+[2026-07-14 17:30:29] StateChange: egg_1 tick hunger=57 energy=22 poop_count=3 asleep=0 grid_step_x=-1 grid_step_y=-1 facing=left | Trigger: tick_pets
+[2026-07-14 17:30:30] StateChange: egg_1 tick hunger=60 energy=20 poop_count=3 asleep=0 grid_step_x=0 grid_step_y=-1 facing=left | Trigger: tick_pets
+[2026-07-14 17:30:31] StateChange: egg_1 tick hunger=63 energy=18 poop_count=3 asleep=0 grid_step_x=0 grid_step_y=1 facing=left | Trigger: tick_pets
+[2026-07-14 17:30:32] StateChange: egg_1 tick hunger=66 energy=16 poop_count=3 asleep=0 grid_step_x=0 grid_step_y=-1 facing=left | Trigger: tick_pets
+[2026-07-14 17:32:51] StateChange: egg_1 tick hunger=69 energy=14 poop_count=3 asleep=0 grid_step_x=1 grid_step_y=0 facing=right | Trigger: tick_pets
+[2026-07-14 17:34:51] StateChange: egg_1 tick hunger=72 energy=12 poop_count=3 asleep=0 grid_step_x=-1 grid_step_y=-1 facing=left | Trigger: tick_pets
+[2026-07-14 17:34:54] StateChange: egg_1 tick hunger=75 energy=10 poop_count=3 asleep=0 grid_step_x=1 grid_step_y=1 facing=right | Trigger: tick_pets
+[2026-07-14 17:34:57] StateChange: egg_1 tick hunger=78 energy=8 poop_count=3 asleep=0 grid_step_x=-1 grid_step_y=1 facing=left | Trigger: tick_pets
+[2026-07-14 17:35:00] StateChange: egg_1 tick hunger=81 energy=6 poop_count=3 asleep=0 grid_step_x=0 grid_step_y=1 facing=left | Trigger: tick_pets
+[2026-07-14 17:35:03] StateChange: egg_1 tick hunger=84 energy=4 poop_count=3 asleep=0 grid_step_x=0 grid_step_y=-1 facing=left | Trigger: tick_pets
+[2026-07-14 17:35:06] StateChange: egg_1 tick hunger=87 energy=2 poop_count=3 asleep=0 grid_step_x=1 grid_step_y=1 facing=right | Trigger: tick_pets
+[2026-07-14 17:35:09] StateChange: egg_1 tick hunger=90 energy=0 poop_count=3 asleep=1 grid_step_x=1 grid_step_y=-1 facing=right | Trigger: tick_pets
+[2026-07-14 17:35:12] StateChange: egg_1 tick hunger=91 energy=8 poop_count=3 asleep=1 grid_step_x=0 grid_step_y=0 facing=right | Trigger: tick_pets
+[2026-07-14 17:35:15] StateChange: egg_1 tick hunger=92 energy=16 poop_count=3 asleep=1 grid_step_x=0 grid_step_y=0 facing=right | Trigger: tick_pets
+[2026-07-14 17:35:18] StateChange: egg_1 tick hunger=93 energy=24 poop_count=3 asleep=1 grid_step_x=0 grid_step_y=0 facing=right | Trigger: tick_pets
+[2026-07-14 17:35:21] StateChange: egg_1 tick hunger=94 energy=32 poop_count=3 asleep=1 grid_step_x=0 grid_step_y=0 facing=right | Trigger: tick_pets
+[2026-07-14 17:35:24] StateChange: egg_1 tick hunger=95 energy=40 poop_count=3 asleep=1 grid_step_x=0 grid_step_y=0 facing=right | Trigger: tick_pets
+[2026-07-14 17:35:27] StateChange: egg_1 tick hunger=96 energy=48 poop_count=3 asleep=1 grid_step_x=0 grid_step_y=0 facing=right | Trigger: tick_pets
+[2026-07-14 17:35:30] StateChange: egg_1 tick hunger=97 energy=56 poop_count=3 asleep=1 grid_step_x=0 grid_step_y=0 facing=right | Trigger: tick_pets
+[2026-07-14 17:35:33] StateChange: egg_1 tick hunger=98 energy=64 poop_count=3 asleep=1 grid_step_x=0 grid_step_y=0 facing=right | Trigger: tick_pets
+[2026-07-14 17:35:36] StateChange: egg_1 tick hunger=99 energy=72 poop_count=3 asleep=1 grid_step_x=0 grid_step_y=0 facing=right | Trigger: tick_pets
+[2026-07-14 17:35:38] StateChange: egg_1 hunger 69 | Trigger: feed_pet
+[2026-07-14 17:35:39] StateChange: egg_1 tick hunger=70 energy=80 poop_count=3 asleep=1 grid_step_x=0 grid_step_y=0 facing=right | Trigger: tick_pets
+[2026-07-14 17:35:42] StateChange: egg_1 tick hunger=71 energy=88 poop_count=3 asleep=1 grid_step_x=0 grid_step_y=0 facing=right | Trigger: tick_pets
+[2026-07-14 17:35:45] StateChange: egg_1 tick hunger=72 energy=96 poop_count=3 asleep=1 grid_step_x=0 grid_step_y=0 facing=right | Trigger: tick_pets
+[2026-07-14 17:35:46] StateChange: egg_1 asleep 0 | Trigger: toggle_sleep
+[2026-07-14 17:35:48] StateChange: egg_1 tick hunger=75 energy=94 poop_count=3 asleep=0 grid_step_x=-1 grid_step_y=-1 facing=left | Trigger: tick_pets
+[2026-07-14 17:35:52] StateChange: egg_1 tick hunger=78 energy=92 poop_count=3 asleep=0 grid_step_x=1 grid_step_y=0 facing=right | Trigger: tick_pets
+[2026-07-14 17:35:55] StateChange: egg_1 tick hunger=81 energy=90 poop_count=3 asleep=0 grid_step_x=-1 grid_step_y=0 facing=left | Trigger: tick_pets
+[2026-07-14 17:35:58] StateChange: egg_1 tick hunger=84 energy=88 poop_count=3 asleep=0 grid_step_x=1 grid_step_y=-1 facing=right | Trigger: tick_pets
+[2026-07-14 17:36:01] StateChange: egg_1 tick hunger=87 energy=86 poop_count=3 asleep=0 grid_step_x=0 grid_step_y=-1 facing=right | Trigger: tick_pets
+[2026-07-14 17:36:04] StateChange: egg_1 tick hunger=90 energy=84 poop_count=3 asleep=0 grid_step_x=0 grid_step_y=-1 facing=right | Trigger: tick_pets
+[2026-07-14 17:36:07] StateChange: egg_1 tick hunger=93 energy=82 poop_count=3 asleep=0 grid_step_x=0 grid_step_y=-1 facing=right | Trigger: tick_pets
+[2026-07-14 17:36:10] StateChange: egg_1 tick hunger=96 energy=80 poop_count=3 asleep=0 grid_step_x=1 grid_step_y=1 facing=right | Trigger: tick_pets
+[2026-07-14 17:36:13] StateChange: egg_1 tick hunger=99 energy=78 poop_count=3 asleep=0 grid_step_x=1 grid_step_y=1 facing=right | Trigger: tick_pets
+[2026-07-14 17:36:16] StateChange: egg_1 tick hunger=100 energy=76 poop_count=3 asleep=0 grid_step_x=0 grid_step_y=0 facing=right | Trigger: tick_pets
+[2026-07-14 17:36:19] StateChange: egg_1 tick hunger=100 energy=74 poop_count=3 asleep=0 grid_step_x=-1 grid_step_y=-1 facing=left | Trigger: tick_pets
+[2026-07-14 17:36:22] StateChange: egg_1 tick hunger=100 energy=72 poop_count=3 asleep=0 grid_step_x=0 grid_step_y=1 facing=left | Trigger: tick_pets
+[2026-07-14 17:36:25] StateChange: egg_1 tick hunger=100 energy=70 poop_count=3 asleep=0 grid_step_x=0 grid_step_y=0 facing=left | Trigger: tick_pets
+[2026-07-14 17:36:28] StateChange: egg_1 tick hunger=100 energy=68 poop_count=3 asleep=0 grid_step_x=-1 grid_step_y=-1 facing=left | Trigger: tick_pets
+[2026-07-14 17:36:31] StateChange: egg_1 tick hunger=100 energy=66 poop_count=3 asleep=0 grid_step_x=-1 grid_step_y=0 facing=left | Trigger: tick_pets
+[2026-07-14 17:36:34] StateChange: egg_1 tick hunger=100 energy=64 poop_count=3 asleep=0 grid_step_x=1 grid_step_y=0 facing=right | Trigger: tick_pets
+[2026-07-14 17:36:37] StateChange: egg_1 tick hunger=100 energy=62 poop_count=3 asleep=0 grid_step_x=-1 grid_step_y=0 facing=left | Trigger: tick_pets
+[2026-07-14 17:36:40] StateChange: egg_1 tick hunger=100 energy=60 poop_count=3 asleep=0 grid_step_x=-1 grid_step_y=-1 facing=left | Trigger: tick_pets
+[2026-07-14 17:36:43] StateChange: egg_1 tick hunger=100 energy=58 poop_count=3 asleep=0 grid_step_x=1 grid_step_y=1 facing=right | Trigger: tick_pets
+[2026-07-14 17:36:46] StateChange: egg_1 tick hunger=100 energy=56 poop_count=3 asleep=0 grid_step_x=-1 grid_step_y=1 facing=left | Trigger: tick_pets
+[2026-07-14 17:36:49] StateChange: egg_1 tick hunger=100 energy=54 poop_count=3 asleep=0 grid_step_x=-1 grid_step_y=-1 facing=left | Trigger: tick_pets
+[2026-07-14 17:36:52] StateChange: egg_1 tick hunger=100 energy=52 poop_count=3 asleep=0 grid_step_x=0 grid_step_y=1 facing=left | Trigger: tick_pets
+[2026-07-14 17:36:55] StateChange: egg_1 tick hunger=100 energy=50 poop_count=3 asleep=0 grid_step_x=0 grid_step_y=1 facing=left | Trigger: tick_pets
+[2026-07-14 17:36:58] StateChange: egg_1 tick hunger=100 energy=48 poop_count=3 asleep=0 grid_step_x=-1 grid_step_y=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:07:17] StateChange: egg_1 tick hunger=100 energy=46 poop_count=3 asleep=0 grid_x=19 grid_y=16 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:07:20] StateChange: egg_1 tick hunger=100 energy=44 poop_count=3 asleep=0 grid_x=19 grid_y=16 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:07:23] StateChange: egg_1 tick hunger=100 energy=42 poop_count=3 asleep=0 grid_x=19 grid_y=15 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:07:27] StateChange: egg_1 tick hunger=100 energy=40 poop_count=3 asleep=0 grid_x=20 grid_y=15 z=0 facing=right | Trigger: tick_pets
+[2026-07-14 18:07:30] StateChange: egg_1 tick hunger=100 energy=38 poop_count=3 asleep=0 grid_x=21 grid_y=16 z=0 facing=right | Trigger: tick_pets
+[2026-07-14 18:27:53] StateChange: egg_1 tick hunger=100 energy=36 poop_count=3 asleep=0 grid_x=21 grid_y=17 z=0 facing=right | Trigger: tick_pets
+[2026-07-14 18:27:56] StateChange: egg_1 tick hunger=100 energy=34 poop_count=3 asleep=0 grid_x=20 grid_y=18 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:28:00] StateChange: egg_1 tick hunger=100 energy=32 poop_count=3 asleep=0 grid_x=21 grid_y=18 z=0 facing=right | Trigger: tick_pets
+[2026-07-14 18:28:04] StateChange: egg_1 tick hunger=100 energy=30 poop_count=3 asleep=0 grid_x=16 grid_y=9 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:28:07] StateChange: egg_1 tick hunger=100 energy=28 poop_count=3 asleep=0 grid_x=9 grid_y=10 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:28:10] StateChange: egg_1 tick hunger=100 energy=26 poop_count=3 asleep=0 grid_x=8 grid_y=9 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:28:14] StateChange: egg_1 tick hunger=100 energy=24 poop_count=3 asleep=0 grid_x=9 grid_y=10 z=0 facing=right | Trigger: tick_pets
+[2026-07-14 18:28:17] StateChange: egg_1 tick hunger=100 energy=22 poop_count=3 asleep=0 grid_x=8 grid_y=10 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:28:21] StateChange: egg_1 tick hunger=100 energy=20 poop_count=3 asleep=0 grid_x=7 grid_y=10 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:28:24] StateChange: egg_1 tick hunger=100 energy=18 poop_count=3 asleep=0 grid_x=6 grid_y=10 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:28:28] StateChange: egg_1 tick hunger=100 energy=16 poop_count=3 asleep=0 grid_x=7 grid_y=10 z=0 facing=right | Trigger: tick_pets
+[2026-07-14 18:28:31] StateChange: egg_1 tick hunger=100 energy=14 poop_count=3 asleep=0 grid_x=8 grid_y=11 z=0 facing=right | Trigger: tick_pets
+[2026-07-14 18:28:34] StateChange: egg_1 tick hunger=100 energy=12 poop_count=3 asleep=0 grid_x=7 grid_y=11 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:28:38] StateChange: egg_1 tick hunger=100 energy=10 poop_count=3 asleep=0 grid_x=8 grid_y=11 z=0 facing=right | Trigger: tick_pets
+[2026-07-14 18:28:41] StateChange: egg_1 tick hunger=100 energy=8 poop_count=3 asleep=0 grid_x=8 grid_y=12 z=0 facing=right | Trigger: tick_pets
+[2026-07-14 18:28:45] StateChange: egg_1 tick hunger=100 energy=6 poop_count=3 asleep=0 grid_x=7 grid_y=12 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:28:48] StateChange: egg_1 tick hunger=100 energy=4 poop_count=3 asleep=0 grid_x=8 grid_y=12 z=0 facing=right | Trigger: tick_pets
+[2026-07-14 18:28:51] StateChange: egg_1 tick hunger=100 energy=2 poop_count=3 asleep=0 grid_x=7 grid_y=11 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:28:55] StateChange: egg_1 tick hunger=100 energy=0 poop_count=3 asleep=1 grid_x=7 grid_y=12 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:28:58] StateChange: egg_1 tick hunger=100 energy=8 poop_count=3 asleep=1 grid_x=7 grid_y=12 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:29:02] StateChange: egg_1 tick hunger=100 energy=16 poop_count=3 asleep=1 grid_x=7 grid_y=12 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:29:05] StateChange: egg_1 tick hunger=100 energy=24 poop_count=3 asleep=1 grid_x=3 grid_y=11 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:29:09] StateChange: egg_1 tick hunger=100 energy=32 poop_count=3 asleep=1 grid_x=3 grid_y=11 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:29:12] StateChange: egg_1 tick hunger=100 energy=40 poop_count=3 asleep=1 grid_x=3 grid_y=11 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:29:15] StateChange: egg_1 tick hunger=100 energy=48 poop_count=3 asleep=1 grid_x=3 grid_y=11 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:29:19] StateChange: egg_1 tick hunger=100 energy=56 poop_count=3 asleep=1 grid_x=3 grid_y=11 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:29:22] StateChange: egg_1 tick hunger=100 energy=64 poop_count=3 asleep=1 grid_x=3 grid_y=11 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:29:26] StateChange: egg_1 tick hunger=100 energy=72 poop_count=3 asleep=1 grid_x=3 grid_y=11 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:29:29] StateChange: egg_1 tick hunger=100 energy=80 poop_count=3 asleep=1 grid_x=3 grid_y=11 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:29:33] StateChange: egg_1 tick hunger=100 energy=88 poop_count=3 asleep=1 grid_x=3 grid_y=11 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:29:36] StateChange: egg_1 tick hunger=100 energy=96 poop_count=3 asleep=1 grid_x=3 grid_y=11 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:29:39] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=3 grid_y=11 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:29:43] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=3 grid_y=11 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:29:46] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=3 grid_y=11 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:29:50] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=3 grid_y=11 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:29:53] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=3 grid_y=11 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:29:56] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=3 grid_y=11 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:30:00] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=3 grid_y=11 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:30:03] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=3 grid_y=11 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:30:07] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=10 grid_y=0 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:30:10] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=13 grid_y=0 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:30:14] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=13 grid_y=0 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:30:17] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=13 grid_y=0 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:30:20] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=13 grid_y=0 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:30:24] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=13 grid_y=0 z=0 facing=left | Trigger: tick_pets
+[2026-07-14 18:30:27] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=13 grid_y=0 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:55:05] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=13 grid_y=0 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:55:09] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=13 grid_y=0 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:55:09] StateChange: egg_2 tick hunger=3 energy=98 poop_count=0 asleep=0 grid_x=19 grid_y=16 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:55:13] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=13 grid_y=0 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:55:13] StateChange: egg_2 tick hunger=6 energy=96 poop_count=0 asleep=0 grid_x=18 grid_y=17 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:55:45] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=13 grid_y=0 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:55:45] StateChange: egg_2 tick hunger=9 energy=94 poop_count=0 asleep=0 grid_x=19 grid_y=18 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:55:45] StateChange: egg_3 tick hunger=3 energy=98 poop_count=0 asleep=0 grid_x=21 grid_y=14 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:55:48] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:55:48] StateChange: egg_2 tick hunger=12 energy=92 poop_count=0 asleep=0 grid_x=20 grid_y=17 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:55:48] StateChange: egg_3 tick hunger=6 energy=96 poop_count=0 asleep=0 grid_x=21 grid_y=15 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:55:51] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:55:51] StateChange: egg_2 tick hunger=15 energy=90 poop_count=0 asleep=0 grid_x=21 grid_y=16 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:55:51] StateChange: egg_3 tick hunger=9 energy=94 poop_count=0 asleep=0 grid_x=21 grid_y=16 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:55:55] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:55:55] StateChange: egg_2 tick hunger=18 energy=88 poop_count=0 asleep=0 grid_x=22 grid_y=17 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:55:55] StateChange: egg_3 tick hunger=12 energy=92 poop_count=0 asleep=0 grid_x=20 grid_y=15 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:55:58] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:55:58] StateChange: egg_2 tick hunger=21 energy=86 poop_count=0 asleep=0 grid_x=22 grid_y=17 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:55:58] StateChange: egg_3 tick hunger=15 energy=90 poop_count=0 asleep=0 grid_x=20 grid_y=16 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:02] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:02] StateChange: egg_2 tick hunger=24 energy=84 poop_count=0 asleep=0 grid_x=21 grid_y=17 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:02] StateChange: egg_3 tick hunger=18 energy=88 poop_count=0 asleep=0 grid_x=19 grid_y=16 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:05] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:05] StateChange: egg_2 tick hunger=27 energy=82 poop_count=0 asleep=0 grid_x=20 grid_y=17 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:05] StateChange: egg_3 tick hunger=21 energy=86 poop_count=0 asleep=0 grid_x=20 grid_y=17 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:56:08] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:08] StateChange: egg_2 tick hunger=30 energy=80 poop_count=0 asleep=0 grid_x=19 grid_y=17 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:08] StateChange: egg_3 tick hunger=24 energy=84 poop_count=0 asleep=0 grid_x=19 grid_y=18 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:12] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:12] StateChange: egg_2 tick hunger=33 energy=78 poop_count=0 asleep=0 grid_x=20 grid_y=18 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:56:12] StateChange: egg_3 tick hunger=27 energy=82 poop_count=0 asleep=0 grid_x=20 grid_y=18 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:56:15] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:15] StateChange: egg_2 tick hunger=36 energy=76 poop_count=1 asleep=0 grid_x=19 grid_y=18 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:15] StateChange: egg_3 tick hunger=30 energy=80 poop_count=0 asleep=0 grid_x=21 grid_y=17 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:56:19] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:19] StateChange: egg_2 tick hunger=39 energy=74 poop_count=1 asleep=0 grid_x=18 grid_y=17 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:19] StateChange: egg_3 tick hunger=33 energy=78 poop_count=0 asleep=0 grid_x=20 grid_y=18 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:19] StateChange: egg_4 tick hunger=3 energy=98 poop_count=0 asleep=0 grid_x=19 grid_y=14 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:22] StateChange: egg_2 tick hunger=42 energy=72 poop_count=1 asleep=0 grid_x=18 grid_y=16 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:22] StateChange: egg_3 tick hunger=36 energy=76 poop_count=1 asleep=0 grid_x=21 grid_y=19 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:56:22] StateChange: egg_4 tick hunger=6 energy=96 poop_count=0 asleep=0 grid_x=16 grid_y=7 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:25] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:25] StateChange: egg_2 tick hunger=45 energy=70 poop_count=1 asleep=0 grid_x=17 grid_y=16 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:25] StateChange: egg_3 tick hunger=39 energy=74 poop_count=1 asleep=0 grid_x=21 grid_y=18 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:56:25] StateChange: egg_4 tick hunger=9 energy=94 poop_count=0 asleep=0 grid_x=16 grid_y=6 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:29] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:29] StateChange: egg_2 tick hunger=48 energy=68 poop_count=1 asleep=0 grid_x=17 grid_y=15 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:29] StateChange: egg_3 tick hunger=42 energy=72 poop_count=1 asleep=0 grid_x=22 grid_y=19 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:56:29] StateChange: egg_4 tick hunger=12 energy=92 poop_count=0 asleep=0 grid_x=15 grid_y=5 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:32] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:32] StateChange: egg_2 tick hunger=51 energy=66 poop_count=1 asleep=0 grid_x=18 grid_y=14 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:56:32] StateChange: egg_3 tick hunger=45 energy=70 poop_count=1 asleep=0 grid_x=21 grid_y=20 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:32] StateChange: egg_4 tick hunger=15 energy=90 poop_count=0 asleep=0 grid_x=14 grid_y=6 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:36] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:36] StateChange: egg_2 tick hunger=54 energy=64 poop_count=1 asleep=0 grid_x=17 grid_y=14 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:36] StateChange: egg_3 tick hunger=48 energy=68 poop_count=1 asleep=0 grid_x=22 grid_y=21 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:56:36] StateChange: egg_4 tick hunger=18 energy=88 poop_count=0 asleep=0 grid_x=13 grid_y=5 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:39] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:39] StateChange: egg_2 tick hunger=57 energy=62 poop_count=1 asleep=0 grid_x=16 grid_y=14 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:39] StateChange: egg_3 tick hunger=51 energy=66 poop_count=1 asleep=0 grid_x=21 grid_y=21 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:39] StateChange: egg_4 tick hunger=21 energy=86 poop_count=0 asleep=0 grid_x=12 grid_y=5 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:43] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:43] StateChange: egg_2 tick hunger=60 energy=60 poop_count=1 asleep=0 grid_x=17 grid_y=13 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:56:43] StateChange: egg_3 tick hunger=54 energy=64 poop_count=1 asleep=0 grid_x=22 grid_y=22 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:56:43] StateChange: egg_4 tick hunger=24 energy=84 poop_count=0 asleep=0 grid_x=12 grid_y=6 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:46] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:46] StateChange: egg_2 tick hunger=63 energy=58 poop_count=1 asleep=0 grid_x=16 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:46] StateChange: egg_3 tick hunger=57 energy=62 poop_count=1 asleep=0 grid_x=21 grid_y=22 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:46] StateChange: egg_4 tick hunger=27 energy=82 poop_count=0 asleep=0 grid_x=13 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:56:50] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:50] StateChange: egg_2 tick hunger=66 energy=56 poop_count=1 asleep=0 grid_x=15 grid_y=14 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:50] StateChange: egg_3 tick hunger=60 energy=60 poop_count=1 asleep=0 grid_x=22 grid_y=23 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:56:50] StateChange: egg_4 tick hunger=30 energy=80 poop_count=0 asleep=0 grid_x=13 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:56:53] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:53] StateChange: egg_2 tick hunger=69 energy=54 poop_count=1 asleep=0 grid_x=15 grid_y=15 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:53] StateChange: egg_3 tick hunger=63 energy=58 poop_count=1 asleep=0 grid_x=23 grid_y=23 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:56:53] StateChange: egg_4 tick hunger=33 energy=78 poop_count=0 asleep=0 grid_x=12 grid_y=8 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:57] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:57] StateChange: egg_2 tick hunger=72 energy=52 poop_count=1 asleep=0 grid_x=14 grid_y=15 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:56:57] StateChange: egg_3 tick hunger=66 energy=56 poop_count=1 asleep=0 grid_x=23 grid_y=22 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:56:57] StateChange: egg_4 tick hunger=36 energy=76 poop_count=1 asleep=0 grid_x=12 grid_y=7 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:00] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:00] StateChange: egg_2 tick hunger=75 energy=50 poop_count=1 asleep=0 grid_x=15 grid_y=16 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:57:00] StateChange: egg_3 tick hunger=69 energy=54 poop_count=1 asleep=0 grid_x=24 grid_y=22 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:57:00] StateChange: egg_4 tick hunger=39 energy=74 poop_count=1 asleep=0 grid_x=13 grid_y=6 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:57:04] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:04] StateChange: egg_2 tick hunger=78 energy=48 poop_count=1 asleep=0 grid_x=15 grid_y=16 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:57:04] StateChange: egg_3 tick hunger=72 energy=52 poop_count=1 asleep=0 grid_x=23 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:04] StateChange: egg_4 tick hunger=42 energy=72 poop_count=1 asleep=0 grid_x=13 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:57:07] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:07] StateChange: egg_2 tick hunger=81 energy=46 poop_count=1 asleep=0 grid_x=16 grid_y=16 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:57:07] StateChange: egg_3 tick hunger=75 energy=50 poop_count=1 asleep=0 grid_x=22 grid_y=22 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:07] StateChange: egg_4 tick hunger=45 energy=70 poop_count=1 asleep=0 grid_x=13 grid_y=8 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:57:11] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:11] StateChange: egg_2 tick hunger=84 energy=44 poop_count=1 asleep=0 grid_x=16 grid_y=15 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:57:11] StateChange: egg_3 tick hunger=78 energy=48 poop_count=1 asleep=0 grid_x=21 grid_y=22 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:11] StateChange: egg_4 tick hunger=48 energy=68 poop_count=1 asleep=0 grid_x=13 grid_y=9 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:57:14] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:14] StateChange: egg_2 tick hunger=87 energy=42 poop_count=1 asleep=0 grid_x=17 grid_y=16 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:57:14] StateChange: egg_3 tick hunger=81 energy=46 poop_count=1 asleep=0 grid_x=21 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:14] StateChange: egg_4 tick hunger=51 energy=66 poop_count=1 asleep=0 grid_x=13 grid_y=9 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:57:18] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:18] StateChange: egg_2 tick hunger=90 energy=40 poop_count=1 asleep=0 grid_x=18 grid_y=15 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:57:18] StateChange: egg_3 tick hunger=84 energy=44 poop_count=1 asleep=0 grid_x=21 grid_y=24 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:18] StateChange: egg_4 tick hunger=54 energy=64 poop_count=1 asleep=0 grid_x=14 grid_y=9 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:57:21] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:21] StateChange: egg_2 tick hunger=93 energy=38 poop_count=1 asleep=0 grid_x=19 grid_y=16 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:57:21] StateChange: egg_3 tick hunger=87 energy=42 poop_count=1 asleep=0 grid_x=20 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:21] StateChange: egg_4 tick hunger=57 energy=62 poop_count=1 asleep=0 grid_x=15 grid_y=9 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:57:25] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:25] StateChange: egg_2 tick hunger=96 energy=36 poop_count=1 asleep=0 grid_x=20 grid_y=17 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:57:25] StateChange: egg_3 tick hunger=90 energy=40 poop_count=1 asleep=0 grid_x=20 grid_y=22 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:25] StateChange: egg_4 tick hunger=60 energy=60 poop_count=1 asleep=0 grid_x=14 grid_y=8 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:29] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:29] StateChange: egg_2 tick hunger=99 energy=34 poop_count=1 asleep=0 grid_x=19 grid_y=17 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:29] StateChange: egg_3 tick hunger=93 energy=38 poop_count=1 asleep=0 grid_x=19 grid_y=22 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:29] StateChange: egg_4 tick hunger=63 energy=58 poop_count=1 asleep=0 grid_x=15 grid_y=9 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:57:32] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:32] StateChange: egg_2 tick hunger=100 energy=32 poop_count=1 asleep=0 grid_x=20 grid_y=16 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:57:32] StateChange: egg_3 tick hunger=96 energy=36 poop_count=1 asleep=0 grid_x=19 grid_y=21 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:32] StateChange: egg_4 tick hunger=66 energy=56 poop_count=1 asleep=0 grid_x=15 grid_y=9 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:57:36] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:36] StateChange: egg_2 tick hunger=100 energy=30 poop_count=1 asleep=0 grid_x=19 grid_y=17 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:36] StateChange: egg_3 tick hunger=99 energy=34 poop_count=1 asleep=0 grid_x=18 grid_y=22 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:36] StateChange: egg_4 tick hunger=69 energy=54 poop_count=1 asleep=0 grid_x=14 grid_y=9 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:39] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:39] StateChange: egg_2 tick hunger=100 energy=28 poop_count=1 asleep=0 grid_x=18 grid_y=16 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:39] StateChange: egg_3 tick hunger=100 energy=32 poop_count=1 asleep=0 grid_x=19 grid_y=23 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:57:39] StateChange: egg_4 tick hunger=72 energy=52 poop_count=1 asleep=0 grid_x=13 grid_y=9 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:43] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:43] StateChange: egg_2 tick hunger=100 energy=26 poop_count=1 asleep=0 grid_x=18 grid_y=15 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:43] StateChange: egg_3 tick hunger=100 energy=30 poop_count=1 asleep=0 grid_x=19 grid_y=22 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:57:43] StateChange: egg_4 tick hunger=75 energy=50 poop_count=1 asleep=0 grid_x=13 grid_y=10 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:47] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:47] StateChange: egg_2 tick hunger=100 energy=24 poop_count=1 asleep=0 grid_x=19 grid_y=14 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:57:47] StateChange: egg_3 tick hunger=100 energy=28 poop_count=1 asleep=0 grid_x=19 grid_y=21 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:57:47] StateChange: egg_4 tick hunger=78 energy=48 poop_count=1 asleep=0 grid_x=13 grid_y=9 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:50] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:50] StateChange: egg_2 tick hunger=100 energy=22 poop_count=1 asleep=0 grid_x=18 grid_y=15 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:50] StateChange: egg_3 tick hunger=100 energy=26 poop_count=1 asleep=0 grid_x=18 grid_y=21 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:50] StateChange: egg_4 tick hunger=81 energy=46 poop_count=1 asleep=0 grid_x=13 grid_y=9 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:54] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:54] StateChange: egg_2 tick hunger=100 energy=20 poop_count=1 asleep=0 grid_x=18 grid_y=14 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:54] StateChange: egg_3 tick hunger=100 energy=24 poop_count=1 asleep=0 grid_x=18 grid_y=22 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:54] StateChange: egg_4 tick hunger=84 energy=44 poop_count=1 asleep=0 grid_x=12 grid_y=10 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:57] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:57] StateChange: egg_2 tick hunger=100 energy=18 poop_count=1 asleep=0 grid_x=17 grid_y=15 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:57:57] StateChange: egg_3 tick hunger=100 energy=22 poop_count=1 asleep=0 grid_x=19 grid_y=21 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:57:57] StateChange: egg_4 tick hunger=87 energy=42 poop_count=1 asleep=0 grid_x=12 grid_y=9 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:58:01] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:58:01] StateChange: egg_2 tick hunger=100 energy=16 poop_count=1 asleep=0 grid_x=18 grid_y=14 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:58:01] StateChange: egg_3 tick hunger=100 energy=20 poop_count=1 asleep=0 grid_x=19 grid_y=22 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:58:01] StateChange: egg_4 tick hunger=90 energy=40 poop_count=1 asleep=0 grid_x=11 grid_y=8 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:58:04] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:58:04] StateChange: egg_2 tick hunger=100 energy=14 poop_count=1 asleep=0 grid_x=19 grid_y=15 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:58:04] StateChange: egg_3 tick hunger=100 energy=18 poop_count=1 asleep=0 grid_x=19 grid_y=22 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:58:04] StateChange: egg_4 tick hunger=93 energy=38 poop_count=1 asleep=0 grid_x=10 grid_y=9 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:58:08] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:58:08] StateChange: egg_2 tick hunger=100 energy=12 poop_count=1 asleep=0 grid_x=20 grid_y=16 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:58:08] StateChange: egg_3 tick hunger=100 energy=16 poop_count=1 asleep=0 grid_x=19 grid_y=22 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:58:08] StateChange: egg_4 tick hunger=96 energy=36 poop_count=1 asleep=0 grid_x=11 grid_y=10 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:58:11] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:58:11] StateChange: egg_2 tick hunger=100 energy=10 poop_count=1 asleep=0 grid_x=20 grid_y=15 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:58:11] StateChange: egg_3 tick hunger=100 energy=14 poop_count=1 asleep=0 grid_x=19 grid_y=21 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:58:11] StateChange: egg_4 tick hunger=99 energy=34 poop_count=1 asleep=0 grid_x=11 grid_y=11 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:58:15] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:58:15] StateChange: egg_2 tick hunger=100 energy=8 poop_count=1 asleep=0 grid_x=21 grid_y=16 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 04:58:15] StateChange: egg_3 tick hunger=100 energy=12 poop_count=1 asleep=0 grid_x=18 grid_y=22 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 04:58:15] StateChange: egg_4 tick hunger=100 energy=32 poop_count=1 asleep=0 grid_x=11 grid_y=10 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:04:56] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:04:56] StateChange: egg_2 tick hunger=100 energy=6 poop_count=1 asleep=0 grid_x=21 grid_y=15 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:04:56] StateChange: egg_3 tick hunger=100 energy=10 poop_count=1 asleep=0 grid_x=18 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:04:56] StateChange: egg_4 tick hunger=100 energy=30 poop_count=1 asleep=0 grid_x=11 grid_y=10 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:04:59] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:04:59] StateChange: egg_2 tick hunger=100 energy=4 poop_count=1 asleep=0 grid_x=20 grid_y=15 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:04:59] StateChange: egg_3 tick hunger=100 energy=8 poop_count=1 asleep=0 grid_x=18 grid_y=22 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:04:59] StateChange: egg_4 tick hunger=100 energy=28 poop_count=1 asleep=0 grid_x=11 grid_y=9 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:05:03] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:05:03] StateChange: egg_2 tick hunger=100 energy=2 poop_count=1 asleep=0 grid_x=21 grid_y=14 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:05:03] StateChange: egg_3 tick hunger=100 energy=6 poop_count=1 asleep=0 grid_x=19 grid_y=23 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:05:03] StateChange: egg_4 tick hunger=100 energy=26 poop_count=1 asleep=0 grid_x=12 grid_y=8 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:05:06] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:05:06] StateChange: egg_2 tick hunger=100 energy=0 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:05:06] StateChange: egg_3 tick hunger=100 energy=4 poop_count=1 asleep=0 grid_x=18 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:05:06] StateChange: egg_4 tick hunger=100 energy=24 poop_count=1 asleep=0 grid_x=13 grid_y=8 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:05:10] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:05:10] StateChange: egg_2 tick hunger=100 energy=8 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:05:10] StateChange: egg_3 tick hunger=100 energy=2 poop_count=1 asleep=0 grid_x=18 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:05:10] StateChange: egg_4 tick hunger=100 energy=22 poop_count=1 asleep=0 grid_x=14 grid_y=9 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:05:13] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:05:13] StateChange: egg_2 tick hunger=100 energy=16 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:05:13] StateChange: egg_3 tick hunger=100 energy=0 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:05:13] StateChange: egg_4 tick hunger=100 energy=20 poop_count=1 asleep=0 grid_x=15 grid_y=9 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:07:33] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:07:33] StateChange: egg_2 tick hunger=100 energy=24 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:07:33] StateChange: egg_3 tick hunger=100 energy=8 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:07:33] StateChange: egg_4 tick hunger=100 energy=18 poop_count=1 asleep=0 grid_x=17 grid_y=7 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:07:36] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:07:36] StateChange: egg_2 tick hunger=100 energy=32 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:07:36] StateChange: egg_3 tick hunger=100 energy=16 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:07:36] StateChange: egg_4 tick hunger=100 energy=16 poop_count=1 asleep=0 grid_x=18 grid_y=8 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:07:40] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:07:40] StateChange: egg_2 tick hunger=100 energy=40 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:07:40] StateChange: egg_3 tick hunger=100 energy=24 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:07:40] StateChange: egg_4 tick hunger=100 energy=14 poop_count=1 asleep=0 grid_x=17 grid_y=9 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:07:43] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:07:43] StateChange: egg_2 tick hunger=100 energy=48 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:07:43] StateChange: egg_3 tick hunger=100 energy=32 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:07:43] StateChange: egg_4 tick hunger=100 energy=12 poop_count=1 asleep=0 grid_x=16 grid_y=9 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:07:47] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:07:47] StateChange: egg_2 tick hunger=100 energy=56 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:07:47] StateChange: egg_3 tick hunger=100 energy=40 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:07:47] StateChange: egg_4 tick hunger=100 energy=10 poop_count=1 asleep=0 grid_x=17 grid_y=8 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:07:50] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:07:50] StateChange: egg_2 tick hunger=100 energy=64 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:07:50] StateChange: egg_3 tick hunger=100 energy=48 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:07:50] StateChange: egg_4 tick hunger=100 energy=8 poop_count=1 asleep=0 grid_x=17 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:07:53] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:07:53] StateChange: egg_2 tick hunger=100 energy=72 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:07:53] StateChange: egg_3 tick hunger=100 energy=56 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:07:53] StateChange: egg_4 tick hunger=100 energy=6 poop_count=1 asleep=0 grid_x=17 grid_y=6 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:07:57] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:07:57] StateChange: egg_2 tick hunger=100 energy=80 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:07:57] StateChange: egg_3 tick hunger=100 energy=64 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:07:57] StateChange: egg_4 tick hunger=100 energy=4 poop_count=1 asleep=0 grid_x=17 grid_y=6 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:08:00] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:00] StateChange: egg_2 tick hunger=100 energy=88 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:00] StateChange: egg_3 tick hunger=100 energy=72 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:00] StateChange: egg_4 tick hunger=100 energy=2 poop_count=1 asleep=0 grid_x=17 grid_y=5 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:08:04] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:04] StateChange: egg_2 tick hunger=100 energy=96 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:04] StateChange: egg_3 tick hunger=100 energy=80 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:04] StateChange: egg_4 tick hunger=100 energy=0 poop_count=1 asleep=1 grid_x=18 grid_y=5 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:08:07] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:07] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:07] StateChange: egg_3 tick hunger=100 energy=88 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:07] StateChange: egg_4 tick hunger=100 energy=8 poop_count=1 asleep=1 grid_x=18 grid_y=5 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:08:10] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:10] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:10] StateChange: egg_3 tick hunger=100 energy=96 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:10] StateChange: egg_4 tick hunger=100 energy=16 poop_count=1 asleep=1 grid_x=12 grid_y=4 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:08:14] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:14] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:14] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:14] StateChange: egg_4 tick hunger=100 energy=24 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:08:17] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:17] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:17] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:17] StateChange: egg_4 tick hunger=100 energy=32 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:08:20] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:20] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:20] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:20] StateChange: egg_4 tick hunger=100 energy=40 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:08:24] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:24] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:24] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:24] StateChange: egg_4 tick hunger=100 energy=48 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:08:27] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:27] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:27] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:27] StateChange: egg_4 tick hunger=100 energy=56 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:08:31] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:31] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:31] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:31] StateChange: egg_4 tick hunger=100 energy=64 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:08:34] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:34] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:34] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:34] StateChange: egg_4 tick hunger=100 energy=72 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:08:38] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:38] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:38] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:38] StateChange: egg_4 tick hunger=100 energy=80 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:08:41] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:41] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:41] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:41] StateChange: egg_4 tick hunger=100 energy=88 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:08:45] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:45] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:45] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:45] StateChange: egg_4 tick hunger=100 energy=96 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:08:48] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:48] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:48] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:48] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:08:52] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:52] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:52] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:52] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:08:55] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:55] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:55] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:55] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:08:59] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:59] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:59] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:08:59] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:09:03] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:03] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:03] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:03] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:09:06] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:06] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:06] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:06] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:09:10] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:10] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:10] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:10] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:09:13] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:13] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:13] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:13] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:09:17] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:17] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:17] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:17] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:09:21] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:21] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:21] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:21] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:09:24] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:24] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:24] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:24] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:09:28] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:28] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:28] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:28] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:09:31] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:31] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:31] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:31] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:09:35] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:35] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:35] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:35] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:09:39] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:39] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:39] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:39] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:09:42] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:42] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:42] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:42] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:09:46] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:46] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:46] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:46] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:09:49] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:49] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:49] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:49] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:09:53] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:53] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:53] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:53] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:09:56] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:56] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:56] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:09:56] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:10:00] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:00] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:00] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:00] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:10:04] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:04] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:04] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:04] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:10:07] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:07] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:07] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:07] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:10:11] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:11] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:11] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:11] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:10:14] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:15] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:15] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:15] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:10:18] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:18] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:18] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:18] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:10:22] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:22] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:22] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:22] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:10:25] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:25] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:26] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:26] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:10:29] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:29] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:29] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:29] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:10:33] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:33] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:33] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:33] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:10:36] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:36] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:36] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:36] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:10:40] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:40] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:40] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:40] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:10:43] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:43] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:43] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:43] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:10:47] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:47] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:47] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:47] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:10:50] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:50] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:50] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:50] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:10:54] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:54] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:54] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:54] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:10:57] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:57] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:57] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:10:57] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:11:01] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:01] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:01] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:01] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:11:04] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:04] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:04] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:04] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:11:08] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:08] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:08] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:08] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:11:12] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:12] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:12] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:12] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:11:15] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:15] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:15] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:15] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:11:19] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:19] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:19] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:19] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:11:22] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:22] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:22] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:22] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:11:26] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:26] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:26] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:26] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:11:29] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:29] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:29] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:29] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:11:33] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:33] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:33] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:33] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:11:36] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:36] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:36] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:36] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:11:40] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:40] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:40] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:40] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:11:43] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:43] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:43] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:43] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:11:47] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:47] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:47] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:47] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:11:50] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:50] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:50] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:50] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:11:54] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:54] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:54] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:54] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:11:57] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:57] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:57] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:11:57] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:12:01] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:01] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:01] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:01] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:12:05] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:05] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:05] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:05] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:12:08] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:08] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:08] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:08] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:12:12] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:12] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:12] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:12] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:12:15] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:15] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:15] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:15] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:12:19] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:19] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:19] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:19] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:12:22] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:22] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:22] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:22] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:12:26] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:26] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:26] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:26] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:12:29] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:29] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:29] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:29] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:12:33] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:33] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:33] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:33] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:12:37] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:37] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:37] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:37] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:12:40] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:40] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:40] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:40] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:12:44] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:44] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:44] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:44] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:12:47] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:47] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:47] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:47] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:12:51] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:51] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:51] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:51] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:12:54] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:55] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:55] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:55] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:12:58] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:58] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:58] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:12:58] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:13:01] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:13:01] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:13:01] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:13:01] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:13:05] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:13:05] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:13:05] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:13:05] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:13:08] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:13:08] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:13:08] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:13:08] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:14:36] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:14:36] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:14:36] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:14:36] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:14:39] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:14:39] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:14:39] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:14:39] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:14:43] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:14:43] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:14:43] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=17 grid_y=23 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:14:43] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:14:46] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:14:46] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:14:46] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=15 grid_y=5 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:14:46] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:14:49] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:14:49] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:14:49] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=15 grid_y=5 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:14:49] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:14:53] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:14:53] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:14:53] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=15 grid_y=5 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:14:53] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:14:56] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:14:56] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:14:56] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=15 grid_y=5 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:14:56] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:14:59] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:14:59] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:14:59] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=15 grid_y=5 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:14:59] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:15:03] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:03] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:03] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=15 grid_y=3 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:03] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:15:06] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:06] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:06] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=7 grid_y=4 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:06] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:15:09] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:09] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:09] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=7 grid_y=4 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:09] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:15:13] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:13] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:13] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=7 grid_y=4 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:13] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:15:16] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:16] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:16] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=7 grid_y=4 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:16] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:15:19] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:19] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:19] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=7 grid_y=4 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:19] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:15:23] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:23] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:23] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=7 grid_y=4 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:23] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:15:26] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:26] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:26] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=7 grid_y=4 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:26] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:15:30] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:30] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:30] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=7 grid_y=4 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:30] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:15:34] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:34] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:34] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=7 grid_y=4 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:34] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:15:37] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:37] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:37] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=7 grid_y=4 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:37] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:15:40] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:40] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:40] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=7 grid_y=4 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:40] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:15:44] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:44] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:44] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=7 grid_y=4 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:44] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:15:47] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:47] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:47] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=3 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:47] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:15:51] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:51] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:51] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=3 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:51] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:15:54] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:54] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:54] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=3 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:54] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:15:58] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:58] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:58] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=3 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:15:58] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:16:01] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:16:01] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:16:01] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=3 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:16:01] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:16:05] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:16:05] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:16:05] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=3 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:16:05] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:16:08] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:16:08] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:16:08] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=3 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:16:08] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:16:12] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:16:12] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:16:12] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=3 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:16:12] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:16:15] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:16:15] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:16:15] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=3 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:16:15] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:16:19] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:16:19] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:16:19] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=3 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:16:19] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:17:16] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:17:16] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:17:16] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=3 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:17:16] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:17:37] StateChange: egg_1 asleep 0 | Trigger: toggle_sleep
+[2026-07-15 05:17:37] StateChange: egg_1 tick hunger=100 energy=98 poop_count=3 asleep=0 grid_x=17 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:17:37] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:17:37] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=3 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:17:37] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:17:38] StateChange: egg_1 tick hunger=100 energy=96 poop_count=3 asleep=0 grid_x=17 grid_y=0 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:17:38] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:17:38] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=3 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:17:38] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:17:38] StateChange: egg_1 tick hunger=100 energy=94 poop_count=3 asleep=0 grid_x=18 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:17:38] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:17:38] StateChange: egg_3 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=3 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:17:38] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:17:51] StateChange: egg_1 asleep 1 | Trigger: toggle_sleep
+[2026-07-15 05:18:01] StateChange: egg_3 asleep 0 | Trigger: toggle_sleep
+[2026-07-15 05:18:02] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=18 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:18:02] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:18:02] StateChange: egg_3 tick hunger=100 energy=98 poop_count=1 asleep=0 grid_x=15 grid_y=3 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:18:02] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:18:05] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=18 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 05:18:05] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:18:05] StateChange: egg_3 tick hunger=100 energy=96 poop_count=1 asleep=0 grid_x=14 grid_y=3 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 05:18:05] StateChange: egg_4 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=16 grid_y=7 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 07:36:10] StateChange: egg_5 tick hunger=3 energy=98 poop_count=0 asleep=0 grid_x=20 grid_y=15 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 07:36:13] StateChange: egg_5 tick hunger=6 energy=96 poop_count=0 asleep=0 grid_x=21 grid_y=16 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 07:36:16] StateChange: egg_5 tick hunger=9 energy=94 poop_count=0 asleep=0 grid_x=22 grid_y=16 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 07:36:20] StateChange: egg_5 tick hunger=12 energy=92 poop_count=0 asleep=0 grid_x=22 grid_y=17 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 07:36:23] StateChange: egg_8 tick hunger=3 energy=98 poop_count=0 asleep=0 grid_x=21 grid_y=14 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 07:36:23] StateChange: egg_5 tick hunger=15 energy=90 poop_count=0 asleep=0 grid_x=21 grid_y=16 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 07:36:26] StateChange: egg_8 tick hunger=6 energy=96 poop_count=0 asleep=0 grid_x=20 grid_y=13 z=-1 facing=left | Trigger: tick_pets
+[2026-07-15 07:36:26] StateChange: egg_5 tick hunger=18 energy=88 poop_count=0 asleep=0 grid_x=20 grid_y=15 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 07:36:29] StateChange: egg_8 tick hunger=9 energy=94 poop_count=0 asleep=0 grid_x=21 grid_y=12 z=-2 facing=right | Trigger: tick_pets
+[2026-07-15 07:36:29] StateChange: egg_5 tick hunger=21 energy=86 poop_count=0 asleep=0 grid_x=19 grid_y=16 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 07:36:32] StateChange: egg_8 tick hunger=12 energy=92 poop_count=0 asleep=0 grid_x=20 grid_y=12 z=-1 facing=left | Trigger: tick_pets
+[2026-07-15 07:36:32] StateChange: egg_5 tick hunger=24 energy=84 poop_count=0 asleep=0 grid_x=20 grid_y=15 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 07:36:35] StateChange: egg_8 tick hunger=15 energy=90 poop_count=0 asleep=0 grid_x=21 grid_y=12 z=-1 facing=right | Trigger: tick_pets
+[2026-07-15 07:36:35] StateChange: egg_5 tick hunger=27 energy=82 poop_count=0 asleep=0 grid_x=19 grid_y=15 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 07:36:38] StateChange: egg_8 tick hunger=18 energy=88 poop_count=0 asleep=0 grid_x=22 grid_y=11 z=-1 facing=right | Trigger: tick_pets
+[2026-07-15 07:36:38] StateChange: egg_5 tick hunger=30 energy=80 poop_count=0 asleep=0 grid_x=20 grid_y=16 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 07:36:41] StateChange: egg_8 tick hunger=21 energy=86 poop_count=0 asleep=0 grid_x=21 grid_y=12 z=-2 facing=left | Trigger: tick_pets
+[2026-07-15 07:36:41] StateChange: egg_5 tick hunger=33 energy=78 poop_count=0 asleep=0 grid_x=21 grid_y=16 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 07:36:44] StateChange: egg_8 tick hunger=24 energy=84 poop_count=0 asleep=0 grid_x=22 grid_y=13 z=-2 facing=right | Trigger: tick_pets
+[2026-07-15 07:36:44] StateChange: egg_5 tick hunger=36 energy=76 poop_count=1 asleep=0 grid_x=21 grid_y=15 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 07:36:47] StateChange: egg_8 tick hunger=27 energy=82 poop_count=0 asleep=0 grid_x=22 grid_y=14 z=-3 facing=right | Trigger: tick_pets
+[2026-07-15 07:36:47] StateChange: egg_5 tick hunger=39 energy=74 poop_count=1 asleep=0 grid_x=21 grid_y=15 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 07:36:50] StateChange: egg_8 tick hunger=30 energy=80 poop_count=0 asleep=0 grid_x=21 grid_y=13 z=-4 facing=left | Trigger: tick_pets
+[2026-07-15 07:36:50] StateChange: egg_5 tick hunger=42 energy=72 poop_count=1 asleep=0 grid_x=21 grid_y=15 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 07:36:53] StateChange: egg_8 tick hunger=33 energy=78 poop_count=0 asleep=0 grid_x=20 grid_y=12 z=-4 facing=left | Trigger: tick_pets
+[2026-07-15 07:36:53] StateChange: egg_5 tick hunger=45 energy=70 poop_count=1 asleep=0 grid_x=22 grid_y=16 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 07:36:56] StateChange: egg_8 tick hunger=36 energy=76 poop_count=1 asleep=0 grid_x=21 grid_y=11 z=-4 facing=right | Trigger: tick_pets
+[2026-07-15 07:36:56] StateChange: egg_5 tick hunger=48 energy=68 poop_count=1 asleep=0 grid_x=21 grid_y=16 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 07:36:59] StateChange: egg_8 tick hunger=39 energy=74 poop_count=1 asleep=0 grid_x=20 grid_y=12 z=-3 facing=left | Trigger: tick_pets
+[2026-07-15 07:36:59] StateChange: egg_5 tick hunger=51 energy=66 poop_count=1 asleep=0 grid_x=21 grid_y=17 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 07:37:02] StateChange: egg_8 tick hunger=42 energy=72 poop_count=1 asleep=0 grid_x=20 grid_y=12 z=-4 facing=left | Trigger: tick_pets
+[2026-07-15 07:37:02] StateChange: egg_5 tick hunger=54 energy=64 poop_count=1 asleep=0 grid_x=22 grid_y=16 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 07:37:05] StateChange: egg_8 tick hunger=45 energy=70 poop_count=1 asleep=0 grid_x=20 grid_y=11 z=-4 facing=left | Trigger: tick_pets
+[2026-07-15 07:37:05] StateChange: egg_5 tick hunger=57 energy=62 poop_count=1 asleep=0 grid_x=23 grid_y=17 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 07:37:08] StateChange: egg_8 tick hunger=48 energy=68 poop_count=1 asleep=0 grid_x=19 grid_y=10 z=-3 facing=left | Trigger: tick_pets
+[2026-07-15 07:37:08] StateChange: egg_5 tick hunger=60 energy=60 poop_count=1 asleep=0 grid_x=24 grid_y=18 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 07:37:11] StateChange: egg_8 tick hunger=51 energy=66 poop_count=1 asleep=0 grid_x=19 grid_y=10 z=-3 facing=left | Trigger: tick_pets
+[2026-07-15 07:37:11] StateChange: egg_5 tick hunger=63 energy=58 poop_count=1 asleep=0 grid_x=25 grid_y=19 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 07:37:14] StateChange: egg_8 tick hunger=54 energy=64 poop_count=1 asleep=0 grid_x=18 grid_y=9 z=-3 facing=left | Trigger: tick_pets
+[2026-07-15 07:37:14] StateChange: egg_5 tick hunger=66 energy=56 poop_count=1 asleep=0 grid_x=25 grid_y=19 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 07:37:17] StateChange: egg_8 tick hunger=57 energy=62 poop_count=1 asleep=0 grid_x=17 grid_y=9 z=-3 facing=left | Trigger: tick_pets
+[2026-07-15 07:37:17] StateChange: egg_5 tick hunger=69 energy=54 poop_count=1 asleep=0 grid_x=26 grid_y=19 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 07:50:44] StateChange: egg_8 tick hunger=60 energy=60 poop_count=1 asleep=0 grid_x=17 grid_y=8 z=-2 facing=left | Trigger: tick_pets
+[2026-07-15 07:50:44] StateChange: egg_5 tick hunger=72 energy=52 poop_count=1 asleep=0 grid_x=26 grid_y=20 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:09:45] ProcessEvent: egg_1 window_opened | Trigger: egg_window
+[2026-07-15 13:11:41] StateChange: egg_5 tick hunger=75 energy=50 poop_count=1 asleep=0 grid_x=26 grid_y=21 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:18:06] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=18 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:18:09] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=18 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:18:12] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=18 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:18:15] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=18 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:18:18] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=18 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:18:21] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=18 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:18:24] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=18 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:18:27] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=18 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:18:30] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=18 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:18:33] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=18 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:18:36] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=18 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:18:39] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=18 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:18:42] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=18 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:18:45] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=18 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:18:48] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=18 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:18:51] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=18 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:18:54] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=18 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:18:57] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=18 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:19:00] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=18 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:19:03] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=18 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:19:06] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=18 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:19:09] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=18 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:19:34] ProcessEvent: egg_1 window_opened | Trigger: egg_window
+[2026-07-15 13:19:34] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=18 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:19:37] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=18 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:25:45] ProcessEvent: egg_2 window_opened | Trigger: egg_window
+[2026-07-15 13:25:45] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 13:25:48] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 13:25:51] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 13:25:54] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 13:25:57] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 13:26:00] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 13:26:01] ProcessEvent: egg_1 window_opened | Trigger: egg_window
+[2026-07-15 13:26:01] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=18 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:26:03] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 13:26:04] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=18 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:26:06] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 13:26:07] StateChange: egg_1 tick hunger=100 energy=100 poop_count=3 asleep=1 grid_x=18 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:26:09] StateChange: egg_1 asleep 0 | Trigger: toggle_sleep
+[2026-07-15 13:26:09] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 13:26:10] StateChange: egg_1 tick hunger=100 energy=98 poop_count=3 asleep=0 grid_x=19 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:26:12] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 13:26:13] StateChange: egg_1 tick hunger=100 energy=96 poop_count=3 asleep=0 grid_x=18 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 13:26:15] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 13:26:16] StateChange: egg_1 tick hunger=100 energy=94 poop_count=3 asleep=0 grid_x=18 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 13:26:18] StateChange: egg_2 tick hunger=100 energy=100 poop_count=1 asleep=1 grid_x=20 grid_y=13 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 13:26:19] StateChange: egg_1 tick hunger=100 energy=92 poop_count=3 asleep=0 grid_x=17 grid_y=1 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 13:26:19] StateChange: egg_2 asleep 0 | Trigger: toggle_sleep
+[2026-07-15 13:26:21] StateChange: egg_2 tick hunger=100 energy=98 poop_count=1 asleep=0 grid_x=21 grid_y=13 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:26:22] StateChange: egg_1 tick hunger=100 energy=90 poop_count=3 asleep=0 grid_x=16 grid_y=0 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 13:26:24] StateChange: egg_2 tick hunger=100 energy=96 poop_count=1 asleep=0 grid_x=20 grid_y=12 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 13:26:25] StateChange: egg_1 tick hunger=100 energy=88 poop_count=3 asleep=0 grid_x=16 grid_y=0 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 13:26:27] StateChange: egg_2 tick hunger=100 energy=94 poop_count=1 asleep=0 grid_x=21 grid_y=12 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:26:28] StateChange: egg_1 tick hunger=100 energy=86 poop_count=3 asleep=0 grid_x=15 grid_y=0 z=0 facing=left | Trigger: tick_pets
+[2026-07-15 13:26:30] StateChange: egg_2 tick hunger=100 energy=92 poop_count=1 asleep=0 grid_x=21 grid_y=11 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:26:31] StateChange: egg_1 tick hunger=100 energy=84 poop_count=3 asleep=0 grid_x=16 grid_y=0 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:26:33] StateChange: egg_2 tick hunger=100 energy=90 poop_count=1 asleep=0 grid_x=31 grid_y=18 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:26:34] StateChange: egg_1 tick hunger=100 energy=82 poop_count=3 asleep=0 grid_x=16 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:26:36] StateChange: egg_2 tick hunger=100 energy=88 poop_count=1 asleep=0 grid_x=32 grid_y=19 z=0 facing=right | Trigger: tick_pets
+[2026-07-15 13:26:36] ProcessEvent: egg_1 window_closed | Trigger: egg_window
+[2026-07-15 13:26:38] ProcessEvent: egg_2 window_closed | Trigger: egg_window
+[2026-07-15 14:06:47] StateChange: egg_2 card_status issued | Trigger: export_card
+[2026-07-15 14:06:47] StateChange: egg_2 card_serial 1 | Trigger: export_card
+[2026-07-15 14:06:47] StateChange: egg_2 card_id egg_2-1 | Trigger: export_card
+[2026-07-17 18:55:08] ProcessEvent: egg_1 window_opened | Trigger: egg_window
+[2026-07-17 18:55:09] StateChange: egg_1 tick hunger=100 energy=80 poop_count=3 asleep=0 grid_x=17 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 18:55:12] StateChange: egg_1 tick hunger=100 energy=78 poop_count=3 asleep=0 grid_x=17 grid_y=0 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 18:55:15] StateChange: egg_1 tick hunger=100 energy=76 poop_count=3 asleep=0 grid_x=17 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 18:55:18] StateChange: egg_1 tick hunger=100 energy=74 poop_count=3 asleep=0 grid_x=16 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 18:55:21] StateChange: egg_1 tick hunger=100 energy=72 poop_count=3 asleep=0 grid_x=15 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 18:55:24] StateChange: egg_1 tick hunger=100 energy=70 poop_count=3 asleep=0 grid_x=15 grid_y=3 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 18:55:27] StateChange: egg_1 tick hunger=100 energy=68 poop_count=3 asleep=0 grid_x=14 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 18:55:30] StateChange: egg_1 tick hunger=100 energy=66 poop_count=3 asleep=0 grid_x=14 grid_y=3 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 18:55:30] ProcessEvent: egg_1 window_closed | Trigger: egg_window
+[2026-07-17 23:04:05] ProcessEvent: egg_1 window_opened | Trigger: egg_window
+[2026-07-17 23:04:06] StateChange: egg_1 tick hunger=100 energy=64 poop_count=3 asleep=0 grid_x=15 grid_y=2 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:04:09] StateChange: egg_1 tick hunger=100 energy=62 poop_count=3 asleep=0 grid_x=15 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:04:12] StateChange: egg_1 tick hunger=100 energy=60 poop_count=3 asleep=0 grid_x=16 grid_y=0 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:04:15] StateChange: egg_1 tick hunger=100 energy=58 poop_count=3 asleep=0 grid_x=16 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:04:18] StateChange: egg_1 tick hunger=100 energy=56 poop_count=3 asleep=0 grid_x=15 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 23:04:21] StateChange: egg_1 tick hunger=100 energy=54 poop_count=3 asleep=0 grid_x=16 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:04:24] StateChange: egg_1 tick hunger=100 energy=52 poop_count=3 asleep=0 grid_x=16 grid_y=2 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:04:27] StateChange: egg_1 tick hunger=100 energy=50 poop_count=3 asleep=0 grid_x=16 grid_y=3 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:04:30] StateChange: egg_1 tick hunger=100 energy=48 poop_count=3 asleep=0 grid_x=15 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 23:04:33] StateChange: egg_1 tick hunger=100 energy=46 poop_count=3 asleep=0 grid_x=14 grid_y=3 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 23:04:36] StateChange: egg_1 tick hunger=100 energy=44 poop_count=3 asleep=0 grid_x=14 grid_y=4 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 23:04:39] StateChange: egg_1 tick hunger=100 energy=42 poop_count=3 asleep=0 grid_x=15 grid_y=4 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:04:42] StateChange: egg_1 tick hunger=100 energy=40 poop_count=3 asleep=0 grid_x=16 grid_y=4 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:04:45] StateChange: egg_1 tick hunger=100 energy=38 poop_count=3 asleep=0 grid_x=16 grid_y=4 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:04:48] StateChange: egg_1 tick hunger=100 energy=36 poop_count=3 asleep=0 grid_x=15 grid_y=5 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 23:04:51] StateChange: egg_1 tick hunger=100 energy=34 poop_count=3 asleep=0 grid_x=16 grid_y=5 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:04:54] StateChange: egg_1 tick hunger=100 energy=32 poop_count=3 asleep=0 grid_x=16 grid_y=5 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:04:57] StateChange: egg_1 tick hunger=100 energy=30 poop_count=3 asleep=0 grid_x=15 grid_y=5 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 23:05:00] StateChange: egg_1 tick hunger=100 energy=28 poop_count=3 asleep=0 grid_x=16 grid_y=5 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:05:03] StateChange: egg_1 tick hunger=100 energy=26 poop_count=3 asleep=0 grid_x=16 grid_y=5 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:05:06] StateChange: egg_1 tick hunger=100 energy=24 poop_count=3 asleep=0 grid_x=16 grid_y=6 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:05:09] StateChange: egg_1 tick hunger=100 energy=22 poop_count=3 asleep=0 grid_x=16 grid_y=5 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:05:12] StateChange: egg_1 tick hunger=100 energy=20 poop_count=3 asleep=0 grid_x=15 grid_y=4 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 23:05:15] StateChange: egg_1 tick hunger=100 energy=18 poop_count=3 asleep=0 grid_x=15 grid_y=4 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 23:05:18] StateChange: egg_1 tick hunger=100 energy=16 poop_count=3 asleep=0 grid_x=15 grid_y=3 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 23:05:21] StateChange: egg_1 tick hunger=100 energy=14 poop_count=3 asleep=0 grid_x=16 grid_y=3 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:05:24] StateChange: egg_1 tick hunger=100 energy=12 poop_count=3 asleep=0 grid_x=17 grid_y=4 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:05:27] StateChange: egg_1 tick hunger=100 energy=10 poop_count=3 asleep=0 grid_x=18 grid_y=3 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:05:30] StateChange: egg_1 tick hunger=100 energy=8 poop_count=3 asleep=0 grid_x=19 grid_y=4 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:05:33] StateChange: egg_1 tick hunger=100 energy=6 poop_count=3 asleep=0 grid_x=20 grid_y=3 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:05:36] StateChange: egg_1 tick hunger=100 energy=4 poop_count=3 asleep=0 grid_x=21 grid_y=3 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:05:39] StateChange: egg_1 tick hunger=100 energy=2 poop_count=3 asleep=0 grid_x=21 grid_y=3 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:05:42] StateChange: egg_1 tick hunger=100 energy=0 poop_count=3 asleep=1 grid_x=21 grid_y=4 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:05:45] StateChange: egg_1 tick hunger=100 energy=8 poop_count=3 asleep=1 grid_x=21 grid_y=4 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:05:48] StateChange: egg_1 tick hunger=100 energy=16 poop_count=3 asleep=1 grid_x=21 grid_y=4 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:05:51] StateChange: egg_1 tick hunger=100 energy=24 poop_count=3 asleep=1 grid_x=21 grid_y=4 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:05:54] StateChange: egg_1 tick hunger=100 energy=32 poop_count=3 asleep=1 grid_x=21 grid_y=4 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:05:57] StateChange: egg_1 tick hunger=100 energy=40 poop_count=3 asleep=1 grid_x=21 grid_y=4 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:06:00] StateChange: egg_1 tick hunger=100 energy=48 poop_count=3 asleep=1 grid_x=21 grid_y=4 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:06:03] StateChange: egg_1 tick hunger=100 energy=56 poop_count=3 asleep=1 grid_x=21 grid_y=4 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:06:06] StateChange: egg_1 tick hunger=100 energy=64 poop_count=3 asleep=1 grid_x=21 grid_y=4 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:06:09] StateChange: egg_1 tick hunger=100 energy=72 poop_count=3 asleep=1 grid_x=21 grid_y=4 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:06:10] StateChange: egg_1 asleep 0 | Trigger: toggle_sleep
+[2026-07-17 23:06:12] StateChange: egg_1 tick hunger=100 energy=70 poop_count=3 asleep=0 grid_x=22 grid_y=3 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:06:15] StateChange: egg_1 tick hunger=100 energy=68 poop_count=3 asleep=0 grid_x=21 grid_y=3 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 23:06:18] StateChange: egg_1 tick hunger=100 energy=66 poop_count=3 asleep=0 grid_x=21 grid_y=3 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 23:06:21] StateChange: egg_1 tick hunger=100 energy=64 poop_count=3 asleep=0 grid_x=20 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 23:06:24] StateChange: egg_1 tick hunger=100 energy=62 poop_count=3 asleep=0 grid_x=20 grid_y=1 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 23:06:27] StateChange: egg_1 tick hunger=100 energy=60 poop_count=3 asleep=0 grid_x=21 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:06:30] StateChange: egg_1 tick hunger=100 energy=58 poop_count=3 asleep=0 grid_x=22 grid_y=0 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:06:33] StateChange: egg_1 tick hunger=100 energy=56 poop_count=3 asleep=0 grid_x=22 grid_y=0 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:06:36] StateChange: egg_1 tick hunger=100 energy=54 poop_count=3 asleep=0 grid_x=21 grid_y=0 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 23:06:39] StateChange: egg_1 tick hunger=100 energy=52 poop_count=3 asleep=0 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:06:42] StateChange: egg_1 tick hunger=100 energy=50 poop_count=3 asleep=0 grid_x=22 grid_y=2 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:06:45] StateChange: egg_1 tick hunger=100 energy=48 poop_count=3 asleep=0 grid_x=21 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 23:06:48] StateChange: egg_1 tick hunger=100 energy=46 poop_count=3 asleep=0 grid_x=22 grid_y=2 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:06:51] StateChange: egg_1 tick hunger=100 energy=44 poop_count=3 asleep=0 grid_x=21 grid_y=3 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 23:06:54] StateChange: egg_1 tick hunger=100 energy=42 poop_count=3 asleep=0 grid_x=20 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 23:06:57] StateChange: egg_1 tick hunger=100 energy=40 poop_count=3 asleep=0 grid_x=21 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:07:00] StateChange: egg_1 tick hunger=100 energy=38 poop_count=3 asleep=0 grid_x=20 grid_y=0 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 23:07:03] StateChange: egg_1 tick hunger=100 energy=36 poop_count=3 asleep=0 grid_x=21 grid_y=0 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:07:06] StateChange: egg_1 tick hunger=100 energy=34 poop_count=3 asleep=0 grid_x=20 grid_y=1 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 23:07:09] StateChange: egg_1 tick hunger=100 energy=32 poop_count=3 asleep=0 grid_x=19 grid_y=1 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 23:07:12] StateChange: egg_1 tick hunger=100 energy=30 poop_count=3 asleep=0 grid_x=20 grid_y=2 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:07:15] StateChange: egg_1 tick hunger=100 energy=28 poop_count=3 asleep=0 grid_x=21 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:07:18] StateChange: egg_1 tick hunger=100 energy=26 poop_count=3 asleep=0 grid_x=21 grid_y=0 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:07:21] StateChange: egg_1 tick hunger=100 energy=24 poop_count=3 asleep=0 grid_x=20 grid_y=1 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 23:07:24] StateChange: egg_1 tick hunger=100 energy=22 poop_count=3 asleep=0 grid_x=21 grid_y=0 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:07:27] StateChange: egg_1 tick hunger=100 energy=20 poop_count=3 asleep=0 grid_x=20 grid_y=1 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 23:07:30] StateChange: egg_1 tick hunger=100 energy=18 poop_count=3 asleep=0 grid_x=19 grid_y=1 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 23:07:33] StateChange: egg_1 tick hunger=100 energy=16 poop_count=3 asleep=0 grid_x=20 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:07:36] StateChange: egg_1 tick hunger=100 energy=14 poop_count=3 asleep=0 grid_x=19 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 23:07:39] StateChange: egg_1 tick hunger=100 energy=12 poop_count=3 asleep=0 grid_x=20 grid_y=3 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:07:42] StateChange: egg_1 tick hunger=100 energy=10 poop_count=3 asleep=0 grid_x=19 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 23:07:45] StateChange: egg_1 tick hunger=100 energy=8 poop_count=3 asleep=0 grid_x=18 grid_y=1 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 23:07:48] StateChange: egg_1 tick hunger=100 energy=6 poop_count=3 asleep=0 grid_x=19 grid_y=0 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:07:51] StateChange: egg_1 tick hunger=100 energy=4 poop_count=3 asleep=0 grid_x=18 grid_y=0 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 23:07:54] StateChange: egg_1 tick hunger=100 energy=2 poop_count=3 asleep=0 grid_x=19 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:07:57] StateChange: egg_1 tick hunger=100 energy=0 poop_count=3 asleep=1 grid_x=20 grid_y=0 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:08:00] StateChange: egg_1 tick hunger=100 energy=8 poop_count=3 asleep=1 grid_x=20 grid_y=0 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:08:03] StateChange: egg_1 tick hunger=100 energy=16 poop_count=3 asleep=1 grid_x=20 grid_y=0 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:08:06] StateChange: egg_1 tick hunger=100 energy=24 poop_count=3 asleep=1 grid_x=20 grid_y=0 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:08:08] StateChange: egg_1 asleep 0 | Trigger: toggle_sleep
+[2026-07-17 23:08:09] StateChange: egg_1 tick hunger=100 energy=22 poop_count=3 asleep=0 grid_x=19 grid_y=0 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 23:08:12] StateChange: egg_1 tick hunger=100 energy=20 poop_count=3 asleep=0 grid_x=20 grid_y=0 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:08:13] StateChange: egg_1 poop_count 0 | Trigger: clean_pet
+[2026-07-17 23:08:15] StateChange: egg_1 tick hunger=100 energy=18 poop_count=0 asleep=0 grid_x=20 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:08:16] StateChange: egg_1 hunger 70 | Trigger: feed_pet
+[2026-07-17 23:08:18] StateChange: egg_1 tick hunger=73 energy=16 poop_count=0 asleep=0 grid_x=19 grid_y=1 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 23:08:21] StateChange: egg_1 tick hunger=76 energy=14 poop_count=0 asleep=0 grid_x=18 grid_y=0 z=0 facing=left | Trigger: tick_pets
+[2026-07-17 23:08:24] StateChange: egg_1 tick hunger=79 energy=12 poop_count=0 asleep=0 grid_x=19 grid_y=0 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:08:27] StateChange: egg_1 tick hunger=82 energy=10 poop_count=0 asleep=0 grid_x=20 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:08:30] StateChange: egg_1 tick hunger=85 energy=8 poop_count=0 asleep=0 grid_x=21 grid_y=2 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:08:33] StateChange: egg_1 tick hunger=88 energy=6 poop_count=0 asleep=0 grid_x=21 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:08:36] StateChange: egg_1 tick hunger=91 energy=4 poop_count=0 asleep=0 grid_x=21 grid_y=0 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:08:39] StateChange: egg_1 tick hunger=94 energy=2 poop_count=0 asleep=0 grid_x=22 grid_y=0 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:08:42] StateChange: egg_1 tick hunger=97 energy=0 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:08:45] StateChange: egg_1 tick hunger=98 energy=8 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:08:48] StateChange: egg_1 tick hunger=99 energy=16 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:08:51] StateChange: egg_1 tick hunger=100 energy=24 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:08:54] StateChange: egg_1 tick hunger=100 energy=32 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:08:57] StateChange: egg_1 tick hunger=100 energy=40 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:09:00] StateChange: egg_1 tick hunger=100 energy=48 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:09:03] StateChange: egg_1 tick hunger=100 energy=56 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:09:06] StateChange: egg_1 tick hunger=100 energy=64 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:09:09] StateChange: egg_1 tick hunger=100 energy=72 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:09:12] StateChange: egg_1 tick hunger=100 energy=80 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:09:15] StateChange: egg_1 tick hunger=100 energy=88 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:09:18] StateChange: egg_1 tick hunger=100 energy=96 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:09:21] StateChange: egg_1 tick hunger=100 energy=100 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:09:24] StateChange: egg_1 tick hunger=100 energy=100 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:09:27] StateChange: egg_1 tick hunger=100 energy=100 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:09:30] StateChange: egg_1 tick hunger=100 energy=100 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:09:33] StateChange: egg_1 tick hunger=100 energy=100 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:09:36] StateChange: egg_1 tick hunger=100 energy=100 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:09:39] StateChange: egg_1 tick hunger=100 energy=100 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:09:42] StateChange: egg_1 tick hunger=100 energy=100 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:09:45] StateChange: egg_1 tick hunger=100 energy=100 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:09:48] StateChange: egg_1 tick hunger=100 energy=100 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:09:51] StateChange: egg_1 tick hunger=100 energy=100 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:09:54] StateChange: egg_1 tick hunger=100 energy=100 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:09:57] StateChange: egg_1 tick hunger=100 energy=100 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:10:00] StateChange: egg_1 tick hunger=100 energy=100 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:10:03] StateChange: egg_1 tick hunger=100 energy=100 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:10:06] StateChange: egg_1 tick hunger=100 energy=100 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:10:09] StateChange: egg_1 tick hunger=100 energy=100 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:10:12] StateChange: egg_1 tick hunger=100 energy=100 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:10:15] StateChange: egg_1 tick hunger=100 energy=100 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:10:18] StateChange: egg_1 tick hunger=100 energy=100 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:10:21] StateChange: egg_1 tick hunger=100 energy=100 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:10:24] StateChange: egg_1 tick hunger=100 energy=100 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:10:27] StateChange: egg_1 tick hunger=100 energy=100 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:10:30] StateChange: egg_1 tick hunger=100 energy=100 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:10:33] StateChange: egg_1 tick hunger=100 energy=100 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:10:36] StateChange: egg_1 tick hunger=100 energy=100 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:10:39] StateChange: egg_1 tick hunger=100 energy=100 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:10:42] StateChange: egg_1 tick hunger=100 energy=100 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:10:45] StateChange: egg_1 tick hunger=100 energy=100 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:10:48] StateChange: egg_1 tick hunger=100 energy=100 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-17 23:10:49] ProcessEvent: egg_1 window_closed | Trigger: egg_window
+[2026-07-18 12:30:52] ProcessEvent: egg_1 window_opened | Trigger: egg_window
+[2026-07-18 12:30:52] StateChange: egg_1 tick hunger=100 energy=100 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-18 12:30:55] StateChange: egg_1 tick hunger=100 energy=100 poop_count=0 asleep=1 grid_x=22 grid_y=1 z=0 facing=right | Trigger: tick_pets
+[2026-07-18 12:30:56] StateChange: egg_1 asleep 0 | Trigger: toggle_sleep
+[2026-07-18 12:30:58] StateChange: egg_1 tick hunger=100 energy=98 poop_count=0 asleep=0 grid_x=23 grid_y=2 z=0 facing=right | Trigger: tick_pets
+[2026-07-18 12:31:01] StateChange: egg_1 tick hunger=100 energy=96 poop_count=0 asleep=0 grid_x=22 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-18 12:31:04] StateChange: egg_1 tick hunger=100 energy=94 poop_count=0 asleep=0 grid_x=22 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-18 12:31:07] StateChange: egg_1 tick hunger=100 energy=92 poop_count=0 asleep=0 grid_x=23 grid_y=3 z=0 facing=right | Trigger: tick_pets
+[2026-07-18 12:31:09] ProcessEvent: egg_1 window_closed | Trigger: egg_window
+[2026-07-18 13:20:43] ProcessEvent: egg_1 window_opened | Trigger: egg_window
+[2026-07-18 13:20:43] StateChange: egg_1 tick hunger=100 energy=90 poop_count=0 asleep=0 grid_x=23 grid_y=2 z=0 facing=right | Trigger: tick_pets
+[2026-07-18 13:20:46] StateChange: egg_1 tick hunger=100 energy=88 poop_count=0 asleep=0 grid_x=23 grid_y=2 z=0 facing=right | Trigger: tick_pets
+[2026-07-18 13:20:49] StateChange: egg_1 tick hunger=100 energy=86 poop_count=0 asleep=0 grid_x=22 grid_y=2 z=0 facing=left | Trigger: tick_pets
+[2026-07-18 13:20:52] StateChange: egg_1 tick hunger=100 energy=84 poop_count=0 asleep=0 grid_x=21 grid_y=1 z=0 facing=left | Trigger: tick_pets
+[2026-07-18 13:20:53] ProcessEvent: egg_1 window_closed | Trigger: egg_window

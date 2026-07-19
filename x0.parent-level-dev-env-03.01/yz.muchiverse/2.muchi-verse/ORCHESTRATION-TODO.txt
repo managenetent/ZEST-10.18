@@ -1,0 +1,184 @@
+ORCHESTRATION TODO — muchi-verse track status, per project
+================================================================================
+Written 2026-07-16, in direct answer to "where are we, what should I
+orchestrate my agents to do." UPDATED same day after direct instruction
+to actually go look, rather than work from doc-derived assumptions - a
+real investigation was run (file mtimes, git status, direct grep against
+actual piece state files, not just design docs) across mutaclsym/
+piececraft-3d*/muchipal-editor. Findings below are VERIFIED as of
+2026-07-16 ~04:00-05:00, not guessed - still worth a fresh check if much
+time has passed since. Format matches `y0.muchi-pal-chat/TODO.txt`:
+WHAT / KPI / WHY.
+
+================================================================================
+ALREADY STAFFED (per your own statement) - use these as the doc-derived
+"what's next" reference, verify actual state with those sessions
+================================================================================
+
+MUTACLSYM - VERIFIED 2026-07-16
+  Not a git repo. Design source: `dox/01-cdda-architecture.md`.
+  **Verified fact, corrects the earlier doc-derived guess**: the FSM
+  layer has genuinely NOT been started - `grep -rl 'current_state'`
+  across the whole tree matches ONLY the design doc itself, zero
+  occurrences in any real piece's `state.txt` (checked directly, e.g.
+  `pieces/world_01/map_start/monsters/zombie_01/state.txt` has only
+  `monster_type`/`pos_x`/`pos_y`/`hp`, no state/mode field at all). No
+  `.pal` file exists anywhere under `pieces/` except `pal/main_loop.pal`
+  itself. `tick_monsters.c` last touched 2026-07-15 12:41 - untouched
+  for the many hours since. **The live agent's actual current work
+  (most recent touches, 22:34-03:48) is on a GL mirror / RGB frame
+  compositing pipeline and font-glyph registry population
+  (`system/gl_mirror.c`, `ops/compose_rgb_frame.c`,
+  `pieces/registry/fonts/ascii/*/`)** - not FSM/monster AI at all. If
+  you want the FSM layer to progress, it needs to be explicitly
+  (re)prioritized - it is not what's currently being worked.
+  NEXT KPI-BEARING STEP: attach ONE real per-piece FSM script to ONE
+  monster type, per mutaclsym's own doc - `muchi-evo-pal/EVO-DESIGN.txt`
+  §7's status update (this session) has a real, working, tested example
+  of exactly this pattern (a `.pal`-scripted FSM piece with `beq`-
+  dispatched states) to copy the SHAPE from, including one real gotcha
+  worth knowing before attempting this in mutaclsym too: `prisc+x`'s
+  `read_state` builtin resolves piece paths as `projects/<proj_id>/
+  pieces/<piece_id>/state.txt` (or a `world_*/map_*/` nested form) -
+  confirm which shape mutaclsym's own prisc+x copy actually expects
+  before assuming muchi-evo-pal's exact layout transfers unchanged.
+
+3D-PIECECRAFT - UPDATED 2026-07-16 (user merged real content in same day)
+  Resolved: `piececraft-3d-pal` now has real content (228 files) - the
+  same GL-mirror/RGB-frame-compositing/font-glyph-registry/emoji-tile
+  work the investigation above found happening in mutaclsym has been
+  merged here (`system/gl_mirror.c` copied verbatim from mutaclsym per
+  its own button.sh header comment, `ops/compose_rgb_frame.c`,
+  `ops/camera_input.c`, a real tile registry with `rock_emoji`/
+  `tree_emoji`/`dog_emoji` rows). Confirms `GRAND-ARCHITECTURE.md` §0's
+  "one shared rendering daemon" bet directly - a second project needed
+  zero new GL code. Design source unchanged: `GRAND-ARCHITECTURE.md`
+  §0/§0a.
+
+MUCHIPAL-EDITOR - VERIFIED 2026-07-16
+  Not a git repo. Real content confirmed present, same scope as before
+  (`ops/piece_viewer.c`, `project_browser.c`, `compose_title_frame.c`,
+  `pal/main_loop.pal`, etc.). **Most recent touches (00:30-00:31) are a
+  rebuild/run cycle (binaries + runtime state files updating), not new
+  source growth** - `piece_viewer.c` itself hasn't been edited since
+  00:14. **No `dox/` or handoff doc exists anywhere in this project**
+  (explicitly checked, zero hits) - a real gap if anyone needs to pick
+  this up cold; worth having whichever agent is on this write one,
+  matching every other project in this family's own practice.
+  Design source: `GRAND-ARCHITECTURE.md` §1-2.
+  NEXT KPI-BEARING STEP: confirm `available_ops[]`-equivalent table +
+  `.pal` script generation is wired end to end for at least ONE real op
+  call, per §2 there; write a handoff doc regardless of how far along
+  it is.
+
+WSR-PAL - PORT STARTED 2026-07-16, real vertical slice built+tested
+  Design source: `wsr-pal/dox/00-overview.md` + this session's own
+  `wsr-pal/WSR-PAL-PORT-STATUS.txt` (full details there).
+  **The unread-files gap this file previously flagged as a pre-req has
+  been closed**: `ai/ai_manager.c`/`ai_module_0]apprx.c`/
+  `ai_module_1]real.c` were read directly - all three are BYTE-
+  IDENTICAL copies of the main menu (same bug pattern as
+  `payroll_loop.c`, a second confirmed instance of it in this codebase)
+  - the "AI trades for corporations" system named in these files'
+  filenames never actually existed. What DID exist and was worth
+  porting: `analysis_loop.c`'s real risk-weighted fundamental-value
+  formula, consuming each corporation's real `weights.txt` (50 real
+  corps have one) - this became decision_mode=1's REAL logic (not a
+  stub) in the new port.
+  **Built and live-tested**: ONE real corporation (ORB/Orbital Express,
+  seeded from its own real balance sheet) as a `.pal`-scripted FSM
+  piece, same shape as `muchi-evo-pal`, all 5 decision_mode tiers
+  wired, preset/weighted/llm/human all verified via real runs (buy AND
+  sell AND hold paths each proven to fire and update cash/shares_held
+  correctly). One real open design question surfaced during testing,
+  not yet decided: should human trades be bounded by the same
+  fundamental-value gate the automated tiers respect, or stay fully
+  discretionary (currently: fully discretionary, affordability-only) -
+  see WSR-PAL-PORT-STATUS.txt §2.
+  NEXT KPI-BEARING STEP: port a second corporation + a government
+  entity to prove the pattern generalizes past one hand-picked case;
+  wire `presets/schedule.txt`'s real interval-scheduler concept into a
+  proper multi-entity tick loop instead of this slice's hardcoded
+  single corporation; fix the now-doubly-confirmed `payroll_loop.c` bug
+  while in this codebase.
+
+================================================================================
+NOT YET STAFFED - the two gaps you asked about directly
+================================================================================
+
+CIV (muchi-civ-pal)
+  Confirmed EMPTY directory (2026-07-16) - genuinely greenfield, no
+  prior design doc of its own beyond `GRAND-ARCHITECTURE.md` §4's one
+  line: "not designed at all yet beyond 'same pal/prisc/ops
+  architecture'... No civ-specific mechanics (turns, tech tree, city/
+  tile management) scoped."
+  IMPORTANT DISTINCTION worth making explicit before staffing this:
+  muchi-civ-pal is NOT the same thing as mutaclsym. `MUCHICIVO_BIBLE.txt`
+  §4 described Tier 2 as "reuse mutaclsym's mechanics" - true for the
+  SURVIVAL/CRAFT/COMBAT skeleton, but civ-specific systems (turn-based
+  city management, tech tree AS a tree not just craft.c recipes,
+  diplomacy, borders/territory) are NOT in mutaclsym's scope and have
+  no design doc yet. Recommend: staff this AFTER evo (below), since (a)
+  you named evo as the higher documentation priority directly, and (b)
+  `MUCHICIVO_BIBLE.txt` §2's own graduation-condition design means
+  civ's starting conditions (what a freshly-graduated Tier-1 species
+  looks like) are better specified once evo's own design (this
+  session's other deliverable, `muchi-evo-pal/EVO-DESIGN.txt`) exists.
+  NEXT STEP: a dedicated `muchi-civ-pal/CIV-DESIGN.txt`, same treatment
+  as evo just got - not written this turn, flagged as the direct
+  next-in-line deep-dive once evo's is done.
+
+EVO (muchi-evo-pal) - UPDATED 2026-07-16, now has REAL CODE, not just design
+  `EVO-DESIGN.txt` (design doc, blending E.V.O.: Search for Eden's
+  creature/body-evolution loop with SimEarth's planetary/ecosystem
+  simulation as two nested granularity scales) PLUS a real, built,
+  live-verified vertical slice: one `.pal`-scripted FSM piece
+  (`creature_01`, `beq`-dispatched on `current_state`, per direct
+  instruction "code our evo game using pal running fsm instead of raw
+  ops") cycling idle -> deciding -> eating/evolving. All 4
+  `decision_mode` tiers wired; `llm` tier is genuinely live against the
+  LAN Mac's `gemma3:270m` (see NEAR-TERM section below), verified via 4
+  real model calls producing correct eat/evolve choices. `weighted`/
+  `rl` tiers are honestly stubbed (same preset logic), not faked as
+  real. See `EVO-DESIGN.txt`'s own STATUS UPDATE + §7 for exact next
+  steps: multi-creature dynamic discovery (currently ONE hardcoded
+  creature), moving dispatch into each piece's own `events/on_tick.pal`
+  (currently inlined in `main_loop.pal`, documented as the deliberate
+  first-slice simplification), and a real weighted/rl implementation.
+
+NEAR-TERM (added 2026-07-16, per direct instruction: "include this in
+our nearterm to do")
+  - **gemma3:270m is now live on the LAN Mac** (pulled via SSH this
+    session, verified ~935ms round trip, registered as `gemma-lan` in
+    `y0.muchi-pal-chat/pieces/registry/models/model_list.txt` AND used
+    directly by `muchi-evo-pal/ops/bot_choose.c`). Preferred over
+    localhost per direct instruction (this machine is slow, corpuses
+    are small - the LAN Mac's GPU-backed ollama is strictly better for
+    this workload) and over groq-tool-use-mac (much larger/slower,
+    unnecessary for simple forced-choice/distillation calls that don't
+    need tool-calling).
+  - NEXT: apply the same "use gemma-lan for distillation, not groq
+    unless tool-calling is specifically needed" choice to
+    `y0.muchi-pal-chat`'s own `generate_corpus.c` (§11.1's pipeline,
+    built last session) - it currently defaults to whatever provider
+    is passed on its CLI, no code change needed, just start actually
+    invoking it with `gemma-lan` as the default choice for bulk corpus
+    generation instead of `groq-tool-use-mac`.
+  - NEXT: implement real `weighted`/`rl` `decision_mode` tiers in
+    `muchi-evo-pal/ops/bot_choose.c` (currently stubbed to preset) -
+    the natural next increment now that `preset` and `llm` both
+    genuinely work.
+  - NEXT: extend `muchi-evo-pal`'s single hardcoded `creature_01` to
+    dynamic multi-creature discovery (Moke-Pet's epoch-loop pattern,
+    already cited in mutaclsym's own FSM design doc) - needed before
+    a rival lineage (EVO-DESIGN.txt §3) is meaningful.
+
+================================================================================
+CROSS-TRACK DEPENDENCY NOTE
+================================================================================
+`y0.muchi-pal-chat`'s own `TODO.txt` Phase A (corpus generation/
+training pipeline, already built+verified this session) is NOT blocked
+by, and doesn't block, any track above - it's a separate project. It
+DOES matter to wsr-pal's redo per `MUCHICIVO_BIBLE.txt` §5 (the R&D-
+corpus mechanic), worth keeping in mind when scoping wsr-pal's port,
+not urgent to act on yet.

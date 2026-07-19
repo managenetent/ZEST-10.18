@@ -1,0 +1,14 @@
+# muchipal-editor known-projects registry
+# Format: id|display_name|path|map_rel_path|registry_format|registry_rel_path
+# Same pipe-delimited shape as platform-vision.txt's proposed
+# locations.txt for the future orchestrator, extended with the fields
+# ops/map_edit.c needs to genuinely open and edit a project's map -
+# "if it's not in a file, it's a lie" (1.TPMOS doctrine cited elsewhere
+# in this family) rather than guessing each project's map path/registry
+# shape from convention. registry_format is "pipe" (mutaclsym's
+# glyph|id|name|walkable|rgb_top, one file) or "equals"
+# (piececraft-3d-pal's glyph=id registry.txt + per-id
+# <id>.tile.txt key=value files) - the two real, differently-shaped
+# tile formats this whole family has produced so far.
+mutaclsym|Mutaclsym (CDDA clone)|/home/no/Desktop/🤖️🪤️🏠️/🚽️🧻️/🚽️🥡️-00.00/ZEST-10.00/x0.parent-level-dev-env-03.00/y0.mutaclsym+05.00/mutaclsym|pieces/world_01/map_start/map.txt|pipe|pieces/registry/terrain/terrain_types.txt
+piececraft-3d-pal|Piececraft 3D (voxel clone)|/home/no/Desktop/🤖️🪤️🏠️/🚽️🧻️/🚽️🥡️-00.00/ZEST-10.00/x0.parent-level-dev-env-03.00/yz.muchiverse/2.muchi-verse/piececraft-3d-pal|pieces/world_01/map_01/map.txt|equals|pieces/registry/tiles/registry.txt

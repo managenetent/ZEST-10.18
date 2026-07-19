@@ -1,0 +1,43 @@
+# egg-pals main menu loop. Same shape as mutaclsym's pal/main_loop.pal:
+# x1 = read cursor into pieces/apps/player_app/history.txt (byte offset)
+# x2 = last key read (0 = nothing new)
+# x9 = 'q' (113), the quit sentinel keyboard_input.c also stops on
+# x3 = epoch tick counter, x4 = ticks-per-epoch threshold (~100 loop
+# iterations * 30ms sleep =~ 3s - the "something re-invokes the pet's
+# tick regularly" mechanism from mutaclsym/dox/01-cdda-architecture.md
+# sec.4; this loop's own re-entry (j loop) IS that re-invoke mechanism,
+# no separate process needed.
+li x1, 0
+li x9, 113
+li x3, 0
+li x4, 100
+
+# Unconditional initial render, so current_frame.txt exists and reflects
+# menu_state.txt's actual starting screen before the first keypress -
+# without this, a truly fresh boot (no leftover current_frame.txt from a
+# prior run) shows nothing until the player presses a key.
+compose_menu
+hit_frame
+
+loop:
+read_history x2, x1
+beq x2, x0, no_key
+beq x2, x9, quit
+menu_input x2
+compose_menu
+hit_frame
+no_key:
+addi x3, x3, 1
+beq x3, x4, do_tick
+j after_tick
+do_tick:
+tick_pets
+li x3, 0
+compose_menu
+hit_frame
+after_tick:
+sleep 30000
+j loop
+
+quit:
+halt

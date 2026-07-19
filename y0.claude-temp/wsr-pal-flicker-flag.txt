@@ -1,0 +1,14 @@
+WSR-PAL CHTPM MODE - SCREEN FLICKER ISSUE
+==========================================
+Date: 2026-07-18
+Status: Keyboard input now working after removing interact_relay overzealousness
+
+Issue: Screen flicker observed in wsr-pal chtpm mode
+- Keyboard input passes through correctly (bug fixed)
+- But display has noticeable flicker
+
+Investigation reference:
+@1.TPMOS_c_+rmmp.0102.0028/!.gem-flashlite--yolo/#.docs/^.pmo.ld-faq+8/PITFALLS_ACTIVE_2026-03-18.txt
+
+TODO: After egg-pals is tested and working, investigate flicker root cause
+using the referenced document.

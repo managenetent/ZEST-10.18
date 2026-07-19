@@ -1,0 +1,95 @@
+📅️
+make a "civ clone" and "rpg maker  clone" (modeled off existing op-ed) 
+
+the trick is . when creating rpg maker event editor. use existing rpg maker events
+and scratch code blocks first, then go back and refactor mutaclysm to use those
+if possible first[or the plugin system]instead of making our own (then we can reuse/
+open mutaclysm and civ clone in this editor and edit it, and later 
+we will even write ports for real rpg maker engine to import/export)
+
+
+> do online p2p 
+> do online chat room the same way [do  x.com like forum first tbh]
+b-b-but we already did these! seperate / doubled is nice 4 sci/redun
+
+then when that is bascially appearant
+
+do copies of each using real "2d gl tiles" 
+
+and do mc-3d 
+🪙️gui? do seperate ; trying 2 mimmick electron look; then port back? or ignore that? & do browser-wrai
+📅️
+Ⓜ️asking me if we should make dwarf fortress . (yes but using pets that evolve on earth 
+and can farm and start governments , and businesses = wsr) + go 2 space (rimworld/gta/mgsv)
++ a stand alone 3d-minecraft (in pal)
++ a stand alone level editor for all of these games that can load all in 2 prove crosscompats 
+
+otherwise u should just make pokemon clone. that also can trade pets in between
+(the other terminal exiting pet should be more like monster rancher (including calendar)
+
+
+<reuse or (FIRST!) refactor mutaclysm ops to be as reusable as possible
+thats a major point of this excersize tbh> 
+ Ⓜ️
+ * in pets time should pass deliberately daily (not including when pet walks around
+ that can be like minute/hourly ; then we can schedule "training blocks/tournaments 2 win bounties
+ and upgrade ranch complete copy of mr. 👨‍🌾️
+📅️jul 15
+(can we do chat/fsm-rl/ r&d without tpmos <using pal> {integrate later when it converses; put this off}
+(just in mutaclysm like enviornments?  <wsr would be good 4 this 2> <may re seperate yahoo 2 >
+(ie big things can get their own thing maybe? 4 now? and later get their own electron 2 ? experiment) 
+<maybe just refactor for nav/ops/pal?> 
+ 
+ <we put chat off , and sensibly so , we have completely mature cli / gui frameworks at this point>
+ 
+ <should we be doing browser apps , just cause? (like electron desktop apps like claude)4 look?onbording? while prototyping in tpmos 4 pre-shipping data structs? (as if it was python?)
+ 🅰️
+ 💡️oh yea at some point i wanna add basic muchi faucet pop out thingi 2 tpmos. 💡️
+ 
+ 
+ we will make chat. tell it 2 use fsm 2 start & play pokemon
+ and later put that same chat in a muchi pet/avatar w/e and tell IT 2 play pokemon
+ (from desktop ava) 
+ {later put itself into game, and pull out its own pokemon and items from save file  or w/e }
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 🤖️
+ we can advertise micro services with difffernt accounts 
+ 
+ and cysec or entire thing 2 gov using blockroachez. etc
+ 
+ 
+ also 
+ 
+ make combine the 3 different chats into 1 stand alone app , like egg-pals/mutaclysm (using only pal)
+ we can switch between models using model
+ (later we will make a fsm/local model 2 switch 2 as well)
+ 
+ <companies can argue on twitter, monopoly faking 4 drama> 
+ 
+ 🐖️💩️one version can be sloppy and polished as possible  ie: brainded pretty = labubu
+ one can be polished slop <opposite ; example= furbi, no obv fx>
+ one can be shitty-looking and good mechanics ; ie cdda
+ one good looking and minecraft++ mechanics and leave it as is + mods suggested
+ and see which they gravitate 2 . dont be surprised if they go goyslop
+ 
+ then later we can congeal them 4 w/e reasons suit our business strategies.;
+ but theres no point in trying 2 sell it congealed. unless ur doing feature demo or something
+ or 2 see if user data shows they dig in and FIND THE STUFF 🐖️💩️
+ 
+ 
+ 🎸️🎸️🎸️🎸️🎸️
+ < we will make daw+vid=edfullduh/photoshop later
+ the secret is using "PAL/OPS " only ; makes things so easy
+ 
+ id do something in browser/electron first, but honestly 
+ u can do it in gl 2, if u mimic wraith but just use pal somehow is maybe
+ the next phase u may do this before piececraf3dtbh 
+ 😶‍🌫️️may even make a more godot like engine , u know? 😶‍🌫️️
+ 🖼️🖼️🖼️🖼️🖼️🖼️
+ 

@@ -1,0 +1,33 @@
+# Human-readable key for state.txt's numeric current_state/decision_mode
+# fields - prisc+x's beq is exact-integer-equality only (see
+# system/prisc+x.c's OP_BEQ), so these are stored as ints, not strings.
+# This file documents the mapping, it isn't read by any op.
+
+current_state:
+  0 = idle       (waiting for the tick loop to act on this creature)
+  1 = deciding   (bot_choose.+x picks eat vs evolve, per decision_mode)
+  2 = eating     (bot_eat.+x runs)
+  3 = evolving   (bot_evolve.+x runs)
+
+decision_mode (see ../../../../../EVO-DESIGN.txt §5/§12 for the full
+chassis - this piece exercises preset/llm/human for real, weighted/rl
+are stubbed):
+  0 = preset     (hardcoded threshold: evolve once ep >= 3, else eat)
+  1 = weighted   (STUB - currently behaves identically to preset; real
+                  weights.txt-driven choice is not implemented, honestly
+                  flagged rather than faked)
+  2 = rl         (STUB - same as weighted for now, no learned policy
+                  wired yet - see EVO-DESIGN.txt §7 build order)
+  3 = llm        (REAL - asks the gemma-lan model, via bot_choose.+x
+                  itself, to pick "eat" or "evolve" given the
+                  creature's current ep/body_parts, and acts on the
+                  answer. Genuinely wired to a live model call.)
+  4 = human      (REAL - an actual person's decision, via `button.sh
+                  choose eat|evolve` + `button.sh step`, not automated
+                  at all. Unlike the other three tiers, bot_choose.+x
+                  deliberately does NOT resolve a decision on its own
+                  here - if no human_decision is queued, it leaves
+                  current_state parked at "deciding" and returns
+                  without acting, so the FSM genuinely waits for a
+                  person. See ../../../../../EVO-DESIGN.txt's human-
+                  controllable-vs-automated report.)

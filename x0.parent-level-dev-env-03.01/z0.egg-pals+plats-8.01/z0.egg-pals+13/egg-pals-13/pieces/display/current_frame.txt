@@ -1,0 +1,24 @@
++============================================================+
+|                                                            |
+|                      E G G - P A L S                       |
+|                                                            |
+|                    ð Ÿ  ›   e g g _ 1                     |
+|                                                            |
+|  Caterpillar  Level 2 (XP 0/40)                            |
+|  HP:25/25 MP:13/13                                         |
+|  Hunger:100 Energy:84 Poop:0                               |
+|  Skills: peck,scratch                                      |
+|  Card: issued                                              |
+|  Position: (21,1,0) Facing: left                           |
+|                                                            |
+|  [ ] 1. [Open Window]                                      |
+|  [ ] 2. [Feed (-5 tokens, -30 hunger)]                     |
+|  [>] 3. [Clean]                                            |
+|  [ ] 4. [Sleep]                                            |
+|  [ ] 5. [Train (-20 energy)]                               |
+|  [ ] 6. [Export Card]                                      |
+|  [ ] 7. [Destroy Card]                                     |
+|  [ ] 8. [Back]                                             |
+|                                                            |
++============================================================+
+[wasd/arrows] move  [0-9] jump  [enter] select  [b] back  [q] quit

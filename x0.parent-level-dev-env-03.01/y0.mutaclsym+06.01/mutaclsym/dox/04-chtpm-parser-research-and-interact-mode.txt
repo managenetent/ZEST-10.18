@@ -1,0 +1,338 @@
+mutaclsym — chtpm_parser.c research, "interact mode" (built, then
+CORRECTED to the real mechanism), joystick input (designed, deferred)
+================================================================================
+Status: real research (background agents read the actual reference
+files directly, not guessed - later followed by a full, non-excerpted
+direct read of `fuzz-op_manager.c`, 942 lines), interact mode + GL panel
+rendering BUILT and live-verified, joystick input DESIGNED but
+explicitly NOT built yet per direct instruction. This doc supersedes
+`03-menu-parser-and-interact-mode.txt`'s open questions with concrete
+findings; read that doc first for the broader context (why mutaclsym's
+ASCII menu was already piece.pdl-driven, unlike wsr-pal's original
+hardcoded system) if you haven't already.
+
+**IMPORTANT - §2 was rewritten after direct user correction.** The
+FIRST "interact mode" built this session (a toggle that moved the
+ACTION BAR's own cursor with arrows) was the wrong feature - the user
+pointed out it "didn't even look different," and directed research into
+mutaclsym's own `dox/01-cdda-architecture.md` §3, which already named
+the real mechanism this was supposed to be: the **xlector active-target
+pattern**. §2 below describes the REAL, corrected design that's
+actually built now - a genuine cursor you walk around the MAP to
+examine things, not a second way to navigate the same action-bar menu.
+If you find any other doc/comment in this codebase still describing
+the old action-bar-cursor version, it's stale - `ops/choice.c`'s own
+header comment is the authoritative, current description.
+
+================================================================================
+1. `chtpm_parser.c` RESEARCH (real 1.TPMOS, 3030 lines, single file)
+================================================================================
+Path: `1.TPMOS_c_+rmmp.0102.0028/pieces/chtpm/plugins/chtpm_parser.c`.
+
+**`load_dynamic_methods()` (~863-948)** - the METHOD-table parser mutaclsym's own `ops/choice.c`/`ops/compose_frame.c` already replicate the shape of:
+```c
+if (strncmp(line, "METHOD", 6) != 0) continue;
+key_start = strchr(line, '|'); if (!key_start) continue; key_start++;
+val_start = strchr(key_start, '|'); if (!val_start) continue;
+cmd_val = trim_pmo(val_start + 1); *val_start = '\0';
+trimmed_key = trim_pmo(key_start);
+if (strcmp(trimmed_key, "move") == 0 || strcmp(trimmed_key, "select") == 0 ||
+    strcmp(trimmed_key, "interact") == 0 || strcmp(trimmed_key, "stat_decay") == 0 ||
+    strcmp(trimmed_key, "on_turn_end") == 0 || trimmed_key[0] == '_') {
+    continue;   /* built-in/reserved keys never become menu buttons */
+}
+```
+Reserved-key convention worth keeping in mind if mutaclsym's own
+`hero/piece.pdl` ever grows non-menu-relevant METHOD rows (it currently
+doesn't need this - every row today IS a real menu action).
+
+**No distinct overlay/panel render layer exists in the reference.**
+Panels are just conditionally-visible children in one flat recursive
+tree (`render_element`, ~2196-2334) - an `onClick="ACTIVATE"` toggles a
+subtree's visibility, nothing more; `<panel>`/`<layout>` tags are dummy
+pass-throughs (~1861-1864) that don't create a separate render surface,
+z-order, or popup layer. **mutaclsym's own `draw_panel_box()`
+(compose_frame.c) - a real, distinct bordered-box overlay - is actually
+more structured than the reference for this specific piece.** Worth
+knowing so a future agent doesn't think mutaclsym's panel system needs
+"upgrading" to match some fancier reference mechanism - it doesn't,
+there isn't one.
+
+**Escape/back - the load-bearing part, and what mutaclsym's own Escape
+handling is modeled on**: `ESC_KEY = 27` (enum, line 66) and
+`JOY_BUTTON_8` (=2008) both trigger "walk to nearest ACTIVATE ancestor
+and close it" (~2742-2754) - a real, fixed, universal escape. `BACK`/
+`RELEASE` as METHOD command VALUES do the same ancestor-walk, falling
+back to injecting keycode `'9'` if there's no open submenu. mutaclsym's
+own Escape (built this pass, see §2) is a deliberate SIMPLIFICATION of
+this: since mutaclsym only ever has two levels (the action bar, one
+optional panel), not an arbitrarily deep tree, "walk to nearest
+ACTIVATE ancestor" collapses to "if a panel is open, close it; else
+exit interact_mode" - the same idea, right-sized for a shallower
+structure.
+
+**Cursor movement (~2609-2618, citation corrected)**: a sibling
+project's own doc (`wsr-pal/ops/wsr_menu_input.c`) cited "lines
+2609-2615" for this; direct verification found it actually runs
+2609-2618 (2615 cuts the DOWN block short by 3 lines). Real code:
+```c
+if (key == ARROW_UP || key == 'w' || key == 'W' || key == JOY_UP) {           // 2609
+    int prev = focus_index; do { focus_index--; if (focus_index < 0) focus_index = element_count-1; } while (focus_index != prev && !is_navigable(focus_index));
+}
+else if (key == ARROW_DOWN || key == 's' || key == 'S' || key == JOY_DOWN) {  // 2614
+    int prev = focus_index; do { focus_index++; if (focus_index >= element_count) focus_index = 0; } while (focus_index != prev && !is_navigable(focus_index));
+}                                                                              // ends 2618
+```
+Wraparound, `w`/`s` accepted as up/down synonyms, and - confirmed
+directly - completely separate from digit-jump (`isdigit(key)`,
+~2619-2651 and 2765-2783, its own independent branch). This confirms
+arrow-nav and digit-jump are meant to COEXIST, not replace each other -
+exactly the shape mutaclsym's own interact-mode arrow-nav was built to
+match (digits still work identically whether interact_mode is on or
+off).
+
+**Joystick codes are pre-translated ints, recognized inline everywhere
+- not a separate mode.** `JOY_BUTTON_0..8 = 2000-2008`, `JOY_LEFT/
+RIGHT/UP/DOWN = 2100-2103` (enum, ~67-70) are accepted as first-class
+alternatives alongside ARROW_*/w-s/Enter in every relevant branch
+(`JOY_UP`/`JOY_DOWN` in nav, `JOY_BUTTON_0` as Enter/activate,
+`JOY_BUTTON_8` as ESC/back). One INTERACT-mode-specific remap exists
+(~2874-2878): inside interact mode, joystick button codes get
+re-mapped `2000 + (key - JOY_BUTTON_0)` - a no-op-looking passthrough
+mirroring the ARROW_*→1000-1003 remap just above it, forwarded to
+whatever the active project's own input handler consumes.
+
+**Command-prefix vocabulary, confirmed exhaustively**: `KEY:<n>`
+(auto-generated for plain digit-dispatched rows), `LOAD_PROJECT:`,
+`LAUNCH:` (→ `handle_launch_command`), `MP3:`/`OP:`/`SET_*` (relayed via
+`inject_command()`), `PROJECT_ACTION:`, `SETTINGS_PAGE:`,
+`PROJECT_PAGE:`, literal `BACK`/`RELEASE`, and `ACTIVATE`/`INTERACT` as
+special `onClick` sentinels (not prefixes) that toggle submenu/interact
+mode. **No `GOTO:` exists anywhere in this file** - that's a
+mutaclsym-family convention (wsr-pal's own rebuild), not from
+chtpm_parser.c itself. Most of this vocabulary
+(`LOAD_PROJECT:`/`LAUNCH:`/`SETTINGS_PAGE:`/etc.) is desktop/multi-
+project-hosting-specific and simply doesn't apply to mutaclsym, a
+single self-contained game, not a project host.
+
+================================================================================
+2. INTERACT MODE - THE REAL XLECTOR ACTIVE-TARGET PATTERN
+   (BUILT AND LIVE-VERIFIED - this section replaces an earlier, wrong
+   first attempt, see the IMPORTANT note above)
+================================================================================
+Real mechanism researched by reading `projects/fuzz-op/manager/
+fuzz-op_manager.c` (942 lines) in FULL, not excerpted - this is the
+concrete implementation `dox/01-cdda-architecture.md` §3 already cited
+by name ("the xlector active-target pattern... concrete mechanism
+written up in §3") before this session ever started. `fuzz-op/pieces/
+xlector/piece.pdl` is the real live piece; a similarly-named `selector`
+piece also exists on disk in the same directory but is DEAD/unreferenced
+- confirmed via grep, zero hits in the manager's own code - not a second
+concept to reconcile.
+
+**The real mechanism, concretely** (`fuzz-op_manager.c`):
+  - A single global `active_target_id` (default `"xlector"`, line 51).
+    Movement (wasd/arrows, `route_input()` ~790-853) and verb-hotkeys
+    (digits 2-9, ~708-788, dispatched via `pdl_reader.+x <active_target_id>
+    list_methods`/`get_method` - indices 0/1 reserved for move/select,
+    exactly mutaclsym's own existing convention) ALWAYS act on whichever
+    piece `active_target_id` currently names - there is no separate
+    "menu cursor" concept at all. xlector is simply the DEFAULT thing
+    you control, itself a free-floating cursor piece with its own
+    `pos_x`/`pos_y`.
+  - Enter (10/13/`JOY_BUTTON_0`=2000), while `active_target_id ==
+    "xlector"` (~559-634): reads xlector's current position, scans
+    EVERY piece under the project's `pieces/` dir for one sitting at
+    that exact tile (excluding xlector itself and anything matching
+    `"zombie"` - the code's own comment: "Can't select zombies - they
+    are AI controlled"), and retargets `active_target_id` to it if
+    found. Movement/hotkeys now act on THAT piece instead. Xlector also
+    inherits the selected entity's `map_id` (~583-627) so it follows
+    cross-map - NOT ported to mutaclsym, see below.
+  - `'9'` / `27` (ESC) / `JOY_BUTTON_8` (2008) is checked **FIRST,
+    UNCONDITIONALLY, before anything else** (~550-557): if
+    `active_target_id != "xlector"`, it snaps back to `"xlector"`
+    immediately and `return`s. This is the real "enter/escape" - not a
+    two-way toggle so much as "there's always exactly one active
+    target, and this key always resets it to the default."
+  - While controlling a non-xlector target, movement ALSO updates
+    xlector's own shadow position to match (~813-837, "SHADOW XLECTOR
+    SYNC") - so xlector is always physically wherever the currently-
+    controlled thing is, ready to resume being "the cursor" the instant
+    Escape fires.
+
+**Adapted for mutaclsym, not a literal port** - mutaclsym is a single
+game with no other movement-controllable entities like fuzz-op's pets,
+and monsters are pure AI, never player-controllable (matching the
+reference's own "can't select zombies" exclusion, just total rather
+than partial - mutaclsym has nothing analogous to fuzz-op's pets to
+"select and drive" at all):
+
+  - `hero/state.txt`'s `interact_mode` (0/1, default 0) replaces the
+    OLD (now-removed) action-bar-cursor toggle:
+      - `0`: hero control, byte-for-byte identical to always - wasd/
+        arrows move the hero, digits 2-9 dispatch the hero's own
+        `piece.pdl` methods, unchanged.
+      - `1`: xlector/cursor control, entered via `'i'`/`'I'`.
+  - **xlector's position is `xlector_pos_x`/`xlector_pos_y` fields
+    directly in `hero/state.txt`** - NOT a separate piece/directory
+    unlike the reference's own live piece. A deliberate simplification:
+    mutaclsym's cursor is transient (only meaningful while
+    `interact_mode=1`) and doesn't need to persist as an independently
+    inspectable entity, or be targetable BY other pieces the way real
+    fuzz-op's xlector piece can be. Reset to the hero's CURRENT
+    `pos_x`/`pos_y` every single time `'i'` is pressed to enter (`ops/
+    choice.c`'s `is_interact_toggle` branch) - a fresh start each entry,
+    matching the reference's own behavior of xlector always starting
+    wherever the player currently is.
+  - **`ops/move_player.c` moves the CURSOR, not the hero, while
+    `interact_mode=1`** - a real rework, not just a movement-suspend
+    like an open panel gets. Movement is deliberately FREE/uncollided:
+    no terrain/furniture walkability check, no map-transition check -
+    matching real CDDA's own "look around"/examine-at-range convention
+    (you can look at something through a window or over a gap you
+    couldn't physically walk through). Clamped only to the map's real
+    width/height (an array-bounds safety net, not a walkability rule).
+  - **`ops/choice.c`'s Enter, while `interact_mode=1`, EXAMINES** -
+    scans the current map's `items/`/`monsters/` directories for
+    anything at `(xlector_pos_x, xlector_pos_y)` via the new
+    `examine_at()` (name/category for an item, name/hp for a monster -
+    small local registry-name lookups, `item_name()`/`monster_name()`,
+    duplicated narrowly rather than shared per this project's "no
+    shared headers" convention) and logs a real line to
+    `message_log.txt` ("You see a Rock here." / "You see nothing
+    here."). **This is the real, deliberately-scoped v1 meaning of
+    "select"**: unlike fuzz-op's pets, mutaclsym's monsters/items have
+    no `piece.pdl` METHOD table of their own yet, so there is nothing
+    to hand further VERBS to - full verb-redirection (the reference's
+    real behavior once something's selected) is real, named future
+    work, not silently done now. Digits are a pure no-op in this mode -
+    there's no action-bar menu to jump around while controlling the
+    cursor.
+  - Escape (27) exits `interact_mode` back to plain hero movement (or
+    closes an open panel first, if one happens to be open) - matches
+    the reference's own "checked first, unconditional" convention
+    exactly, just simplified to mutaclsym's own two-level shape (action
+    bar, one optional panel) rather than an arbitrarily deep ACTIVATE
+    tree. **Required zero changes to either `keyboard_input.c` or
+    `gl_mirror.c`** - confirmed by direct code read that both already
+    forward a bare Escape keypress as raw byte 27 unmodified.
+  - Panel arrow-nav (craft/inventory overlay cursor movement, built the
+    same pass as the original interact_mode attempt) is UNCHANGED and
+    unaffected by this rework - still independent of `interact_mode`'s
+    value, a real usability improvement for keyboard players regardless
+    of any of this xlector work.
+  - Rendering (`ops/compose_frame.c` and `ops/compose_rgb_frame.c`,
+    both mirrored exactly as always in this project): the cursor draws
+    as glyph `'X'` (confirmed unused by every terrain/furniture/item/
+    monster registry) at `(xlector_pos_x, xlector_pos_y)`, drawn LAST -
+    on top of even the hero, since it starts exactly on the hero's own
+    tile every time `interact_mode` is entered. GL gives `'X'` its own
+    dedicated fallback color (cyan) alongside the hero's existing
+    yellow, rather than letting it fall through to the generic
+    "unmapped" magenta - it's a real, always-meaningful special glyph,
+    not genuinely unmapped content. The whole HUD footer is REPLACED
+    with `[wasd/arrows] Look  [enter] Examine  [esc] Back` while
+    `interact_mode=1` (both renderers) - the numbered action list would
+    be actively misleading here, since those digits are genuine no-ops
+    in this mode.
+
+**Explicitly out of scope this pass** (named, not silently skipped):
+full verb-redirection to a selected monster/item (needs giving them
+real `piece.pdl` METHOD tables first); combat targeting specifically
+(attacking via the cursor rather than bump-attack) - a natural next use
+of this same mechanism; cross-map xlector following (real fuzz-op's
+xlector inherits a selected entity's `map_id` - mutaclsym's cursor
+stays on the hero's current map only).
+
+**Live-verified**: compiled every changed file individually (zero
+warnings) and the full `./button.sh compile`. See `dox/00-HANDOFF.md`'s
+own checklist entry for the specific playable-interface test results
+(interact-mode entry resetting the cursor to the hero's position, free/
+uncollided cursor movement across walls, a real examine result logged
+for an item/monster at the cursor's position, Escape exiting back to
+movement, and a full regression check confirming plain digit-jump/wasd
+movement is completely unchanged when `interact_mode=0`).
+
+================================================================================
+3. JOYSTICK INPUT - DESIGNED, NOT BUILT (deferred to a later pass)
+================================================================================
+Per direct instruction, this section is a concrete, buildable plan for
+whenever joystick support is actually wanted - not a vague "future
+work" placeholder. A future agent should be able to implement this
+directly from what's written here.
+
+**Real `joystick_input.c` reference** (`1.TPMOS_c_+rmmp.0102.0028/
+pieces/joystick/plugins/joystick_input.c`), researched directly:
+  - Reads `/dev/input/jsN` (default `js0`) via the kernel's native
+    `struct js_event { unsigned int time; short value; unsigned char
+    type; unsigned char number; }` in a blocking `read()` loop.
+  - Buttons → `2000 + button_number`; axes → `2100 + axis_num*2` (+0
+    negative/left/up, +1 positive/right/down), with a `THRESHOLD=16384`
+    deadzone and an `axis_pushed[]` press-once/re-arm scheme (re-arms at
+    `THRESHOLD/2`) so a held axis doesn't spam repeat codes.
+  - Checks the exact same `gl_os_has_focus()` lock-file convention
+    `keyboard_input.c` does, before writing - because a joystick reading
+    a raw device node genuinely has no window-focus concept at all.
+    **This is the real, legitimate use case for that lock mechanism** -
+    contrast with this session's own earlier finding that the SAME
+    check was wrongly applied to mutaclsym's `keyboard_input.c` for the
+    keyboard-vs-GL-window case (removed - see `dox/00-HANDOFF.md`'s own
+    writeup of that regression/fix). `gl_mirror.c` still WRITES
+    `gl_focus.lock` today (harmless, unused since that removal) -
+    joystick input is what will finally give that file a real consumer
+    again.
+  - Writes to the exact same shared history file keyboard writes to,
+    same line format.
+
+**mutaclsym's own port, when built, should differ from the reference in
+one deliberate way**: translate DIRECTLY into mutaclsym's EXISTING
+keycodes at the source, rather than adopting the reference's own
+separate `2000+`/`2100+` numeric range:
+  - D-pad/left-stick axes → `ARROW_UP/DOWN/LEFT/RIGHT` (1000-1003) -
+    the same codes `move_player.c`/`choice.c`/`title_input.c` already
+    understand. This is a real simplification the reference itself
+    doesn't have (it recognizes BOTH its own 2000+/2100+ range AND
+    keyboard codes inline, everywhere, permanently) - mutaclsym
+    normalizes once at the joystick_input.c layer instead, so
+    `move_player.c`/`choice.c`/`title_input.c` need ZERO changes to
+    understand joystick input once it exists. It will look identical to
+    keyboard input by the time it reaches `history.txt`.
+  - One button → `13` (Enter/confirm), matching `JOY_BUTTON_0`'s real
+    Enter/activate convention - doubles as fuzz-op's own real "select/
+    examine" button once translated through mutaclsym's existing
+    keycode, needing no separate joystick-specific Enter handling.
+  - One button → `'i'`/`105` (the Interact/xlector-cursor toggle built
+    this pass).
+  - One button → `27` (Escape/back), matching `JOY_BUTTON_8`'s real
+    ESC/back convention - and matching the real reference's own
+    unconditional-first-check convention (fuzz-op checks this exact
+    keycode before anything else in its own `route_input()`; mutaclsym's
+    `choice.c` does the same).
+  - Digits 2-9 have NO joystick equivalent - correctly, matching the
+    original motivating complaint ("no numbers on joystick"). This is
+    fine precisely BECAUSE digits are already a no-op while
+    `interact_mode=1` (the xlector cursor is examine-only in this v1,
+    not an action-bar substitute) - a joystick player loses nothing by
+    lacking digit keys, since walking the cursor onto something and
+    pressing the Enter-equivalent button is the real, complete
+    interaction path already. If/when full verb-redirection (§2's
+    named future work) gets built, THAT is what would need a real
+    joystick digit-equivalent designed - not before.
+  - `button.sh` gets a new MANUAL-ONLY `joystick`/`js` verb, NOT
+    auto-launched from `run` - given this session's own earlier lesson
+    about auto-launching an environment-dependent process causing a
+    real regression (the GL-window auto-launch saga, see `dox/
+    00-HANDOFF.md`), and given there's no `/dev/input/jsN` hardware in
+    this environment to validate an auto-launch path against anyway,
+    manual-only is the safer default. Trivial to flip to auto-launch
+    later once real hardware confirms the whole pipeline works.
+  - **Testing limitation, stated honestly**: no joystick hardware exists
+    in this environment. The actual device-read loop can be written and
+    code-reviewed but not live-hardware-verified here. Everything
+    DOWNSTREAM of it (interact_mode's xlector-cursor movement/examine,
+    Escape, and panel arrow-nav) is ALREADY built and independently
+    verified via synthetic keycodes straight into `history.txt` (this
+    pass's own verification) - that is deliberately what makes joystick
+    support straightforward to bolt on later: it only needs to land on
+    keycodes that already work correctly today.

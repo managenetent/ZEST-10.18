@@ -1,0 +1,67 @@
+# egg-pals main menu loop - CHTPM-MODULE VARIANT (see
+# chtpm-to-pal-layout-plan.txt §8 and pal-standards.txt §7).
+# Byte-identical to the real, unmodified pal/main_loop.pal - ONLY
+# read_history's own line changed, to the literal-path 3-arg form (a
+# real, needed fix in this project's own system/prisc+x.c - see that
+# file's own top-of-file comment) reading
+# pieces/apps/player_app/interact_relay.txt instead of the default
+# pieces/apps/player_app/history.txt.
+#
+# WHY A SEPARATE FILE, NOT THE SAME ONE main_loop.pal reads: real, live
+# bug found by testing in zoo_0000, not guessed - this project's own
+# system/keyboard_input.c writes every real keystroke to
+# pieces/apps/player_app/history.txt UNCONDITIONALLY (for prisc+x's own
+# regular "run" mode, which knows nothing about chtpm). Pointing this
+# module's own read at that same file double-dispatches every
+# interact-mode keypress relayed by chtpm_parser_pal's own
+# inject_raw_key(). Reading a genuinely separate file - written ONLY by
+# chtpm's own relay - is the real fix. See eggpal.chtpm's own
+# <interact src="pieces/apps/player_app/interact_relay.txt" /> for the
+# matching write side.
+#
+# NOTE: this project has no map/movement concept at all - it's a pure
+# digit-menu-driven game (menu_input.c's own digit-accumulator
+# dispatch). The interact+module pattern still applies the same way:
+# once "in control," ALL relayed keys (digits included, not just
+# arrows) pass straight through to menu_input.c's own real dispatch -
+# chtpm owns only the outer "Control Pets" shell button.
+#
+# REAL BUG FIX (found live, not guessed): the ORIGINAL version of this
+# file kept main_loop.pal's own `beq x2, x9, quit` ('q' halts). While
+# chtpm's own onClick="INTERACT" is engaged, it relays EVERY key
+# through - including 'q' - so a player instinctively pressing 'q' to
+# quit (reasonable, since 'q' IS the real quit key in regular
+# gameplay, per this game's own footer text) halted THIS module - but
+# chtpm itself has no way to notice the module died and reset its own
+# active_index back to normal nav, so it kept relaying every further
+# keypress into a file nothing was reading anymore: a real "stuck, no
+# input response" bug. Quitting the WHOLE session is chtpm's own job
+# (top-level 'q', or ESC then 'q') - this module no longer owns any
+# quit path of its own; it just keeps running until chtpm itself exits
+# (which kills this process too, via button.sh's own trap) or a
+# different module is launched.
+li x1, 0
+li x3, 0
+li x4, 100
+
+compose_menu
+hit_frame
+
+loop:
+read_history pieces/apps/player_app/interact_relay.txt x2, x1
+beq x2, x0, no_key
+menu_input x2
+compose_menu
+hit_frame
+no_key:
+addi x3, x3, 1
+beq x3, x4, do_tick
+j after_tick
+do_tick:
+tick_pets
+li x3, 0
+compose_menu
+hit_frame
+after_tick:
+sleep 30000
+j loop

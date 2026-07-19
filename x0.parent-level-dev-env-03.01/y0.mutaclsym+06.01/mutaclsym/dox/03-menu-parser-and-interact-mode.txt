@@ -1,0 +1,177 @@
+mutaclsym — menu/action-bar parser: what's already real, what's fixed,
+and the bigger "redo as pal-native chtpm_parser" question left open
+================================================================================
+Status: mixed - two things ALREADY correct, one real gap found+fixed
+this session, one genuinely open forward-looking redesign question
+NOT started (explicitly, per direct instruction: "we don't have to do
+it all now... leave blanks for a future agent"). Read this whole doc
+before assuming mutaclsym's menu system needs the same rebuild wsr-pal
+needed - it doesn't, for the parts that already exist.
+
+================================================================================
+1. WHAT'S ALREADY CORRECT (confirmed by reading the code, not assumed)
+================================================================================
+Real 1.TPMOS's own governing precedent (`pieces/chtpm/plugins/
+chtpm_parser.c`'s `load_dynamic_methods()`, and the family-wide rule in
+memory as `feedback_menus_as_piece_pdl_method_tables`): a piece's own
+`piece.pdl` METHOD table IS the menu - never a hardcoded C option array.
+wsr-pal needed a full rebuild to reach this (its first pass used
+hardcoded `MAIN_OPTIONS[]`/`FINANCING_OPTIONS[]` arrays, correctly
+called out and redone - see `WSR-PAL-PORT-STATUS.txt`'s "REVISION 2").
+
+**mutaclsym's ASCII action bar was already built this way, from the
+start - confirmed by direct code read, not assumed:**
+  - `pieces/world_01/map_start/hero/piece.pdl` has a real METHOD table
+    (`move`/`end_turn`/`pickup`/`drop`/`eat`/`craft`/`examine`/`save`,
+    each pointing at its real op path).
+  - `ops/choice.c`'s `load_method_names()` reads that table directly,
+    and dispatches via `pdl_reader.+x hero get_method <name>` - not a
+    hardcoded index->op switch.
+  - `ops/compose_frame.c`'s `build_choice_footer()` ALSO reads it live
+    (`pdl_reader.+x hero list_methods`), building the "[wasd/arrows]
+    Move  [ ] 2. [Pickup]  [ ] 3. [Drop]..." HUD line dynamically -
+    its own header comment already cites the exact real 1.TPMOS bug
+    class this avoids (`get_piece_methods_op.c` vs `pdl_reader.c`/
+    `route_input()` disagreeing, a real bug in the reference codebase).
+
+So mutaclsym does NOT have wsr-pal's original problem (hardcoded,
+drift-prone option arrays). Don't assume it does and rebuild something
+that already works this way.
+
+================================================================================
+2. THE REAL GAP FOUND AND FIXED THIS SESSION
+================================================================================
+The user's actual reported symptom ("I don't see the ASCII options in
+GL") had a narrow, concrete cause: `ops/compose_rgb_frame.c` (the GL/
+RGB mirror's content half) never got the SAME action-bar footer row
+`compose_frame.c` already has - it only ever rendered HP/Hunger/
+Thirst/Stamina. Not a parser problem, a missing renderer surface.
+
+Fixed by adding `build_action_footer()` to `compose_rgb_frame.c` - a
+direct copy of `compose_frame.c`'s own `build_choice_footer()` (same
+`pdl_reader.+x hero list_methods` call, same "skip rows 0/1 move/
+end_turn, number from 2" convention, same `[>]`/`[ ]` cursor-marker
+shape). `FOOTER_ROWS` bumped 1->2 (`FRAME_H`/`gl_mirror.c`'s `HEIGHT`
+288->304 to match - both updated together, confirmed rebuilding warns
+about nothing). Live-verified via `dump_rgb_png.+x`: the action-bar row
+renders correctly, `[>]` lands on the real live `action_cursor` value
+read from `hero/state.txt`, matching ASCII exactly.
+
+**A real, known limitation, not silently hidden**: the GL frame's
+pixel width is fixed at `FRAME_W` (640px = 80 chars at 8px/glyph),
+tied directly to the 40-tile viewport width - unlike a terminal, which
+just keeps printing past 40 columns with no hard wall. With all 6
+actions plus the Quit legend, the real footer text is well over 80
+characters and gets clipped at the right edge (confirmed in the debug
+PNG: "Examine"/"Save"/"Quit" get cut off once several actions are
+visible). This is a genuine, structural constraint of GL's fixed-width
+frame, not a bug in the new footer code itself (`blit_char()`'s own
+per-pixel bounds check prevents any memory issue - it just stops
+drawing at the edge). Not fixed this pass - see §4's open items.
+
+================================================================================
+3. THE BIGGER QUESTION, GENUINELY OPEN: "interact mode" / nav pass-thru
+================================================================================
+Per direct instruction, referencing real TPMOS/wraith-alpha's actual
+mechanism for this: `wraith-alpha_manager.c`'s `is_map_control` flag
+(`project_is_map_control()`, read from a project's own `session/
+state.txt`). Researched directly (not guessed) - here's the real shape:
+
+A wraith-alpha-hosted "project" (piececraft-wraith, wraith-ed, etc.)
+can set `is_map_control=1` in its own session state. When true, the
+DESKTOP MANAGER (which normally intercepts raw digit keys for its own
+window-navigation/menu system) instead forwards EVERY raw keystroke
+straight through to that project's own input op untouched - "instead
+of being consumed as desktop digit-nav" (the manager's own comment,
+cited directly). This is how WASD movement coexists with a shared
+keyboard in a system that ALSO wants digits to mean "pick menu item N"
+in other contexts - an explicit MODE FLAG arbitrates which
+interpretation wins for a given keystroke, per currently-active
+project.
+
+**Why mutaclsym does NOT currently need this same flag, and shouldn't
+blindly copy it in**: `is_map_control` solves a problem specific to
+wraith-alpha's architecture - ONE shared input stream, MANY different
+hosted projects, each of which might want digits to mean something
+totally different, requiring an explicit switch to decide. mutaclsym
+has no such ambiguity: `move_player.c` only ever reacts to wasd/arrow
+keycodes, `choice.c` only ever reacts to digits/Enter - two completely
+disjoint key sets, both ops running unconditionally every tick and
+silently no-op'ing on keys they don't recognize (the project's own
+long-standing "self-filtering op" convention, not a coincidence). Since
+the key SETS never overlap, there's no ambiguity to arbitrate in the
+first place - nav already "passes thru" for free, for the CURRENT
+feature set.
+
+**When this WOULD become real, concrete future work** (name it here so
+a future agent doesn't have to re-derive this reasoning from scratch):
+  - If mutaclsym ever gains a mode where digit keys need to mean
+    something CONTEXTUAL rather than fixed (e.g., a build-mode or
+    targeting-mode where 1-9 select something entirely different from
+    the current action bar, layered on top of it rather than replacing
+    it) - that's the point an explicit mode flag genuinely earns its
+    keep, the same way it does for wraith-alpha's many-hosted-projects
+    problem.
+  - If mutaclsym or a sibling pal-family project ever grows a real
+    multi-piece "desktop"-like hosting layer (unlikely for mutaclsym
+    itself, more plausible for something like `muchipal-editor`) - THAT
+    is the direct architectural analog to wraith-alpha's own actual use
+    case, and `is_map_control`'s real shape (a per-hosted-thing flag in
+    its own state file, checked by the one process actually reading raw
+    keys) is the correct pattern to port, not a generic "just in case"
+    addition to mutaclsym today.
+
+================================================================================
+4. OPEN BLANKS FOR A FUTURE AGENT (explicitly not started this pass)
+================================================================================
+Named per direct instruction ("assume one day we will [redo this],
+leave blanks for future agent to fill in"):
+
+  - **A genuine PAL-native chtpm_parser port, as real ops** - wsr-pal's
+    own rebuild (`ops/wsr_menu_input.c` + `ops/wsr_compose_frame.c`,
+    both in `yz.muchiverse/2.muchi-verse/wsr-pal/`) is the concrete,
+    ALREADY-PROVEN reference to build from, not `chtpm_parser.c`'s full
+    3000+ lines directly (too much wraith-alpha-desktop-specific
+    complexity neither project needs). Its real shape, worth copying
+    the PATTERN of (not the file - mutaclsym's own action bar is
+    already piece.pdl-driven per §1, so this isn't a straight port, more
+    a question of whether mutaclsym's overlay-panel system - craft/
+    inventory panels, `active_panel`/`panel_cursor` in `ops/choice.c` -
+    should ALSO become piece.pdl-METHOD-driven the same way, rather than
+    the current dedicated panel-mode branch in `choice.c`):
+      - one small generic `load_menu_items()` parsing `METHOD` rows
+      - screens are pieces with their own `piece.pdl`
+      - navigation between screens is a `GOTO:<piece_id>` command value
+      - a small special-command vocabulary (`GOTO:`/`RUN:`/etc.), with
+        anything unrecognized shelled directly
+      - the RENDERER'S loop over menu items becomes fully generic (see
+        `wsr_compose_frame.c`'s own `for (int i = 0; i < item_count;
+        i++)` loop - zero per-screen code)
+  - **Whether the overlay-panel system (`craft`/`inventory` in `ops/
+    choice.c`) gets folded into this same pattern, or stays a separate
+    concern** - genuinely open, not decided. Arguably a DIFFERENT kind
+    of "menu" (a dynamic item-list preview keyed off inventory/recipe
+    contents, not a fixed action list) - may or may not fit the same
+    METHOD-table shape cleanly. Decide before starting, don't assume.
+  - **The GL footer's 80-char width clipping (§2)** - options not yet
+    weighed: widen the GL frame independently of the tile-viewport width
+    (needs re-deriving tile-blit X-offsets so the map stays centered/
+    aligned - real risk of misalignment if done carelessly), wrap onto
+    a 3rd footer row, shrink the footer font specifically, or accept the
+    clip as a permanent, documented GL-side limitation. Not decided.
+  - **Whether Save (`hero/piece.pdl`'s own `save` METHOD row) should
+    stay in the generic action-bar dispatch, or get pulled out into
+    first-class treatment** the way the title screen's own New Game/
+    Load already has its own dedicated `title_input.c` rather than
+    going through the generic action bar - genuinely open, not decided.
+  - **A real `is_map_control`-style mode flag** - per §3, NOT currently
+    needed for mutaclsym's own feature set. Don't add it speculatively;
+    revisit only if/when a concrete feature actually creates keystroke
+    ambiguity between two different interpretations of the same key.
+
+None of the above is started. This document exists so a future agent
+picking this up doesn't have to re-derive "is mutaclsym's menu system
+broken like wsr-pal's was" (no, confirmed, see §1) or "do we need
+is_map_control right now" (no, confirmed, see §3) from scratch - both
+were real, live questions this session actually investigated and
+resolved, not left ambiguous.

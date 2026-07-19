@@ -1,0 +1,53 @@
+# muchi-pal-chat main loop.
+# x1 = read cursor into pieces/apps/player_app/history.txt (byte offset)
+# x2 = last key read (0 = nothing new)
+# x9 = 'q' (113), the quit sentinel keyboard_input.c also stops on - same
+#      fixed, non-numbered quit key mutaclsym uses, for the same reason:
+#      quit is never a piece of typed message content.
+# x10/x13 = LF/CR (10/13) - Enter. Two separate compares since prisc+x's
+#      beq is exact-int-equality only, no logical OR.
+#
+# Unlike mutaclsym (where tick_monsters/end_turn only run on an actual
+# keypress, matching a turn-based game), check_response must run on EVERY
+# tick regardless of whether a key arrived - the user may be sitting idle
+# while a curl request is still in flight in the background, and only
+# check_response's own PID-liveness poll knows when it finishes. So
+# every path through this loop - key or no key - funnels into the single
+# `tick:` block that checks the response and redraws, rather than
+# mutaclsym's did_action/no_key split.
+li x1, 0
+li x9, 113
+li x10, 10
+li x13, 13
+
+# Unconditional initial render, so current_frame.txt exists and reflects
+# the actual starting state before the first keypress.
+compose_frame
+hit_frame
+
+loop:
+read_history x2, x1
+beq x2, x0, tick
+beq x2, x9, quit
+beq x2, x10, do_submit
+beq x2, x13, do_submit
+buffer_key x2
+j tick
+
+do_submit:
+# send_message.+x is the single self-filtering Enter handler: sends a
+# chat message, runs a /model command, or answers a pending tool y/n,
+# depending on current state - see its own header comment for why this
+# decision has to live in C rather than a pal-level branch.
+send_message
+j tick
+
+tick:
+check_response
+compose_frame
+hit_frame
+sleep 30000
+j loop
+
+quit:
+halt

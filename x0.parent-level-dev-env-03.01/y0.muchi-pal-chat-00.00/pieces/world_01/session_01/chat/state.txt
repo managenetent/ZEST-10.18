@@ -1,0 +1,10 @@
+current_model_id=iqabod-daily-life
+provider_kind=iqabod
+current_api_url=/home/no/Desktop/🤖️🪤️🏠️/🚽️🧻️/🚽️🥡️-00.00/ZEST-10.00/x0.parent-level-dev-env-03.00/#.ref/^.IQABOD-llm-06.00
+current_model_name=curriculum/daily_life/daily_life.txt
+ai_state=IDLE
+input_buffer=
+pending_tool_name=
+pending_tool_args=
+curl_pid=256681
+sys_msg=Response received.

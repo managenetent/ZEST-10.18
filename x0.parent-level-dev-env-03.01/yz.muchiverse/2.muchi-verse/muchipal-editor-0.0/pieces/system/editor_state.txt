@@ -1,0 +1,12 @@
+screen=title
+cursor=1
+digit_accum=0
+proj_name=
+proj_path=
+map_rel_path=
+registry_format=
+registry_rel_path=
+piece_pdl_path=
+cursor_x=0
+cursor_y=0
+armed_idx=0

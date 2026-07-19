@@ -1,0 +1,154 @@
+SHARED-OPS REFACTOR - what's changing, why, and the real precedent it's
+copied from (op-ed / 1.TPMOS), not invented
+========================================================================
+
+Written per direct instruction, before touching any code: "pls make a
+document explaining exactly the changes you are going to make how u
+are inspired by op ed and tpmos." Read this first if picking up this
+refactor mid-stream.
+
+0. THE MISTAKE BEING CORRECTED
+------------------------------------------------------------------------
+Earlier this session, building z0.zoo_0000, I ported the xlector
+standard and pet import/export as PATTERNS - independently re-typed
+into zoo_0000's own ops/ directory, matching mutaclsym's shape but not
+literally sharing any code with it. When the user then asked "are u
+able to simply copy the ops mutaclsym uses? if not why?", I explained
+this project family's own long-standing "one op = one binary, no
+shared headers" convention as the reason. The user's direct reply:
+"thats not what i wanted ever... not reusing the ops was a non
+compliant cop out." Correct, and the underlying convention itself was
+being over-applied - "no shared headers" was always about not coupling
+files WITHIN one project via fragile .h-based structs, not a mandate
+to re-type identical logic in every new project forever. Concrete
+proof this was being over-applied: muchipal-editor-0.0's own
+ops/piece_viewer.c header comment literally says "Identical in shape
+to mutaclsym/ops/pdl_reader.c's own parse_method_line() - intentionally
+duplicated, not shared, per this project family's doctrine" while
+ALSO calling itself "the concrete proof of cross-project
+compatibility this editor exists to establish" - i.e. a THIRD
+independent retyping of the exact same parser, in a project whose
+entire purpose is proving cross-project compatibility. That's the
+tell that the doctrine itself needed correcting, not another
+faithful-but-separate reimplementation.
+
+1. THE REAL PRECEDENT: REAL 1.TPMOS ALREADY SHARES OPS ACROSS PROJECTS
+------------------------------------------------------------------------
+Confirmed by direct code reads this session, not assumed:
+
+- `fuzz-op_manager.c` (real 1.TPMOS, `projects/fuzz-op/manager/`,
+  read in full earlier this session) calls
+  `'%s/pieces/system/pdl/+x/pdl_reader.+x' %s list_methods` (line 716)
+  - i.e. fuzz-op does NOT have its own private pdl_reader copy under
+  `projects/fuzz-op/`. It calls a SHARED implementation living under
+  `pieces/system/pdl/`, one level above any individual project, exactly
+  the way `pieces/system/` already hosts other shared infrastructure
+  (`pieces/system/input_dispatcher/` for keyboard capture,
+  `pieces/system/master_ledger/` for piece-state mutation via
+  `piece_manager.+x`, also called directly from fuzz-op_manager.c).
+- `pieces/system/emoji_extract/` (`emoji_gen_atlas.c`/`emoji_xtract.c`)
+  is used by wraith-alpha (confirmed via direct research this session)
+  AND was personally used by me, this same session, to generate real
+  pixel assets for BOTH mutaclsym's GL emoji work and zoo_0000's pet
+  sprites/emoji tiles - i.e. I already had first-hand, hands-on proof
+  this exact sharing pattern works before this refactor, from using the
+  same real tool across two different projects myself.
+- op-ed's own README describes itself as a "Thin Engine" - a genuine
+  multi-consumer engine other content plugs into, not a single-purpose
+  game with its own private copy of everything. muchipal-editor-0.0
+  (an RPG-Maker-MV-style level/event editor for pal scripts, per the
+  user's own framing) is aiming at exactly this same role for THIS
+  family of projects - a shared engine layer, not "yet another project
+  with its own duplicated ops."
+
+**The actual real-1.TPMOS structure being mirrored**:
+`projects/<name>/` = individual game-specific content + game-specific
+ops; `pieces/system/<service>/` = shared, project-agnostic
+infrastructure any project calls into via a path that is NOT inside
+any single project's own directory. This refactor builds the
+muchi-verse family's own equivalent of `pieces/system/` - a
+`2.muchi-verse/shared-ops/` directory - and moves the genuinely
+generic ops there, matching this real, already-proven shape instead of
+re-deriving a new one.
+
+2. WHAT'S MOVING TO shared-ops/, AND WHY EACH ONE QUALIFIES
+------------------------------------------------------------------------
+The bar for "belongs in shared-ops/, not a project's own ops/": zero
+hardcoded game content, zero hardcoded per-project constants (map ids,
+world names) - genuinely identical behavior regardless of which
+project's PRISC_PROJECT_ROOT it's pointed at.
+
+- `pdl_reader.c` - already byte-identical between mutaclsym and
+  zoo_0000 (confirmed via `diff`, zero differences). Generalizing it
+  further to also accept an ABSOLUTE piece.pdl path directly (not just
+  project-root + piece_id) and adding a `list_methods_full` action
+  (prints `name|handler` pairs, not just bare names) - this is exactly
+  what lets muchipal-editor-0.0's `piece_viewer.c` retire in favor of
+  the shared binary, since that op's whole job is reading an external
+  project's piece.pdl by absolute path.
+- `dump_rgb_png.c` (+ `stb_image_write.h`) - already byte-identical
+  code between mutaclsym and zoo_0000 (header comments differ only in
+  prose). Reads whatever `compose_rgb_frame.c` wrote via its own
+  receipt file - zero hardcoded dimensions, genuinely project-agnostic
+  already.
+- `move_entity.c`, `xlector_input.c`, `pet_export.c`, `pet_import.c`
+  (all written this session, for zoo_0000) - currently NOT
+  project-agnostic, because each has a `#define MAP_ID "map_zoo"`
+  baked in. Fixing this is the one real code change these need before
+  they can move: replace the hardcoded constant with a dynamic
+  `world_*/map_*/<piece_id>/` scan - THE EXACT SAME PATTERN
+  `pdl_reader.c`'s own `resolve_piece_pdl_path()` and real 1.TPMOS's
+  own `resolve_piece_state_path()` (`system/prisc+x.c`) already use.
+  This is a strict improvement, not just a refactor for its own sake:
+  it also removes the single-map-only limitation as a free side
+  effect, the same way `pdl_reader.c` was never limited to one map to
+  begin with.
+
+3. WHAT IS NOT MOVING, AND WHY (named, not silently kept duplicated)
+------------------------------------------------------------------------
+- `compose_frame.c`/`compose_rgb_frame.c` (both projects) - these
+  render genuinely DIFFERENT content per project (mutaclsym's
+  hero/inventory/HUD vs. zoo_0000's pet roster vs. muchipal-editor's
+  own map-edit UI). The font-glyph loading/blit_char/blit_text
+  primitives inside them ARE generic, but factoring those out cleanly
+  without a shared header is a separate, smaller follow-up - not
+  bundled into this pass to keep this refactor's actual scope (op
+  reuse, not renderer internals) contained.
+- `feed_pet.c`/`pet_pet.c`/`play_pet.c` - genuinely zoo_0000-specific
+  game content (mutaclsym has no pets; muchipal-editor isn't a game at
+  all). Not framework ops.
+- The digit-accumulator + Enter-commit menu dispatch pattern - counted
+  independently in mutaclsym's `choice.c`, egg-pals' `menu_input.c`,
+  zoo_0000's `xlector_input.c`, AND muchipal-editor's
+  `project_browser.c` - FOUR separate implementations of the same
+  algorithm, each over a different state shape. This is real,
+  identified duplication, same class of problem this whole refactor is
+  about - but unifying four already-working, differently-shaped
+  systems safely is a bigger, riskier job than this pass should take
+  on blind. Named explicitly in `pal-standards.txt` as a real,
+  concrete next step, not silently left unaddressed.
+
+4. HOW A PROJECT ACTUALLY "USES" A SHARED OP (mechanically)
+------------------------------------------------------------------------
+Each project's own `scripts/build.sh` compiles the shared op's SOURCE
+directly into that project's own `ops/+x/<name>.+x` binary (e.g. `$CC
+$CFLAGS -o ops/+x/pdl_reader.+x ../../../2.muchi-verse/shared-ops/
+pdl_reader.c`), rather than keeping a local copy of the .c file at
+all. Runtime behavior is completely unchanged - `pal/main_loop.pal`
+still invokes `ops/+x/pdl_reader.+x` exactly as before, and the op
+still resolves `PRISC_PROJECT_ROOT` at runtime the same way. The ONLY
+thing that changes is where the SOURCE lives: one file, edited once,
+instead of N copies that can silently drift apart (which is exactly
+what "no shared headers" was supposed to prevent in the first place,
+and instead was accidentally causing by being over-applied to whole
+files).
+
+5. VERIFICATION PLAN
+------------------------------------------------------------------------
+Rebuild mutaclsym, zoo_0000, and muchipal-editor-0.0 after the switch -
+zero warnings is the bar, not "it compiles" (this project family's own
+existing standard). Then re-run the SAME playable-interface tests
+already live-verified this session for zoo_0000 (xlector select/
+menu-switch-per-active-target, pet export/import round-trip, emoji
+toggle both renderers) to confirm the shared-ops switch introduced
+zero behavioral regressions - not just a clean build.

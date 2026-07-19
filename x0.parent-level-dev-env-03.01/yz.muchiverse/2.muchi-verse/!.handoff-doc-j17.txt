@@ -1,0 +1,311 @@
+HANDOFF DOC - 2026-07-17 - the pal-family chtpm/interact+module work
+========================================================================
+Written per direct instruction, at a real checkpoint after a long
+session's worth of real, tested work - "at this point we have come a
+long way," disconnection risk flagged directly. If this session ends
+and a new one picks this up cold, read this file FIRST, then the docs
+it points to (don't re-derive anything below from scratch - it's all
+already grounded in direct code reads and live tests, not guesses).
+
+========================================================================
+0. WHAT'S DONE, TOP TO BOTTOM (all real, all tested, in this order)
+========================================================================
+
+0.1 Shared-ops refactor (earlier this session)
+------------------------------------------------------------------------
+`2.muchi-verse/shared-ops/` now holds real, project-agnostic source
+shared across ALL pal-native projects: `prisc+x.c` (the VM itself),
+`keyboard_input.c`, `pdl_reader.c`, `dump_rgb_png.c`, `move_entity.c`,
+`xlector_input.c`, `pet_export.c`, `pet_import.c`, `chtpm_parser_pal.c`.
+Full rationale: `shared-ops-refactor-plan.txt`. Standing conventions
+(including WHEN NOT to force-share - egg-pals' own `prisc+x.c`/
+`keyboard_input.c` stay local, real Windows/MinGW support neither
+shared version has): `pal-standards.txt` §1.
+
+0.2 The chtpm-to-pal layout bridge
+------------------------------------------------------------------------
+`shared-ops/chtpm_parser_pal.c` is a TRACKED FORK of real 1.TPMOS's own
+`chtpm_parser.c` - exactly 2 patches (search "PAL-NATIVE PATCH" in that
+file), everything else byte-identical to real upstream. Full account:
+`chtpm-to-pal-layout-plan.txt` §1-7, `pal-standards.txt` §6. All 5 pal
+projects (mutaclsym, zoo_0000, muchipal-editor-0.0, wsr-pal, egg-pals)
+have this base bridge built into their own `scripts/build.sh`.
+
+0.3 The interact+module pattern (real fuzz-op/wraith-alpha mechanism)
+------------------------------------------------------------------------
+Lets a chtpm menu shell embed a REAL, separately-running game/module,
+with arrow/digit keys passing straight through to it once "in control."
+Full account: `chtpm-to-pal-layout-plan.txt` §8, `pal-standards.txt` §7.
+BUILT AND LIVE-VERIFIED in mutaclsym, zoo_0000, and egg-pals (each via
+`./button.sh chtpm`) - a real `<module>`+`<interact src>`+
+`onClick="INTERACT"` layout, a `main_loop_chtpm.pal` variant per
+project, a `view.txt` dual-write in each project's own compose_frame
+op. wsr-pal does NOT have this yet (base bridge only) - natural next
+target if this work continues past what's described here.
+
+0.4 kill_all.sh (real 1.TPMOS precedent, `pieces/os/kill_all.sh`)
+------------------------------------------------------------------------
+`2.muchi-verse/kill_all.sh` - family-wide, surgical, SIGKILL-based
+process cleanup, modeled directly on the real file (which itself has
+documented past incidents of this exact bug class). Every project's
+own `button.sh kill` action now calls it. Full account:
+`feedback_pkill_relative_path_gotcha.md` (memory), `pal-standards.txt`
+§8.
+
+0.5 Two real bugs found via live user testing, both fixed
+------------------------------------------------------------------------
+Full account: `chtpm-to-pal-layout-plan.txt` §8.6-8.7, `pal-standards.txt`
+§9.
+- **The module must not own a quit path.** Removed `beq x2, x9, quit`
+  from all 3 `main_loop_chtpm.pal` variants - chtpm's own
+  `onClick="INTERACT"` relays EVERY key including 'q', so a module
+  independently halting on 'q' left chtpm relaying into a dead
+  process, looking exactly like "stuck."
+- **`chtpm` actions never reset `pieces/system/quit_flag.txt`.**
+  `system/renderer.c`'s own loop is `while (!quit_requested())` -
+  without the reset, ANY prior 'q'-quit anywhere left this file
+  permanently non-empty, so the renderer died silently after exactly
+  one frame on every SUBSEQUENT launch - looked exactly like
+  unresponsive input, even though everything else was working
+  correctly underneath. Fixed in all 3 `chtpm` actions AND in
+  zoo_0000's own pre-existing `run` action (a genuine separate gap
+  found in the same pass).
+- **The test method that found both, now this family's own preferred
+  method** (`pal-standards.txt` §9.3, `feedback_test_through_playable_
+  interface.md`): skip `keyboard_input`/any FIFO entirely, write
+  keycodes DIRECTLY into whichever file the next consumer reads
+  (`pieces/keyboard/history.txt` with `KEY_PRESSED: N` for chtpm's own
+  nav). Deterministic; the earlier FIFO-simulated-keyboard method was
+  genuinely flaky for isolated bytes (a lone ESC needed 2-4 retries).
+
+========================================================================
+1. WHERE THIS SESSION IS RIGHT NOW: THE GL WINDOW PROBLEM
+========================================================================
+User report, live, with a real screenshot: in `chtpm` mode, the GL
+mirror window (`system/gl_mirror.c` + `ops/compose_rgb_frame.c`) (a)
+never shows chtpm's own menu chrome ("Control Hero" button, panel
+borders, title) at all - just the raw game - making it LOOK like
+control is always active by default; (b) its own keyboard capture was
+a dead end (see §1.2); (c) the ASCII action-bar footer text gets cut
+off before showing methods 6+ (Examine/Save) - a real, pre-existing,
+SEPARATE bug in `compose_rgb_frame.c` itself, not caused by chtpm work.
+
+1.1 Investigated real 1.TPMOS's own wraith-alpha architecture first,
+    per direct instruction ("this is basically a redoing of wraith
+    alpha but without a virtual desktop")
+------------------------------------------------------------------------
+Confirmed via direct code reads (NOT the `pieces/chtpm/renderers/
+gl_renderer.c` stub - that file is dead scaffolding, byte-identical
+across 3 backup copies, never wired to anything, never spawned,
+confirmed via `pieces/os/proc_list.txt` and grepping `chtpm_parser.c`
+for any reference to it - there is none). The REAL mechanism lives
+under `projects/wraith-alpha/`, THREE separate processes:
+
+- `ops/wraith_parser_alpha.c` (= our `chtpm_parser_pal.c`) - owns ALL
+  parsing/state/`active_index`, writes the FULL ASCII character grid
+  (chrome AND embedded content, everything) to
+  `pieces/display/current_frame.txt`, growing
+  `pieces/display/frame_changed.txt` as its own dirty marker.
+- `plugins/wraith_rgb_daemon.c` - watches `frame_changed.txt`, reads
+  `current_frame.txt`, and FONT-RASTERIZES EVERY CHARACTER OF IT
+  (`blit_char`/`blit_text`, glyph bitmaps) into an RGBA32 buffer.
+  **Confirmed explicitly** (its own architecture doc,
+  `WRAITH_RGB_ARCHITECTURE.md:279-283`): "Does NOT parse .chtpm... does
+  not recognize `<cli_io>`, `<button>`, `<text>` tags." It has ZERO
+  semantic awareness of buttons/panels - it just blits whatever
+  characters are already in the string, unconditionally. THIS is the
+  entire answer to "why does GL show the chrome" - because the chrome
+  is literally IN the text buffer already, and every character gets
+  rasterized, full stop.
+- `ops/wraith_gl.c` - reads the RGBA32 buffer, uploads it as ONE GL
+  texture, draws ONE textured quad. That's the entire "GL geometry" -
+  no widget rendering, no button drawing, just a plain texture blit
+  (matches our own `gl_mirror.c`'s own job exactly, already).
+
+Three processes, sharing state PURELY through files - never IPC/shared
+memory. `wraith_parser_alpha.c` never calls into GL code.
+
+1.2 Input routing - the REAL mechanism, confirmed via direct code read
+------------------------------------------------------------------------
+`wraith_gl.c`'s own GLUT keyboard callback:
+```c
+static void append_keyboard_event(int code) {
+    FILE *f = fopen(WRAITH_KEYBOARD_HISTORY, "a");   // "pieces/keyboard/history.txt"
+    ...
+    fprintf(f, "KEY_PRESSED: %d\n", code);
+}
+```
+Writes into the EXACT SAME file `wraith_parser_alpha.c` itself reads.
+Nothing more elaborate than that for the top-level case. (Real
+wraith-alpha ALSO has a separate, narrower mechanism -
+`append_project_history()`/`run_active_project_input_op()` in
+`wraith-alpha_manager.c` - but that's ONLY for relaying into an
+EMBEDDED sub-project's own separate history file, i.e. the "virtual
+desktop" compositing case we don't need.)
+
+**Already applied to our own family, this session**: `gl_mirror.c` (in
+both mutaclsym and zoo_0000) now dual-writes - the original bare-int
+line to `player_app/history.txt` (unchanged, for regular `run` mode)
+PLUS a new `KEY_PRESSED: N` line to `pieces/keyboard/history.txt`
+(exactly matching `wraith_gl.c`'s own mechanism above) - so typing
+into the GL window now correctly reaches chtpm's own `process_key()`
+dispatch, respecting whatever gating state (`active_index`) it's
+currently in. Rebuilt, zero new warnings, confirmed via
+`./button.sh compile`. NOT yet live-tested (see §3 below - that's
+task #59).
+
+1.3 Mouse - NOT built, explicitly out of scope for now
+------------------------------------------------------------------------
+Real wraith-alpha's own mouse handling is the genuinely more
+complicated part (its own semantic hit-testing via `current_frame.
+objects.pdl`, a manager-authored parallel numbering system kept in
+sync with the parser's own tree ONLY by hand-maintained convention -
+the architecture doc's own headline finding, `WRAITH_RGB_ARCHITECTURE.
+md:8-183`, is that this dual-numbering-with-no-automatic-sync is
+wraith-alpha's own real, load-bearing pain point). We do NOT need this:
+since (unlike wraith-alpha) nothing in our own family composites
+multiple embedded windows/projects, chtpm_parser_pal.c itself is
+ALREADY the single source of truth for both button ordering (ASCII)
+and (once §2 below is built) RGB pixel position (since the RGB image
+IS a rasterization of the SAME text chtpm_parser_pal wrote) - there is
+no second numbering system to keep in sync at all. Real mouse-click
+support (translate a GL window pixel click into a chtpm `hit_zones[]`
+entry) is a real, separate, NOT YET STARTED follow-up - not blocking
+anything built so far, since keyboard-only control already works once
+§1.2's fix is live-tested.
+
+========================================================================
+2. THE PLAN GOING FORWARD (direct user instruction, confirmed):
+   "we can do the same thing... reuse the rgb renderer... run it as a
+   pal op or w/e"
+========================================================================
+Confirmed: `ops/compose_rgb_frame.c` (mutaclsym's own copy, read in
+full) ALREADY has `load_glyphs()`/`blit_char()`/`blit_text()` as ITS
+OWN direct port of `wraith_rgb_daemon.c`'s exact same-named functions
+(see that file's own header comment, lines 31, 42: "wraith_rgb_daemon.c
+(load_glyphs()/blit_char()/blit_text()...)... direct port of that same
+shape"). Currently these are used ONLY to draw the action-bar footer
+TEXT on top of the real tile-graphics map compose_rgb_frame.c ALSO
+draws (walls/furniture as actual colored 2D tiles, NOT character
+glyphs - a fundamentally different rendering philosophy from
+wraith_rgb_daemon.c's own "rasterize the whole ASCII buffer,
+uniformly, glyph by glyph" approach). This is exactly why chtpm's own
+chrome never appears in GL today: compose_rgb_frame.c never reads
+`current_frame.txt` at all - it re-derives its own raw game view
+directly from game-state files, completely bypassing whatever
+chtpm_parser_pal composed.
+
+**THE FIX, confirmed by direct user instruction - build this as a NEW
+SHARED, PERSISTENT PROCESS** (same category as `renderer.c`/
+`gl_mirror.c` already are - NOT a one-shot pal op invoked from a .pal
+script, since its whole job, like `wraith_rgb_daemon.c`'s own, is to
+sit and watch a marker file forever):
+
+`shared-ops/chtpm_rgb_render.c` - watches
+`pieces/display/frame_changed.txt` (the SAME marker chtpm_parser_pal.c
+already grows on every `process_key()` call - confirmed via grep,
+lines ~2666/2679/2967/3030 of `chtpm_parser_pal.c` all touch this
+file), reads `pieces/display/current_frame.txt` (the FULL text -
+chrome AND embedded `${game_map}`, all of it, exactly as
+wraith_rgb_daemon.c does), and rasterizes EVERY CHARACTER via the SAME
+`load_glyphs()`/`blit_char()`/`blit_text()` shape already proven in
+`compose_rgb_frame.c` - extracted into shared-ops so it's written
+once, not duplicated a 3rd time. Writes to the SAME
+`pieces/display/rgb_frame.raw` + `rgb_frame.receipt.txt` paths
+`gl_mirror.c` ALREADY reads - meaning **`gl_mirror.c` itself needs ZERO
+further changes** beyond the keyboard fix already made in §1.2. It
+already just displays whatever's in that file, regardless of which
+process wrote it - real tile graphics from `compose_rgb_frame.c` in
+regular `run` mode, or this new daemon's text rasterization in `chtpm`
+mode. Same "one state, two renderers" mirror philosophy this whole
+family already uses for the ASCII/GL split - just applied one level up
+now, at the chtpm-shell level instead of the raw-game level.
+
+**Framebuffer sizing, a real, separate consideration from
+compose_rgb_frame.c's own `FRAME_W`**: that constant is tied to
+mutaclsym's own game-viewport tile count (`VIEWPORT_W * TILE_PX`) -
+irrelevant here. This new daemon's own framebuffer needs to be sized
+to fit chtpm's OWN actual max line width across whatever `.chtpm`
+layout is active (e.g. `game.chtpm`'s own `+===...===+` border is 62
+chars wide) - compute the widest line in `current_frame.txt` (or just
+pick one generous fixed width, e.g. 120 cols, matching a typical wide
+terminal) times `GLYPH_W`, and total line count times `GLYPH_H`. This
+ALSO, as a free side effect, fixes the "6+ truncation" symptom for
+CHTPM mode specifically (size it generously from the start, unlike
+compose_rgb_frame.c's own `MAX_TEXT_COLS`, which is genuinely
+constrained by the small game-viewport width and NOT part of this
+fix). NOTE: `compose_rgb_frame.c`'s OWN truncation bug, for REGULAR
+`run` mode specifically, is a real, separate, NOT YET FIXED issue -
+would need its own fix (widen `FRAME_W` or wrap footer text) if the
+user wants that fixed too; do not conflate the two.
+
+**Once this daemon exists, remove the now-redundant `compose_rgb_frame`
+call from all 3 `main_loop_chtpm.pal` variants** - the module no
+longer needs to write `rgb_frame.raw` itself in chtpm mode at all
+(the new daemon derives it from `current_frame.txt` instead,
+triggered by chtpm's own marker, not the module's own tick) - leaving
+it in would just mean two processes racing to write the same file,
+wasted work, not a correctness issue per se (chtpm's own later write
+would always win since the daemon's trigger fires AFTER the ASCII
+render completes) but worth cleaning up regardless.
+
+========================================================================
+3. EXACT NEXT STEPS, IN ORDER (tracked as tasks #56-59 in this session -
+   if picking this up fresh, recreate them from this list)
+========================================================================
+1. Extract `load_glyphs()`/`blit_char()`/`blit_text()` from mutaclsym's
+   `ops/compose_rgb_frame.c` into a new `shared-ops/` file (confirm
+   zoo_0000's own copy is close enough to treat as the same shape
+   first - it almost certainly is, same "direct port" header comment
+   pattern this whole family uses).
+2. Build `shared-ops/chtpm_rgb_render.c`: persistent daemon, poll
+   `frame_changed.txt` size (same `usleep`-poll shape `renderer.c`
+   already uses), on growth re-read `current_frame.txt`, rasterize via
+   the extracted functions into a framebuffer sized per §2's own
+   sizing note, write `rgb_frame.raw` + `rgb_frame.receipt.txt` (same
+   checksum/receipt shape `compose_rgb_frame.c` already establishes -
+   reuse `checksum_buffer()`/`write_receipt()` too if they're already
+   generic enough, or note if they're not and why).
+3. Wire it into mutaclsym's, zoo_0000's, and egg-pals' own
+   `scripts/build.sh` + `chtpm` button.sh action (egg-pals has no
+   `gl_mirror`/tile-map concept at all - reconsider whether this daemon
+   even applies there, or whether egg-pals' own chtpm mode should just
+   stay ASCII-only for now; not yet decided, real judgment call for
+   whoever picks this up).
+4. Remove the redundant `compose_rgb_frame` call from all 3
+   `main_loop_chtpm.pal` variants per §2's own note.
+5. Live-test via the NOW-STANDARD direct key-injection method
+   (`pal-standards.txt` §9.3): confirm `rgb_frame.raw` shows the FULL
+   chtpm chrome (title, Control Hero button, all of it) matching ASCII
+   exactly; confirm typing (via direct `pieces/keyboard/history.txt`
+   injection, simulating what the now-fixed `gl_mirror.c` would send)
+   correctly drives the SAME interact-mode gating as the ASCII
+   terminal does.
+6. Update `chtpm-to-pal-layout-plan.txt` (new §8.8 or similar) and
+   `pal-standards.txt` with the final, tested design - this doc is a
+   snapshot/plan, not the final source of truth once the above is
+   actually built and verified.
+7. Update memory (`project_chtpm_to_pal_layout_bridge.md` and/or a new
+   entry) with the final, live-verified state.
+
+========================================================================
+4. THINGS NOT TO RE-LITIGATE (already decided, with real reasoning,
+   this session - don't re-derive from scratch)
+========================================================================
+- Don't patch `chtpm_parser_pal.c` again unless truly unavoidable -
+  direct, repeated user preference this session ("prisc is newer,"
+  meaning fix the pal-native side instead) - everything in §2 above is
+  designed to need ZERO further chtpm_parser_pal.c changes.
+- Don't build wraith-alpha's own "virtual desktop"/multi-embedded-
+  window compositing, its own manager-authored parallel numbering
+  system, or its own mouse hit-testing infrastructure - direct
+  instruction ("without a virtual desktop") - we only need the
+  3-process file-sharing SHAPE, not its own harder problems that
+  shape was built to solve.
+- Prefer the direct key-injection test method over FIFO-simulated
+  keyboard for ANYTHING downstream of `keyboard_input.c`/`gl_mirror.c`
+  themselves - only use the FIFO method to test those two files' own
+  raw-input-capture code specifically.
+- egg-pals' own `prisc+x.c`/`keyboard_input.c` stay local (real
+  Windows/MinGW support), NOT switched to shared-ops - already decided,
+  don't reconsider without a new, real reason.

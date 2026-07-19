@@ -1,0 +1,232 @@
+GAME AI SPEED DOCTRINE — why in-game AI is never a live API call, and
+which local technique to reach for (GOAP/FSM/ML-weights/RL/BT)
+================================================================================
+Status: HARD RULE, not a preference - written per direct instruction
+specifically so this does not drift in future sessions. This document
+governs EVERY decision_mode-bearing piece across this whole family
+(muchi-evo-pal, wsr-pal, the future muchi-civ-pal, and
+COMPOSABLE-MATERIALS-ARCHITECTURE.md's own FSM/ops bridge) - it's not
+scoped to one project.
+
+================================================================================
+0. THE RULE, STATED PLAINLY
+================================================================================
+**AI API calls (Gemini, Groq, LAN-hosted Ollama/gemma - ANY of them,
+local network or cloud, doesn't matter) are for TRAINING/distillation
+ONLY. They are never called during live gameplay, full stop.** In-game
+decisions always resolve against something already local and instant -
+a compiled rule, a small weight file, a trained local policy. If a
+decision needs "AI," that AI was already trained/distilled BEFORE the
+game loop needed it, not summoned live during it.
+
+**Why, concretely - this isn't a style preference:**
+  - **Speed**: a live LLM call is 1-2+ seconds (measured directly this
+    session: gemma3:270m on the LAN Mac averaged ~935ms per call even
+    for a trivial forced-choice prompt; the wsr-pal port's 57
+    corporation/government pieces, each needing a decision every tick,
+    would take upwards of a MINUTE per game tick if every one called an
+    LLM - the multi-entity vertical slice built this session made this
+    concrete, not hypothetical). A local weight lookup or FSM
+    transition is microseconds. This is not a small difference, it's
+    the difference between a game and a batch job.
+  - **Cost**: every live call costs money (cloud) or contends for a
+    shared machine's GPU (LAN). Training-time calls are bounded and
+    occasional; in-game calls would be continuous and unbounded.
+  - **Determinism/offline-capability**: a local weight/FSM answers the
+    same way given the same inputs (or in RL's case, evolves
+    predictably from logged outcomes) with no network dependency - the
+    game keeps working with no internet, no LAN Mac reachable, no API
+    key. An LLM-in-the-hot-path game literally cannot run without all
+    of that infrastructure present and healthy.
+  - **This is the actual reason IQABOD (the home-made local transformer)
+    exists at all** - `y0.muchi-pal-chat/ROADMAP-models.txt`'s whole
+    iqabod/rl/fsm arc, and this session's own Phase A corpus-generation
+    pipeline, are about TRAINING a small local model using a bigger
+    external one as a bootstrap teacher (§11.1's "corpus distillation"),
+    specifically so the trained result can run locally, instantly, with
+    zero live API dependency, at play-time. That's the whole point -
+    not "use IQABOD sometimes and Gemini other times," but "use a big
+    model ONCE, offline, to produce something small and fast that runs
+    forever without it."
+
+================================================================================
+1. WHAT THIS MEANS FOR THE decision_mode CHASSIS (correction to earlier
+   framing in EVO-DESIGN.txt / WSR-PAL-PORT-STATUS.txt)
+================================================================================
+The 5-tier chassis (`preset|weighted|rl|llm|human`) already designed in
+`wrai-dust-fable` §12 and built out this session for muchi-evo-pal and
+wsr-pal stays the right shape - but `llm`'s ROLE needs correcting:
+  - `preset` - hardcoded rule (FSM leaf logic). Always local, instant.
+  - `weighted` - tunable numeric parameters read from a small file
+    (risk_bias, etc). Always local, instant. This is "ML" in the
+    lightest possible sense - trained/set numbers, not a live model.
+  - `rl` - a REAL learned policy, tuned over time from logged
+    `(state,action,outcome)` tuples (exactly `wrai-dust-fable` §12 Tier
+    3's own design: "run a batch, log which choice correlated with a
+    better outcome, nudge that option's weight up"). **Still always
+    local, instant at decision-time** - the LEARNING/tuning step can
+    happen offline/between sessions, but making an actual in-game
+    choice never blocks on a live call. This is the tier this session's
+    wsr-pal work should have been building toward as the real default,
+    not `llm`.
+  - `llm` - **RESCOPED**: not a per-tick in-game option at all anymore.
+    Reserved for (a) TRAINING/distillation time (generating corpora,
+    generating example `(state,action,outcome)` data to bootstrap a
+    `weighted`/`rl` tier, exactly `ROADMAP-models.txt` §11's pipeline),
+    and (b) rare, genuinely special narrative moments where the design
+    explicitly wants to pay the latency cost (e.g. `wrai-dust-fable`
+    §12 Tier 4's own "novelty matters" framing - a handful of agents,
+    not fifty). NEVER the default for routine per-tick decisions across
+    many entities.
+  - `human` - unchanged, a real person, inherently not a speed concern.
+
+**Correction to this session's own prior work**: muchi-evo-pal's and
+wsr-pal's `decision_mode=3` (llm) branches, built earlier this session,
+are still valid CODE (the mechanism is fine to keep as an option), but
+should never be the DEFAULT for bulk/routine entities - both projects'
+auto-generated pieces should default to `weighted` (already done for
+wsr-pal's `ensure_entities.sh`) with a real path toward `rl` (not yet
+built - see §3).
+
+================================================================================
+2. GOAP vs FSM vs ML(weights)/RL vs BT - the real options, compared
+   honestly (requested directly: "whats best ai for that? goap? fsm?
+   ml? bt?")
+================================================================================
+All four are LOCAL/instant-at-decision-time techniques (none of them
+require a live API call, which is why all four are legitimate options
+under §0's rule, unlike LLM-in-the-loop) - the real tradeoff between
+them is authorability, expressiveness, and scaling behavior, not speed.
+
+**FSM (Finite State Machine)** - what's built so far (muchi-evo-pal,
+wsr-pal). Explicit states + transitions, `beq`-dispatched. Strengths:
+dead simple to author, trivially auditable (read the states.txt/
+transitions and you know EXACTLY what it can do), deterministic,
+replayable with a fixed seed (per `fsm_bot_programmer.txt`'s own
+testing-bot rationale). Weakness: state explosion - a behavior with
+many interacting conditions needs combinatorially many states to cover
+every combination, so FSMs get unwieldy past a certain complexity.
+Best for: small, well-understood, bounded behavior loops - exactly
+what corp/gov trading and creature eat/evolve decisions currently are.
+
+**BT (Behavior Tree)** - NOT YET BUILT anywhere in this family, worth
+adopting for more complex nodes once FSM's limits are actually hit, not
+before. Hierarchical composition of tasks/conditions via
+selector ("try children in order until one succeeds") and
+sequence ("run children in order, fail if any fails") nodes. Strengths:
+avoids FSM's state-explosion problem - behaviors compose instead of
+needing a new explicit state per combination, and subtrees are
+directly reusable across different agents (industry-standard in AAA
+game AI for exactly this reason). Still fully local/instant,
+still fully authorable by hand (no training needed). Weakness: an extra
+authoring paradigm to build tooling for (this family has zero BT
+infrastructure today) - worth building when a real node's complexity
+actually justifies it (per the very sensible engineering complaint FSM
+alone doesn't scale to), not speculatively.
+
+**ML/weights (the `weighted` tier)** - a small numeric parameter set
+(risk_bias, etc) read from a plain file, blended into a formula. Real
+precedent already exists and was ported honestly this session
+(wsr-pal's own `analysis_loop.c` fundamental-value formula). Strengths:
+captures a tunable "feel"/bias without needing explicit rule
+enumeration, cheap to store/read, cheap to author (a human can just
+type a number). Weakness: the FORMULA itself is still hand-designed
+(only the coefficients are "learned"/tunable) - it's not discovering
+new strategies on its own, just weighting a fixed shape of reasoning a
+human already wrote.
+
+**RL (the `rl` tier, real version, not yet built)** - the natural next
+step past static `weighted`: instead of a human hand-setting risk_bias
+once, log every `(state,action,outcome)` tuple the FSM already produces
+for free (per `wrai-dust-fable` §12 Tier 3, already-specified) and
+nudge weights based on which choices actually correlated with good
+outcomes, automatically, over many ticks/sessions. Strengths: genuinely
+adapts to what's actually working, not just what a human guessed would
+work; matches the user's own direct framing ("set weights and tweak
+them based on performance"). Still 100% local/instant at decision time
+- the tuning step runs BETWEEN decisions (or between sessions), not
+DURING one. Weakness: needs a real reward signal design (what counts
+as "good outcome" - e.g. for a corporation, did net worth grow after
+this trade) and enough logged history to learn from - not free, but
+still strictly local/offline work, never a live API dependency.
+
+**GOAP (Goal-Oriented Action Planning)** - NOT YET BUILT, the most
+different of the four. Instead of hand-authored states/transitions, an
+agent has a GOAL (a desired world-state) and a library of actions each
+with preconditions/effects; a planner SEARCHES for a sequence of
+actions that reaches the goal from the current state, at decision time.
+Strengths: genuinely emergent - a GOAP agent can find action sequences
+a designer never explicitly authored, as long as the right primitive
+actions exist in its library (classic use: an agent that needs to
+"acquire ammo" figures out on its own whether that means buying,
+looting, or crafting, based on what's currently possible). Still local/
+instant PER DECISION as long as the action library stays small (the
+search itself has real, if modest, per-tick cost - larger than an FSM
+transition or a weight lookup, smaller than a network call by orders
+of magnitude). Weakness: the planning search is real compute cost
+(worth budgeting/profiling once used at scale, unlike FSM/weights which
+are free), and authoring good preconditions/effects per action is more
+design work upfront than an FSM's simpler state/transition table. Best
+for: agents whose behavior is fundamentally about "reaching a goal
+through whichever means are currently available," not fixed-shape
+decisions like buy/sell/hold - a strong future candidate for something
+like a civilization-tier AI opponent's strategic planning
+(`muchi-civ-pal`, not yet designed) rather than a corp's trading tick.
+
+================================================================================
+3. THE PHILOSOPHY: BESPOKE NODES, NOT ONE-SIZE-FITS-ALL (direct
+   instruction, quoted: "not really looking for 1 size fits all llm,
+   more want bespoke nodes for game ai that may use rl/llm for certain
+   things")
+================================================================================
+Different decision points should use whichever of FSM/BT/weighted-ML/
+RL/GOAP actually fits that node's shape - not a single universal
+mechanism applied everywhere. Concretely, per this session's real work:
+  - A creature's eat-vs-evolve choice (muchi-evo-pal) - FSM/weighted is
+    already the right fit; the decision space is small and fixed-shape.
+    No GOAP/BT needed here.
+  - A corporation's buy/sell/hold (wsr-pal) - same, FSM/weighted-ported-
+    from-real-formula is already the right fit.
+  - A government's multi-lever fiscal strategy (tax AND spending AND
+    debt issuance, considered together toward a longer-horizon goal
+    like "avoid a debt crisis in 3 years") - a stronger GOAP candidate
+    than the current single-lever `weighted` heuristic, worth revisiting
+    once the simpler version's limits are actually felt, not before.
+  - A civilization-tier AI opponent (`muchi-civ-pal`, unbuilt) -
+    plausibly GOAP or BT territory (multi-step strategic planning), not
+    a good fit for a flat FSM.
+  - `COMPOSABLE-MATERIALS-ARCHITECTURE.md` §7.3's promotion/demotion
+    idea (a stabilized FSM/weighted node gets "promoted" to a compiled
+    op; a hardcoded op that needs more flexibility gets "demoted" to a
+    script) is the SAME philosophy one level lower - matching technique
+    to node, not forcing uniformity, and this doctrine's local-only
+    rule applies to every rung of that ladder identically.
+This is why the chassis has five tiers instead of one - each one is a
+real, different tool, not five names for the same thing at different
+speeds.
+
+================================================================================
+4. WHAT CHANGES, CONCRETELY, GOING FORWARD
+================================================================================
+  - Both `muchi-evo-pal` and `wsr-pal`'s auto-generated pieces default
+    to `decision_mode=1` (weighted) - already true for wsr-pal's
+    `ensure_entities.sh` after this session's earlier correction, worth
+    double-checking muchi-evo-pal matches too.
+  - `decision_mode=3` (llm) stops being exercised in bulk/routine ticks
+    - keep the code (it's a legitimate rare-moment/training-adjacent
+      tool per §1), stop defaulting to it or calling it across many
+      entities per tick.
+  - Real `rl` (decision_mode=2) is the actual next build priority for
+    both projects - currently both fall back to `weighted`'s static
+    formula, honestly labeled as a stub. Building real reward-driven
+    weight-tuning (§2's RL description) is what actually delivers "set
+    weights and tweak them based on performance."
+  - BT and GOAP are named, real, future options - not scheduled, not
+    forgotten either. Revisit BT once an FSM node's complexity actually
+    justifies it; revisit GOAP for genuinely goal-directed multi-step
+    agents (governments, civ-tier opponents), not before either is
+    concretely needed.
+
+Cross-referenced from `muchi-evo-pal/EVO-DESIGN.txt`,
+`wsr-pal/WSR-PAL-PORT-STATUS.txt`, and `MUCHICIVO_BIBLE.txt` (all three
+define/use the same decision_mode chassis this doctrine now governs).

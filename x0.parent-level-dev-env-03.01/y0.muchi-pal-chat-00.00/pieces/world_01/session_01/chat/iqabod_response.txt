@@ -1,0 +1,13 @@
+Generation mode: vocab_file=curriculum/daily_life/daily_life.txt, temp=0.80, top_p=0.90, max_tokens=60, prompt='walking is fun'
+Loading model from vocab file: curriculum/daily_life/daily_life.txt
+Loaded model with vocabulary from curriculum/daily_life/daily_life.txt (47 tokens)
+Loaded model weights from curriculum/daily_life/daily_life.txt.weights
+Generating text with dynamic vocabulary expansion: 'walking is fun'
+Generation completed. Output: walking is fun every Walking is can a Walking Walking a Walking daily every walk and share stories includes is Walking share often life often stories share savory walk <UNK> can walk necessary every <START> includes Walking <UNK> Cereal walk with includes with Cereal do life Stories Cereal can <PAD> breakfast helps breakfast share <START> <PAD> friends friends friends morning Many people do
+Final generated text: walking is fun every Walking is can a Walking Walking a Walking daily every walk and share stories includes is Walking share often life often stories share savory walk <UNK> can walk necessary every <START> includes Walking <UNK> Cereal walk with includes with Cereal do life Stories Cereal can <PAD> breakfast helps breakfast share <START> <PAD> friends friends friends morning Many people do
+Generating attention map for prompt: 'walking is fun'...
+Generating attention map for prompt: 'walking is fun' with curriculum: curriculum/daily_life/daily_life.txt
+Attention map generated: 3 prompt tokens, 47 curriculum tokens, 141 attention scores saved to attention_map.txt
+Attention map successfully generated in attention_map.txt
+Loaded configuration: lr=0.000010, epochs=10, batch_size=1
+Mode: Generation with temperature=0.80, max_tokens=60, prompt='walking is fun'

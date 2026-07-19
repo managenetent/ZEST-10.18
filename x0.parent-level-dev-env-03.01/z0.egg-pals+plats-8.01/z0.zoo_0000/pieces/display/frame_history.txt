@@ -1,0 +1,898 @@
+
+--- FRAME at 2026-07-18 06:04:55 ---
++============================================================+
+|                       Z O O _ 0 0 0 0                     |
++============================================================+
+[ ] 1. [Control Zoo]
+[ ] 2. [Feed]  [ ] 3. [Pet]  [>] 4. [Play]  [ ] 5. [Export]
++============================================================+
+ZOO_0000   active: xlector
+####################
+#..................#
+#c.................#
+#..................#
+#..................#
+#..................#
+#..................#
+#..................#
+#................X.#
+#..................#
+#..d...............#
+####################
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+...........#
+####################
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+
++============================================================+
+ [enter] Control Zoo  [esc, while controlling] Back to Menu  [q] Quit
+
++=========================================================+
+Nav > _
+
++============================================================+
+ [enter] Control Zoo  [esc, while controlling] Back to Menu  [q] Quit
+
++=========================================================+
+Nav > _
+
+
+--- FRAME at 2026-07-18 06:04:55 ---
+ZOO_0000   active: xlector
+####################
+#..................#
+#c.................#
+#..................#
+#..................#
+#..................#
+#..................#
+#..................#
+#................X.#
+#..................#
+#..d...............#
+####################
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+...........#
+####################
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+...........#
+####################
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+
++============================================================+
+ [enter] Control Zoo  [esc, while controlling] Back to Menu  [q] Quit
+
++=========================================================+
+Nav > _
+
++============================================================+
+ [enter] Control Zoo  [esc, while controlling] Back to Menu  [q] Quit
+
++=========================================================+
+Nav > _
+
+
+--- FRAME at 2026-07-18 06:04:56 ---
++============================================================+
+|                       Z O O _ 0 0 0 0                     |
++============================================================+
+[>] 1. [Control Zoo]
+[ ] 2. [Feed]  [ ] 3. [Pet]  [ ] 4. [Play]  [ ] 5. [Export]
++============================================================+
+ZOO_0000   active: xlector
+####################
+#..................#
+#c.................#
+#..................#
+#..................#
+#..................#
+#..................#
+#..................#
+#................X.#
+#..................#
+#..d...............#
+####################
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+...........#
+####################
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+...........#
+####################
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+
++============================================================+
+ [enter] Control Zoo  [esc, while controlling] Back to Menu  [q] Quit
+
++=========================================================+
+Nav > _
+
++============================================================+
+ [enter] Control Zoo  [esc, while controlling] Back to Menu  [q] Quit
+
++=========================================================+
+Nav > _
+
++============================================================+
+ [enter] Control Zoo  [esc, while controlling] Back to Menu  [q] Quit
+
++=========================================================+
+Nav > _
+
+
+--- FRAME at 2026-07-18 06:04:59 ---
++============================================================+
+|                       Z O O _ 0 0 0 0                     |
++============================================================+
+[>] 1. [Control Zoo]
+[ ] 2. [Feed]  [ ] 3. [Pet]  [ ] 4. [Play]  [ ] 5. [Export]
++============================================================+
+ZOO_0000   active: xlector
+####################
+#..................#
+#c.................#
+#..................#
+#..................#
+#..................#
+#..................#
+#..................#
+#................X.#
+#..................#
+#..d...............#
+####################
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+...........#
+####################
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+...........#
+####################
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+
++============================================================+
+ [enter] Control Zoo  [esc, while controlling] Back to Menu  [q] Quit
+
++=========================================================+
+Nav > _
+
++============================================================+
+ [enter] Control Zoo  [esc, while controlling] Back to Menu  [q] Quit
+
++=========================================================+
+Nav > _
+
++============================================================+
+ [enter] Control Zoo  [esc, while controlling] Back to Menu  [q] Quit
+
++=========================================================+
+Nav > _
+
+
+--- FRAME at 2026-07-18 06:05:00 ---
++============================================================+
+|                       Z O O _ 0 0 0 0                     |
++============================================================+
+[>] 1. [Control Zoo]
+[ ] 2. [Feed]  [ ] 3. [Pet]  [ ] 4. [Play]  [ ] 5. [Export]
++============================================================+
+ZOO_0000   active: xlector
+####################
+#..................#
+#c.................#
+#..................#
+#..................#
+#..................#
+#..................#
+#..................#
+#................X.#
+#..................#
+#..d...............#
+####################
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+...........#
+####################
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+...........#
+####################
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+
++============================================================+
+ [enter] Control Zoo  [esc, while controlling] Back to Menu  [q] Quit
+
++=========================================================+
+Nav > _
+
++============================================================+
+ [enter] Control Zoo  [esc, while controlling] Back to Menu  [q] Quit
+
++=========================================================+
+Nav > _
+
++============================================================+
+ [enter] Control Zoo  [esc, while controlling] Back to Menu  [q] Quit
+
++=========================================================+
+Nav > _
+
+
+--- FRAME at 2026-07-18 06:05:00 ---
++============================================================+
+|                       Z O O _ 0 0 0 0                     |
++============================================================+
+[^] 1. [Control Zoo]
+[ ] 2. [Feed]  [ ] 3. [Pet]  [ ] 4. [Play]  [ ] 5. [Export]
++============================================================+
+ZOO_0000   active: xlector
+####################
+#..................#
+#c.................#
+#..................#
+#..................#
+#..................#
+#..................#
+#..................#
+#................X.#
+#..................#
+#..d...............#
+####################
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+...........#
+####################
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+...........#
+####################
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+
++============================================================+
+ [enter] Control Zoo  [esc, while controlling] Back to Menu  [q] Quit
+
++=========================================================+
+Nav > _
+
++============================================================+
+ [enter] Control Zoo  [esc, while controlling] Back to Menu  [q] Quit
+
++=========================================================+
+Nav > _
+
++============================================================+
+ [enter] Control Zoo  [esc, while controlling] Back to Menu  [q] Quit
+
++=========================================================+
+Active [^]:  (ESC to exit)
+
+
+--- FRAME at 2026-07-18 06:05:00 ---
++============================================================+
+|                       Z O O _ 0 0 0 0                     |
++============================================================+
+[^] 1. [Control Zoo]
+[ ] 2. [Feed]  [ ] 3. [Pet]  [ ] 4. [Play]  [ ] 5. [Export]
++============================================================+
+ZOO_0000   active: xlector
+####################
+#..................#
+#c.................#
+#..................#
+#..................#
+#..................#
+#..................#
+#..................#
+#.................X#
+#..................#
+#..d...............#
+####################
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+
++============================================================+
+ [enter] Control Zoo  [esc, while controlling] Back to Menu  [q] Quit
+
++=========================================================+
+Active [^]:  (ESC to exit)
+
+
+--- FRAME at 2026-07-18 06:05:01 ---
++============================================================+
+|                       Z O O _ 0 0 0 0                     |
++============================================================+
+[^] 1. [Control Zoo]
+[ ] 2. [Feed]  [ ] 3. [Pet]  [ ] 4. [Play]  [ ] 5. [Export]
++============================================================+
+ZOO_0000   active: xlector
+####################
+#..................#
+#c.................#
+#..................#
+#..................#
+#..................#
+#..................#
+#..................#
+#.................X#
+#..................#
+#..d...............#
+####################
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+
++============================================================+
+ [enter] Control Zoo  [esc, while controlling] Back to Menu  [q] Quit
+
++=========================================================+
+Active [^]:  (ESC to exit)
+
+
+--- FRAME at 2026-07-18 06:05:01 ---
+ZOO_0000   active: xlector
+####################
+#..................#
+#c.................#
+#..................#
+#..................#
+#..................#
+#..................#
+#.................X#
+#..................#
+#..................#
+#..d...............#
+####################
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+
+
+--- FRAME at 2026-07-18 06:05:01 ---
++============================================================+
+|                       Z O O _ 0 0 0 0                     |
++============================================================+
+[^] 1. [Control Zoo]
+[ ] 2. [Feed]  [ ] 3. [Pet]  [ ] 4. [Play]  [ ] 5. [Export]
++============================================================+
+ZOO_0000   active: xlector
+####################
+#..................#
+#c.................#
+#..................#
+#..................#
+#..................#
+#..................#
+#.................X#
+#..................#
+#..................#
+#..d...............#
+####################
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+
++============================================================+
+ [enter] Control Zoo  [esc, while controlling] Back to Menu  [q] Quit
+
++=========================================================+
+Active [^]:  (ESC to exit)
+
+
+--- FRAME at 2026-07-18 06:05:01 ---
+ZOO_0000   active: xlector
+####################
+#..................#
+#c.................#
+#..................#
+#..................#
+#..................#
+#..................#
+#................X.#
+#..................#
+#..................#
+#..d...............#
+####################
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+
+
+--- FRAME at 2026-07-18 06:05:02 ---
++============================================================+
+|                       Z O O _ 0 0 0 0                     |
++============================================================+
+[^] 1. [Control Zoo]
+[ ] 2. [Feed]  [ ] 3. [Pet]  [ ] 4. [Play]  [ ] 5. [Export]
++============================================================+
+ZOO_0000   active: xlector
+####################
+#..................#
+#c.................#
+#..................#
+#..................#
+#..................#
+#..................#
+#................X.#
+#..................#
+#..................#
+#..d...............#
+####################
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+
++============================================================+
+ [enter] Control Zoo  [esc, while controlling] Back to Menu  [q] Quit
+
++=========================================================+
+Active [^]: e (ESC to exit)
+
+
+--- FRAME at 2026-07-18 06:05:02 ---
++============================================================+
+|                       Z O O _ 0 0 0 0                     |
++============================================================+
+[^] 1. [Control Zoo]
+[ ] 2. [Feed]  [ ] 3. [Pet]  [ ] 4. [Play]  [ ] 5. [Export]
++============================================================+
+ZOO_0000   active: xlector
+🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱
+🧱🐱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🎯🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🐶🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+
++============================================================+
+ [enter] Control Zoo  [esc, while controlling] Back to Menu  [q] Quit
+
++=========================================================+
+Active [^]:  (ESC to exit)
+
+
+--- FRAME at 2026-07-18 06:05:02 ---
++============================================================+
+|                       Z O O _ 0 0 0 0                     |
++============================================================+
+[^] 1. [Control Zoo]
+[ ] 2. [Feed]  [ ] 3. [Pet]  [ ] 4. [Play]  [ ] 5. [Export]
++============================================================+
+ZOO_0000   active: xlector
+🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱
+🧱🐱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🎯🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🐶🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+
++============================================================+
+ [enter] Control Zoo  [esc, while controlling] Back to Menu  [q] Quit
+
++=========================================================+
+Active [^]:  (ESC to exit)
+
+
+--- FRAME at 2026-07-18 06:05:02 ---
+ZOO_0000   active: xlector
+🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱
+🧱🐱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🎯🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🐶🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+
+
+--- FRAME at 2026-07-18 06:05:03 ---
++============================================================+
+|                       Z O O _ 0 0 0 0                     |
++============================================================+
+[^] 1. [Control Zoo]
+[ ] 2. [Feed]  [ ] 3. [Pet]  [ ] 4. [Play]  [ ] 5. [Export]
++============================================================+
+ZOO_0000   active: xlector
+🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱
+🧱🐱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🎯🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🐶🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+
++============================================================+
+ [enter] Control Zoo  [esc, while controlling] Back to Menu  [q] Quit
+
++=========================================================+
+Active [^]:  (ESC to exit)
+
+
+--- FRAME at 2026-07-18 06:05:03 ---
++============================================================+
+|                       Z O O _ 0 0 0 0                     |
++============================================================+
+[^] 1. [Control Zoo]
+[ ] 2. [Feed]  [ ] 3. [Pet]  [ ] 4. [Play]  [ ] 5. [Export]
++============================================================+
+ZOO_0000   active: xlector
+🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱
+🧱🐱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🎯🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🐶🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+
++============================================================+
+ [enter] Control Zoo  [esc, while controlling] Back to Menu  [q] Quit
+
++=========================================================+
+Active [^]:  (ESC to exit)
+
+
+--- FRAME at 2026-07-18 06:05:03 ---
++============================================================+
+|                       Z O O _ 0 0 0 0                     |
++============================================================+
+[^] 1. [Control Zoo]
+[ ] 2. [Feed]  [ ] 3. [Pet]  [ ] 4. [Play]  [ ] 5. [Export]
++============================================================+
+ZOO_0000   active: xlector
+🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱
+🧱🐱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🎯🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🐶🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+
++============================================================+
+ [enter] Control Zoo  [esc, while controlling] Back to Menu  [q] Quit
+
++=========================================================+
+Active [^]:  (ESC to exit)
+
+
+--- FRAME at 2026-07-18 06:05:03 ---
++============================================================+
+|                       Z O O _ 0 0 0 0                     |
++============================================================+
+[^] 1. [Control Zoo]
+[ ] 2. [Feed]  [ ] 3. [Pet]  [ ] 4. [Play]  [ ] 5. [Export]
++============================================================+
+ZOO_0000   active: xlector
+🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱
+🧱🐱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🎯🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🐶🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+
++============================================================+
+ [enter] Control Zoo  [esc, while controlling] Back to Menu  [q] Quit
+
++=========================================================+
+Active [^]:  (ESC to exit)
+
+
+--- FRAME at 2026-07-18 06:05:04 ---
++============================================================+
+|                       Z O O _ 0 0 0 0                     |
++============================================================+
+[^] 1. [Control Zoo]
+[ ] 2. [Feed]  [ ] 3. [Pet]  [ ] 4. [Play]  [ ] 5. [Export]
++============================================================+
+ZOO_0000   active: xlector
+🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱
+🧱🐱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🎯🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🐶🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+
++============================================================+
+ [enter] Control Zoo  [esc, while controlling] Back to Menu  [q] Quit
+
++=========================================================+
+Active [^]:  (ESC to exit)
+
+
+--- FRAME at 2026-07-18 06:05:04 ---
+ZOO_0000   active: xlector
+🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱
+🧱🐱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🎯🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🐶🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+
+
+--- FRAME at 2026-07-18 06:05:08 ---
++============================================================+
+|                       Z O O _ 0 0 0 0                     |
++============================================================+
+[^] 1. [Control Zoo]
+[ ] 2. [Feed]  [ ] 3. [Pet]  [ ] 4. [Play]  [ ] 5. [Export]
++============================================================+
+ZOO_0000   active: xlector
+🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱
+🧱🐱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🎯🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🐶🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+
++============================================================+
+ [enter] Control Zoo  [esc, while controlling] Back to Menu  [q] Quit
+
++=========================================================+
+Active [^]: 0 (ESC to exit)
+
+
+--- FRAME at 2026-07-18 06:05:08 ---
+ZOO_0000   active: xlector
+🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱
+🧱🐱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🎯🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🟫🟫🐶🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🟫🧱
+🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱🧱
+Mochi    Hunger: 40  Happiness: 60  Energy: 90
+Rex      Hunger:  0  Happiness: 75  Energy: 80
+Mochi was exported to the exchange.
+Mochi was imported from the exchange.
+A pet enjoys the attention.
+A pet enjoys the attention.
+[wasd/arrows] Move  [enter] Select/Act  [9] Release to xlector  [e] Emoji
+

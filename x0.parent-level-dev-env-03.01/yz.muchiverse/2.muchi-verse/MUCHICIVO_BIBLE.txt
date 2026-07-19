@@ -1,0 +1,344 @@
+MUCHICIVO BIBLE — three-tier progression game (evo -> civilization ->
+stock-market/GTA-in-space), where FSM/RL drops in, and what to
+benchmark against
+================================================================================
+Status: PLANNING DOCUMENT. Written per direct request, grounded in
+real, already-existing docs/code across four projects - every claim
+below cites something real or is marked speculative. Sibling to
+`GRAND-ARCHITECTURE.md` and `COMPOSABLE-MATERIALS-ARCHITECTURE.md` in
+this same directory.
+
+**GOVERNED BY `GAME-AI-SPEED-DOCTRINE.txt` (added after this bible's
+own decision_mode chassis was first built out in real code, in both
+muchi-evo-pal and wsr-pal): `llm` is NOT the default in-game tier
+anywhere in this family - reserved for training/distillation and rare
+special moments. `weighted`/real `rl` are the always-on, local, instant
+tiers every routine per-tick decision should use. Read that doctrine
+before extending §6/§12's chassis further.**
+
+The core finding, stated up front: this three-tier structure is NOT new
+architecture to invent. It's `wrai-dust-fable`'s existing "Three
+Pillars" fusion (§2-3 there: Dustopia physics -> xo-pets/mutaclsym
+creatures -> Mar$.$treetRace society) reframed as a PLAYER-FACING
+PROGRESSION instead of three permanently-fused simultaneous systems.
+Naming it as tiers/epochs the player advances through - rather than
+three layers running at once from minute one - is the actual new idea
+here, and it's a good one: it gives each already-designed pillar a
+concrete gameplay reason to exist in sequence.
+
+================================================================================
+0. WHAT GROUNDS THIS
+================================================================================
+- `❤️‍🔥️.⚛️.wrai-dust.fable-0.0.md` (ZEST-10.00 root) - the Three
+  Pillars (§2), the fusion diagram (§3: Dustopia -> xo-pets ->
+  Mar$.$treetRace -> Wraith), the 4-tier FSM brain chassis
+  (`decision_mode=preset|weighted|rl|llm`, §12), and §14's "fractal
+  zoom applies to AI compute too" framing.
+- `GRAND-ARCHITECTURE.md`'s GOVERNING CONSTRAINT (top of that file) -
+  the reason this document does NOT recommend adopting an external game
+  engine (§1 below explains why directly).
+- `COMPOSABLE-MATERIALS-ARCHITECTURE.md` - the atom->molecule->cell->
+  organism->structure->environment composable chain (§2-3 there) and
+  the ops-vs-FSM bridge with promotion/demotion (§7 there) - both reused
+  here, not redesigned.
+- `y0.mutaclsym+05.00/mutaclsym/dox/01-cdda-architecture.md` (read
+  directly this session) - real current state: working `craft.c`
+  recipes, hardcoded `tick_monsters.c` combat AI, a designed-but-
+  unbuilt FSM layer explicitly "one system, two uses" (testing bots +
+  AI bots), CDDA-flavored survival/crafting/farming build order.
+- `wsr-pal/dox/00-overview.md` (read directly this session) - real
+  current state of "Mar$.$treetRace": a genuinely deep, ALREADY-BUILT
+  (not designed-only) corporations/governments/financing/payroll/tax
+  economic sim - entities are directories with rich pro-forma financial
+  text, `presets/schedule.txt` is a real working interval-scheduler
+  (`3_months -> payroll_loop.+x`), NOT yet ported to pal/prisc+x (no
+  `.pal` files anywhere in it today - a real, scoped port is needed,
+  §2 there lays out the 5-phase shape). One real bug flagged there
+  worth knowing about: `payroll_loop.c` is currently a dead copy-paste
+  of the main menu, contains zero payroll logic - don't assume it works
+  until that's fixed.
+- `y0.muchi-pal-chat/ROADMAP-models.txt` §11-13 and `TODO.txt` Phase A
+  (this session, just built and live-verified) - the corpus-generation-
+  and-training pipeline (`generate_corpus.c`/`train_corpus.sh`), which
+  turns out to be EXACTLY Tier 3's "R&D that gives companies internal
+  corpuses" mechanic, already working in prototype form (§5 below).
+
+================================================================================
+1. THE ACTUAL QUESTION: WHAT ENGINE/FRAMEWORK TO BENCHMARK AGAINST
+================================================================================
+Direct answer: don't adopt one. `GRAND-ARCHITECTURE.md`'s GOVERNING
+CONSTRAINT is explicit and applies with full force here: this whole
+ecosystem is being built toward RISC-V-compilable portable C, with
+`glBegin(GL_QUADS)` + one textured-quad blit as the ONLY GL surface
+ever touched, everywhere - "we do not write direct GL/OpenGL primitive
+calls ourselves, anywhere, ever." Unity/Godot/Unreal/etc are all a hard
+dependency on a live GPU driver API with no RISC-V-compilable
+equivalent - adopting one would directly violate a constraint this
+family of projects has already committed to, not a neutral tooling
+choice.
+
+**"Benchmark" splits into two different, non-conflicting things -
+answer each separately:**
+
+**(a) MECHANICS benchmark - real games as feature checklists, per
+tier, not engines to port.** This is what "Evo" and "Civilization" are
+actually useful for: a checklist of "does our tier-N loop do at least
+what the equivalent real game does," independent of how either is
+built.
+  - Tier 1 (evo): benchmark against E.V.O./Spore's cell-and-creature
+    stages - does our cell-to-organism-to-proto-sapient loop have a
+    comparably satisfying sense of gradual complexity growth?
+  - Tier 2 (civilization): benchmark against Civilization's settle/
+    tech-tree/diplomacy/war loop, and CDDA's own survival/crafting/
+    farming loop (mutaclsym is ALREADY built toward CDDA parity, which
+    turns out to overlap heavily with "early civilization" - hunting,
+    farming, crafting, basic combat - more than it first looks like a
+    coincidence).
+  - Tier 3 (stock market + GTA-in-space): benchmark against economic-
+    sim games (Democracy, Capitalism) for the corp/stock/policy side,
+    EVE Online specifically for "player-driven economy where R&D and
+    corporate structure are real gameplay stakes" (the single closest
+    real precedent for the "pay workers to do real R&D, companies have
+    internal knowledge assets" mechanic named in the request), and GTA
+    for the open-world action/tone layer.
+
+**(b) TECHNICAL benchmark - build on what's already running in THIS
+tree, don't build new skeletons.** Each tier already has a real,
+existing, non-hypothetical piece of code closest to it:
+  - Tier 1 -> Dustopia's toy-cell math (`wrai-dust-fable` §11) +
+    `COMPOSABLE-MATERIALS-ARCHITECTURE.md`'s composable registry - not
+    built as a game yet, but the RULES are already fully specified.
+  - Tier 2 -> `mutaclsym` - a real, running, CDDA-parity engine today
+    (craft.c, tick_monsters.c, terrain/furniture/monster registries).
+  - Tier 3 -> `wsr-pal`/`Mar$.$treetRace` - a real, deep, ALREADY-BUILT
+    (if unported) economic sim, per §0's citations above.
+Validation, concretely: for each tier, build the vertical slice IN
+this family's own pieces/ops/PAL architecture, and check it against
+(a)'s feature checklist - not "does it run in Unity," but "does a
+player who's played Civilization recognize this as doing the thing
+Civilization does."
+
+================================================================================
+2. THE THREE TIERS, MAPPED ONTO THE THREE PILLARS
+================================================================================
+```
+TIER 1 (evo)              <- Dustopia physics/chemistry (Pillar 3) +
+  cells -> organisms ->      COMPOSABLE-MATERIALS' composable chain
+  proto-sapient species      (atom -> molecule -> cell -> organism)
+
+TIER 2 (civilization)     <- xo-pets/mutaclsym mechanics (Pillar 1)
+  settle, fight, hunt,       (already real: craft.c, terrain/furniture/
+  farm, tech tree             monster registries, combat)
+
+TIER 3 (stock market +    <- Mar$.$treetRace/wsr-pal society (Pillar 2)
+  GTA-in-space)               (already real: corporations, governments,
+  bonds/stocks/VC/R&D/        financing/payroll/tax/dividend loops)
+  breakthroughs, open-
+  world action
+```
+Wraith renders whichever tier/piece is focused, per the fusion diagram
+- no new rendering architecture needed, per §0's citations.
+
+The tier BOUNDARIES matter as much as the tiers themselves - each one
+should have a concrete, mechanically-checkable graduation condition,
+not a vague "and then eventually":
+  - Tier 1 -> Tier 2: a lineage's `decision_mode` (per §12's chassis)
+    crossing from `rl` to `llm` for the first time - i.e. "reaching
+    civilized intelligence" is DEFINED as the moment a species' agents
+    start needing the LLM tier at all. Concrete, checkable, already-
+    specified machinery (§3 below).
+  - Tier 2 -> Tier 3: the moment a civilization's first
+    `setup_corporations.c`/`setup_governments.c`-equivalent piece gets
+    instantiated for it - i.e. "entering the economic age" is defined
+    as founding the first formal corporation/government, not a
+    calendar date or tech-tree checkbox (§4 below).
+
+================================================================================
+3. TIER 1 (EVO) - detail
+================================================================================
+Entities are `COMPOSABLE-MATERIALS-ARCHITECTURE.md` §2's composable
+chain, literally: atom -> molecule -> cell (with §11's membrane/
+metabolism/replication toy-rules) -> organism. Nothing new to design
+here - this tier IS that document, played.
+
+**FSM/RL role, as a progression, not a fixed assignment:**
+  - Early cells/simple organisms: `decision_mode=preset` almost
+    entirely - deterministic bond-table chemistry (§11's worked
+    examples), no "brain" needed, matching how real early-evo games
+    (E.V.O., Spore's cell stage) are mostly reflexive too.
+  - As organisms compose into more complex creatures: climbs to
+    `weighted` (simple scarcity-driven instinct - flee/eat/reproduce
+    weights, per `wrai-dust-fable` §13's own "cells/agents that
+    cooperate... survive/replicate more... a selection pressure,
+    cheaply computed from the same bond table"), then `rl` (learned
+    survival policy from the free `(state,action,outcome)` logging
+    §12 Tier 3 already specifies).
+  - The FIRST creature/lineage to need `decision_mode=llm` (judgment/
+    novelty genuinely required, not just tuned instinct - per §12
+    Tier 4's own framing) is, by this document's definition, the
+    moment that species graduates to Tier 2. This is a satisfying,
+    literal "spark of civilization" moment a player can watch happen,
+    not an abstract milestone screen.
+
+================================================================================
+4. TIER 2 (CIVILIZATION) - detail
+================================================================================
+Reuses `mutaclsym`'s already-real mechanics directly, re-themed (or
+even left CDDA-flavored - "stone age survival building toward
+civilization" is a genuinely good fit for CDDA's existing hunt/farm/
+craft/fight loop, more overlap than reskin):
+  - Settling/building: mutaclsym's piece/directory model, as-is.
+  - Fighting/hunting: `move_player.c`'s attack-on-collision + monster
+    pieces, as-is; `tick_monsters.c`'s hardcoded AI is EXACTLY the
+    "should become an FSM" candidate mutaclsym's own doc already names
+    (§0 above) - a great source of Tier 2 FSM work that isn't
+    speculative, it's already on mutaclsym's own to-do list.
+  - Farming: named in mutaclsym's own build order (§5 there), not yet
+    built - a real, scoped, near-term item, not invented for this doc.
+  - Tech tree: reuses `craft.c`'s recipe mechanism AGAIN (the same
+    reuse `COMPOSABLE-MATERIALS-ARCHITECTURE.md` §2 already made for
+    "what is this object made of") - a "tech" is just a composable
+    whose `composed_of` list names prerequisite techs/resources instead
+    of physical materials. One mechanism, two applications, not a new
+    tech-tree engine to write.
+
+**FSM/RL role:** background villagers/wildlife stay `preset`/
+`weighted` (cheap, per §14's fractal-zoom-for-compute framing); a
+handful of AI-opponent civilizations' strategic decisions (declare war?
+found a city here?) are good `rl`/`llm` candidates - directly matching
+`wrai-dust-fable` §12's own "corporation board"/"government" examples,
+just one tier earlier (a proto-government before it's a full
+Mar$.$treetRace-style formal government).
+
+================================================================================
+5. TIER 3 (STOCK MARKET + GTA-IN-SPACE) - detail
+================================================================================
+This is where the request's most concrete, valuable idea lives: **"R&D
+that gives companies internal corpuses" is not a metaphor - it's
+LITERALLY today's just-built `y0.muchi-pal-chat` pipeline, already
+working.** `TODO.txt` Phase A (`generate_corpus.c` + `train_corpus.sh`,
+live-verified this session) generates and trains a curriculum from a
+topic + LLM call. A Tier 3 company's "R&D department" is exactly this:
+  - Workers (NPC pieces, paid via `wsr-pal`'s real `payroll_loop.c` -
+    once its known bug, §0, is fixed) are assigned R&D tasks.
+  - An R&D task IS a `generate_corpus.+x` + `train_corpus.sh` call,
+    scoped to that company's own private curriculum directory - the
+    company's competitive advantage becomes a literal, ownable,
+    trainable asset (a bigger/better-trained curriculum), not an
+    abstract "R&D points" number.
+  - `ROADMAP-models.txt` §12.3's qualification/exam mechanism becomes
+    the "breakthrough" event: a company's R&D curriculum crossing a
+    qualification threshold IS a breakthrough - triggerable as a real
+    in-game event (stock price jump, new tech unlocked, licensable IP).
+  - §12.3's teacher/qualification registry also makes company R&D
+    TRADEABLE: a highly-qualified curriculum is IP a company could
+    license or sell to another company/player - a clean, mechanically
+    grounded stock-market-adjacent gameplay hook that falls directly
+    out of connecting today's Phase A work to this tier, not a new
+    system to invent.
+  - Corporations/governments/financing/dividends/bonds/VC financing:
+    `wsr-pal`'s real, already-built machinery (§0's citations),
+    ported to pal/prisc+x per its own doc's 5-phase plan before it can
+    be wired to the rest of the family.
+  - "Hospitals... breakthroughs" - directly the R&D-agent example
+    `wrai-dust-fable` §5/§12 already worked through (a drug-screening
+    FSM piece, `idle -> propose_candidate -> synthesize -> test_on_cell
+    -> record_result`, its `decision_mode` choosing how novel a
+    candidate to try) - reuse that worked example verbatim, it already
+    fits this tier exactly.
+  - GTA-in-space (open-world action/tone layer): reuses op-ed's own
+    already-established Mode 1/Mode 2 split (`op-ed/README.md:35`:
+    "WASD movement is realtime (Direct C); Interaction is scripted
+    (PRISC)") - real-time movement/combat stays direct C ops for
+    responsiveness, mission/dialogue/economic logic stays PAL-scripted.
+    Not a new engine boundary, the same one mutaclsym already uses.
+
+**FSM/RL role:** the widest spectrum of any tier - corporation boards
+and governments at `llm` (per `wrai-dust-fable` §12's own named
+examples), most NPC workers/civilians at `preset`/`weighted`, combat/
+hostile-NPC AI at `weighted`/`rl`. This is the tier where
+`COMPOSABLE-MATERIALS-ARCHITECTURE.md` §7.3's promotion/demotion
+mechanism stops being a nice-to-have and becomes load-bearing: a game
+with this many simultaneous agents (thousands of workers/civilians
+across many corporations) genuinely needs "most agents run at the
+cheapest tier, promote to compiled ops once behavior stabilizes" for
+performance - directly `wrai-dust-fable` §14's "fractal zoom applies to
+AI compute, not just pixels" framing, now with an actual reason to
+matter (Tier 1/2 have far fewer simultaneous agents).
+
+================================================================================
+6. FSM/RL ACROSS THE WHOLE GAME - THE UNIFIED PICTURE
+================================================================================
+One chassis (`wrai-dust-fable` §12's `decision_mode` field), one
+promotion/demotion mechanism (`COMPOSABLE-MATERIALS-ARCHITECTURE.md`
+§7.3), used identically in all three tiers - only WHAT it's attached to
+changes (a cell, a monster, a corporation board), never the mechanism
+itself. This is the actual answer to "where does FSM/RL drop into
+this": everywhere, uniformly, via the same field on the same piece
+shape, with tier-appropriate defaults (Tier 1 mostly `preset`/
+`weighted`, Tier 2 mixed, Tier 3 widest spread including the most
+`llm`-tier agents) rather than a different AI system per tier. The
+tier-graduation definitions in §2 (rl->llm crossing, first corporation
+founded) are themselves just readable STATE on this one mechanism, not
+separate tracking systems.
+
+================================================================================
+7. SELLING THIS AS BOTH A GAME AND A PRODUCT
+================================================================================
+Directly extends `wrai-dust-fable` §5/§10's own go-to-market framing
+(Dustopia physics sold as "fast approximation/visualization sandbox,"
+never "validated physics") to this tiered structure specifically:
+  - Gamers: the full three-tier progression, sold as one game with a
+    genuinely novel hook (your civilization's economy runs on AI models
+    YOUR players trained, not scripted numbers).
+  - The SAME R&D-corpus mechanic (§5) is honestly also a real product
+    outside the game wrapper: a working example of "cheap local-LLM-
+    bootstrapped curriculum training with a qualification/audit trail"
+    (§12.3) is something a business/research tool could package
+    separately - matching `wrai-dust-fable` §5's own "one rule system
+    cheaply powers multiple different-looking products" business case,
+    now demonstrated concretely by something that ACTUALLY RUNS today
+    (Phase A), not just argued for.
+  - Same honesty discipline as §5/§10 there: never pitch Tier 3's
+    "hospitals, breakthroughs" framing as real pharmacology - it's a
+    toy-cell/toy-curriculum sandbox, sold as intuition-building and
+    play, exactly the line `wrai-dust-fable` already draws.
+
+================================================================================
+8. BUILD ORDER
+================================================================================
+Two independent threads, both real, worth naming as separate rather
+than forcing a single sequence:
+  1. **Architecture-dependency order (what a new player would reach
+     first):** Tier 1's composable chain first (per
+     `COMPOSABLE-MATERIALS-ARCHITECTURE.md` §8's own build order -
+     already the most concretely scoped next step of the three tiers),
+     then Tier 2 (mutaclsym's own FSM-layer build order, §0 above),
+     then Tier 3 (wsr-pal's 5-phase port, §0 above).
+  2. **What's already accelerated by today's other work:** Tier 3's
+     R&D-corpus mechanic (§5) is ALREADY PARTIALLY BUILT AND VERIFIED
+     (`TODO.txt` Phase A), purely as a side effect of muchi-pal-chat's
+     own needs, not because Tier 3 was deliberately built first. Worth
+     exploiting opportunistically (e.g. prototype the "company R&D"
+     UI/mechanic against Phase A's existing pipeline NOW, cheaply, even
+     before Tier 1/2 exist to feed a real player-facing game) but NOT
+     worth reordering the whole build around - Tier 1/2 are still the
+     real prerequisites for a coherent player experience, per thread 1.
+  Recommendation: keep threads 1 and 2 explicitly separate in planning
+  - don't let "Tier 3's mechanic already half-works" become an excuse
+  to skip Tiers 1/2's own foundational work.
+
+================================================================================
+9. WHAT'S NOT SOLVED HERE
+================================================================================
+- The exact numeric thresholds for tier-graduation (§2) - named as a
+  mechanism, not tuned.
+- wsr-pal's port (§0/§5) is scoped at the phase level in its own doc,
+  not started, and that doc explicitly flags its own AI/setup-
+  generation files as unread - a second research pass is needed there
+  before the port actually begins.
+- Whether Tier 1/2/3 ship as one continuous game or separable modules/
+  expansions - named as a real question in §7, not decided.
+- Everything in `COMPOSABLE-MATERIALS-ARCHITECTURE.md` §9's own open-
+  items list still applies here unchanged (environment/space-scale
+  composables, the promotion-mechanism code itself, etc).

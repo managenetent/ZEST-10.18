@@ -1,0 +1,25 @@
+🥚️
+
+i have a bit of modification of the direction of this
+
+we wont show circle. just shape of pet. 
+and it will move on an invisible grid on the users screen (and can face left or right)
+and can create new windows like "poop"
+(and if it goes on a nother tiles space (another pet or item, it may interact)
+
+If pet or item is clicked on , it will open another window, that function like context windows in 1.tpmos wraith : /home/no/Downloads/1.TPMOS_c_+rmmp.0100.0110
+but on the users desktop . 
+there will also be storage windows . so if user moves pet to a storage window
+(but they will all function  like they are in wraith but on users real desktop/fs ) get it? 
+
+
+
+it will live in a "folder/flexbox 🥡️📦️ icon shaped / labled window" but if folder is clicked , the folder will open into a bigger
+new window showing the pets and items in that folder
+
+
+
+
+later for chat we will open a little dialog box window at bottom of users screen
+so its os but more invisble even than wraith.. we will still use wraith 
+principles sometimes or not . were doing product market fit, iteration and having fun.(ux)

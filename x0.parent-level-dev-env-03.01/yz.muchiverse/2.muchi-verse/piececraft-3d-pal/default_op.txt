@@ -1,0 +1,7 @@
+# Custom Operations for piececraft-3d-pal's prisc+x program
+# Format: name type handler {description}
+
+out void builtin_out {print register to stdout}
+halt void builtin_halt {stop execution}
+compose_rgb_frame void ops/+x/compose_rgb_frame.+x {render map_01 as an RGBA32 framebuffer - defaults to a real perspective-projected 3D view (ported from wraith_rgb_daemon.c's box renderer), '8' toggles to flat top-down. Zero GL calls, see GOVERNING CONSTRAINT in 2.muchi-verse/GRAND-ARCHITECTURE.md}
+camera_input void ops/+x/camera_input.+x {apply a keycode to pieces/system/camera_state.txt - WASD/ZX pan, 1/2/3 POV preset, 8 toggles 2D/3D}

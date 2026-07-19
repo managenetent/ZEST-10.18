@@ -1,0 +1,18 @@
+module_path=projects/agy-text-editor/manager/+x/agy-text-editor_manager.+x
+active_layout_id=editor.chtpm
+project_id=agy-text-editor
+active_project=projects/agy-text-editor/hi.txt
+editor_map=<text label="║   hi   😅 😆 😇                     ║" /><br/><text label="║                                           ║" /><br/><text label="║  ?[X]                                     ║" /><br/><text label="║                                           ║" /><br/><text label="║                                           ║" /><br/><text label="║                                           ║" /><br/><text label="║                                           ║" /><br/><text label="║                                           ║" /><br/>
+input_line=98
+active_file_info_line=<text label="║  FILE: projects/agy-text-editor/hi.txt    ║" /><br/>
+editor_response_line=║  Saved to projects/agy-text-editor/hi.txt ║
+browser_mode_header=<text label="║  MODE: SAVE FILE AS                         ║" /><br/>
+browser_current_dir_line=<text label="║  DIR: .                                   ║" /><br/>
+search_query_val=
+file_path_input_val=hi.txt
+autocomplete_suggestions_markup=<text label="║  (Type to see autocompletions)              ║" /><br/>
+directory_browser_markup=<text label="║  " /><button label="[DIR] !.2do/" onClick="SET_DIR:!.2do" /><text label="                   " /><text label=" ║" /><br/><text label="║  " /><button label="[DIR] !.gem-flashlite--yolo/" onClick="SET_DIR:!.gem-flashlite--yolo" /><text label="   " /><text label=" ║" /><br/><text label="║  " /><button label="[DIR] #.co-pilot/" onClick="SET_DIR:#.co-pilot" /><text label="              " /><text label=" ║" /><br/><text label="║  " /><button label="[DIR] #.dev-storage/" onClick="SET_DIR:#.dev-storage" /><text label="           " /><text label=" ║" /><br/><text label="║  " /><button label="[DIR] #.mp3-library/" onClick="SET_DIR:#.mp3-library" /><text label="           " /><text label=" ║" /><br/><text label="║  " /><button label="[DIR] #.ref/" onClick="SET_DIR:#.ref" /><text label="                   " /><text label=" ║" /><br/><text label="║  " /><button label="[DIR] libraries/" onClick="SET_DIR:libraries" /><text label="               " /><text label=" ║" /><br/><text label="║  " /><button label="[DIR] pieces/" onClick="SET_DIR:pieces" /><text label="                 " /><text label=" ║" /><br/><text label="║  ... and 21 more items ...                ║" /><br/>
+browser_action_buttons_markup=<text label="║  " /><button label="SAVE FILE" onClick="SET_SAVE_ACTION" /><text label="                     " /><text label=" ║" /><br/><text label="║  " /><button label="CANCEL" href="projects/agy-text-editor/layouts/file_menu.chtpm" /><text label="                        " /><text label=" ║" /><br/>
+slot_name_input=default
+slot_info_line=║  CURRENT SLOT: default                    ║
+slot_selection_markup=<text label="║  [Slots deprecated]                    ║" /><br/>

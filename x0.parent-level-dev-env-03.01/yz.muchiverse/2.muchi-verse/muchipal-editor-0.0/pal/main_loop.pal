@@ -1,0 +1,38 @@
+# muchipal-editor main loop - unlike mutaclsym (title phase falls
+# through into a separate real-time gameplay phase), this whole app IS
+# navigation, so there's only one loop: read a key, dispatch it to BOTH
+# project_browser and map_edit_input every tick (each one self-filters
+# by editor_state.txt's own screen field and no-ops if it doesn't own
+# the current screen - same "run unconditionally, self-filter" shape
+# mutaclsym's move_player.c/choice.c already use), render, repeat.
+# project_browser owns title/projects/project_menu/pieces/piece_detail
+# (digit-accumulator-then-Enter-commits, see nar-refactor-2.txt);
+# map_edit_input owns map_edit (continuous cursor movement - a real,
+# different input shape, see that op's own header comment).
+#
+# x1 = read cursor into pieces/apps/player_app/history.txt (byte offset)
+# x2 = last key read (0 = nothing new)
+# x9 = 'q' (113) - fixed, non-numbered quit key, same precedent as
+# mutaclsym/egg-pals (real 1.TPMOS's chtmp_parser.c keeps Quit as a
+# literal key check outside the numbered/accumulator dispatch entirely -
+# see nav-refactor-2.txt for the citation).
+li x1, 0
+li x9, 113
+
+compose_title_frame
+hit_frame
+
+loop:
+read_history x2, x1
+beq x2, x0, no_key
+beq x2, x9, quit
+project_browser x2
+map_edit_input x2
+compose_title_frame
+hit_frame
+no_key:
+sleep 30000
+j loop
+
+quit:
+halt

@@ -1,0 +1,1354 @@
+PAL-STANDARDS - the running list of conventions every pal/prisc+x
+project in the muchi-verse family (mutaclsym, z0.zoo_0000,
+muchipal-editor-0.0, wsr-pal, and anything else built this way) is
+expected to follow. Started per direct user request alongside the
+shared-ops refactor ("lets also at that to our list of
+pal-standards.txt wherever that is" - none existed before this file).
+Add to this file rather than starting a second one.
+
+========================================================================
+0. FOUNDATIONAL CORRECTION: THIS FAMILY HAS EXACTLY ONE INTENTIONAL
+   DEVIATION FROM CLASSIC/REAL CHTPM - "USE MORE PAL." A PERSISTENT,
+   INDEPENDENTLY-POLLING MODULE PROCESS WAS NEVER ONE OF THEM, AND IS
+   THE ROOT CAUSE OF NEARLY EVERY RACE/LAG BUG DOCUMENTED BELOW
+   (READ THIS SECTION FIRST, BEFORE ANY OTHER)
+========================================================================
+DIRECT CORRECTION (2026-07-18, in response to an agent wrongly
+rationalizing a real architectural mistake as an intentional design
+choice - do not repeat this reasoning error): an earlier pass in this
+file (sec. 7/16/16.3/17 below) explained the "interact + module"
+pattern's own persistent `prisc+x` process - reached via a relay file
+(`interact_relay.txt`), running its OWN independent poll loop (a plain
+`sleep N; j loop` inside `main_loop_chtpm.pal`, decoupled from
+`chtpm_parser_pal.c`'s own separate poll loop) - as deliberately built
+for "continuous, real-time" needs (mutaclsym's own hero movement). THIS
+WAS WRONG. Direct correction: "mutaclysm isn't real time nor is the
+deviation deliberate. it should always be change based. that was not
+intentional never assume we meant to deviate from classic chtpm
+standards other than 2 use more pal. thats where all problems start."
+
+REAL/CLASSIC CHTPM'S OWN ARCHITECTURE (confirmed via direct code read,
+`pieces/chtpm/plugins/chtpm_parser.c`, and the TPMOS Bible's own
+"Standalone Operational Architecture" section): ops are invoked
+SYNCHRONOUSLY, per keypress - `fork()`/`exec()`/`waitpid()`, inside the
+SAME `process_key()` call that will go on to render, BEFORE that
+render happens. There is no second, independently-polling process for
+this at all. State changes and rendering are strictly, causally
+ordered: key -> op runs and finishes -> render. A plain marker file
+("did the content change") is sufficient and reliable in that design
+PRECISELY BECAUSE there is no second process racing against the first
+one's own writes - the thing this family calls "change-based," not
+"poll-based."
+
+THIS FAMILY'S ONLY INTENTIONAL DEVIATION FROM THAT (see sec. 10's own
+PAL-VS-C-ARCHITECTURE.txt): op LOGIC should increasingly run as real
+PAL/prisc+x bytecode instead of hand-written C - a change of
+EXECUTION VEHICLE for an op's own internal logic, NOT a change to WHEN
+or HOW that op gets invoked. A pal-native op is still meant to be
+invoked SYNCHRONOUSLY, per keypress, exactly like a real TPMOS C op -
+`system/prisc+x pal/some_op.pal` as a ONE-SHOT process (fork/exec/wait,
+same as any other op binary), not as a PERSISTENT process that outlives
+a single keypress and polls a relay file on its own independent timer.
+
+WHERE THE UNINTENTIONAL DRIFT ACTUALLY CAME FROM: the "interact +
+module" pattern (sec. 7) genuinely DOES need something that stays alive
+between keypresses - but only because mutaclsym's own `pal/game_loop.pal`
+(now `main_loop_chtpm.pal`) was modeled as a copy of its own regular,
+already-existing `main_loop.pal` - which is itself a real, persistent,
+always-running VM loop, because THAT'S how mutaclsym's regular (non-chtpm)
+"run" mode was ALWAYS structured (`system/prisc+x pal/main_loop.pal`,
+one long-lived process for the whole session, reading history.txt in a
+loop). Reusing that SAME persistent-process shape for the CHTPM-mode
+variant was a copy-paste of convenience, not a deliberate decision that
+mutaclsym (or ANY project in this family) genuinely needs a background
+process ticking independently of user input. Nothing in this family is
+real-time; every op should be triggered BY a keypress and FINISH before
+the next render, exactly like real chtpm's own synchronous model.
+
+THE ACTUAL BUGS THIS DRIFT CAUSED (all documented in more detail in
+their own sections below, but ALL trace back to this one root cause -
+a persistent module process racing chtpm_parser_pal's own render cycle
+via two independently-timed poll loops instead of one synchronous
+call-then-render sequence):
+  - sec. 16.3 / this same day: a project's own compose op writing
+    directly to `current_frame.txt` (to paper over the lag a
+    persistent, asynchronous module introduces) clobbers chtpm's own
+    chrome/`${piece_methods}` output for any project where the module
+    runs on EVERY interaction, not just during a continuously-engaged
+    INTERACT mode.
+  - sec. 17: `system/renderer.c`/`chtpm_rgb_render.c` only watching one
+    marker misses a module-driven recompose entirely, because the
+    module's own update and chtpm's own reaction to it are two
+    separate, asynchronously-timed events instead of one atomic
+    sequence.
+  - The user-reported "press Enter twice" / "Back doesn't navigate"
+    symptoms - all instances of the SAME race: the module hasn't
+    finished (or chtpm hasn't noticed it finished) by the time a render
+    happens, because there was never a guarantee the two would be
+    synchronized in the first place.
+
+THE STANDING RULE, going forward: do not "fix" a race between chtpm's
+own render cycle and a project's own module/op by tuning sleep
+intervals, adding settle-loops, or dual-writing outputs to route around
+the asynchrony (all of sec. 16.3/17's own fixes are exactly this kind
+of patch, and are known to be incomplete/leaky, per this section).
+Those are stopgaps on top of an architecture that should not exist in
+this shape at all. For any NEW project (or when revisiting an existing
+one), ask FIRST: does this project's own logic need to keep running
+BETWEEN keypresses (an actual real-time tick - monster AI, a clock,
+something with no key involved at all)? If NOT (true of every current
+`${piece_methods}`-driven pure-menu project - wsr-pal, egg-pals), its
+op(s) should be invoked SYNCHRONOUSLY per keypress (via chtpm's own
+`OP:`/`SET_` command-dispatch conventions, matching real TPMOS's own
+op-invocation model exactly - a one-shot process, not a persistent one
+reached through a relay file), not modeled on mutaclsym's own
+persistent-process shape just because that shape already existed
+somewhere else in the family. A persistent module process is ONLY
+justified for a project with a genuine, continuous, keypress-independent
+tick - verify this explicitly, don't assume it by copying the pattern.
+
+0.1 IMPLEMENTED (2026-07-18): mutaclsym AND zoo_0000's OWN INTERACT MODE
+    IS NOW SYNCHRONOUS - `run_module_synchronous()`, THE FIX FOR THIS
+    SECTION'S OWN ROOT CAUSE
+------------------------------------------------------------------------
+Confirmed mutaclsym IS a turn-based roguelike, not real-time - monster
+ticking happens on the SAME turn as player movement (direct
+clarification: "its a rougelike. so monsters only move when player has
+moved... but there should be room for there 2 be free monster movement
+based on clock tick instead of player key tick. get it? ... but were
+using move tick for now"). This means the ENTIRE per-key sequence
+(`move_player`/`choice`/`end_turn`/`tick_monsters`/`compose_frame`) is a
+single, atomic, keypress-driven unit today - no split between
+"synchronous movement" and "separately-continuous ticking" was needed. A
+genuinely independent clock-tick mode for monsters remains a real,
+intentionally-deferred future option - NOT built now, and nothing here
+blocks adding it later as an actual separate mechanism when needed.
+
+THE FIX (`shared-ops/chtpm_parser_pal.c`):
+- `launch_module()`'s own guard changed from `strcmp(launch_str,
+  current_module_path) == 0 && current_module_pid > 0` to just
+  `strcmp(...) == 0 && current_module_path[0] != '\0'` - purely
+  path-based now, not tied to whether the child is still alive. A
+  pal-native module is a ONE-SHOT program now (see below) - this call
+  only needs to fire once per unique module_path (populating the
+  initial view before any key is pressed); checking `pid > 0` would let
+  it keep re-firing the instant each one-shot child exits, since
+  `parse_chtm()` calls this on every layout re-parse.
+- New function `run_module_synchronous(int key)`, called from
+  `process_key()`'s own INTERACT branch INSTEAD OF `inject_raw_key()`:
+  writes `key` directly (truncate, not append) to the same target
+  `inject_raw_key()` would use, then `fork()`+`execv()`+**blocking**
+  `waitpid()` for `current_module_path` to run to completion before
+  returning - the real fuzz-op_manager.c shape
+  (`execl(...); waitpid(p, NULL, 0);`), not the old relay-to-a-
+  persistent-process shape.
+
+THE FIX (a project's own `main_loop_chtpm.pal`, mutaclsym AND
+zoo_0000): converted from a persistent loop (`loop: ... sleep 30000; j
+loop`) to a ONE-SHOT program - no loop, no sleep, exits naturally when
+`pc` reaches the end (`prisc+x.c`'s own `while (pc < inst_count)`, no
+halt instruction needed). Invoked TWO different ways, by design:
+  1. Once, automatically, via `<module>${module_path}</module>` at
+     layout-parse time (`launch_module()`, unchanged otherwise) -
+     `interact_relay.txt` is empty at this point, `read_history` finds
+     nothing, `no_key` is taken - this pass ONLY populates the initial
+     `view.txt`/`current_frame.txt` before any key is ever pressed.
+  2. Once per relayed key, via `run_module_synchronous()` - which
+     already wrote the key to `interact_relay.txt` before forking, so
+     THIS run's own `read_history` finds it immediately, dispatches the
+     real action, and composes - by the time `run_module_synchronous()`
+     returns, `view.txt`/`current_frame.txt` already reflect the new
+     state.
+
+LIVE-VERIFIED (direct key injection into `pieces/keyboard/history.txt`,
+per sec. 9.3's own method - not assumed): both mutaclsym (hero moved
+`pos_x` 13->14 on one relayed arrow key, exactly once, no double-
+dispatch) and zoo_0000 (xlector visibly moved on the map, chrome/menu
+intact) tested clean. One residual, EXPECTED artifact, harmless: a
+project's own module still writes chrome-less content directly to
+`current_frame.txt` as part of its own `compose_frame` call (same
+dual-write shape sec. 16.3 describes for mutaclsym specifically) -
+under the OLD architecture this could persist indefinitely (an
+independent, unsynchronized second process racing to correct it); now
+it is corrected DETERMINISTICALLY and immediately, because chtpm's own
+render fires in the same synchronous sequence right after
+`run_module_synchronous()` returns, not on a separately-timed poll
+cycle. `system/renderer.c`'s own polling can catch this
+transitional-write for a single, bounded frame, but the FINAL settled
+frame is always correct - confirmed via full `frame_history.txt`
+sequence review, not a single-snapshot check (see sec. 9.3's own
+"rendering from a frame history file" testing principle - a snapshot
+check would have missed this transitional frame entirely and drawn the
+wrong conclusion either way).
+
+NOT YET DONE: wsr-pal/egg-pals still use the OLDER, direct-dual-write
+compose pattern (sec. 16.3) rather than this synchronous model, because
+they have NO `<module>`/INTERACT usage at all anymore (sec. 16 removed
+it, correctly, for pure-menu projects) - `wsr_menu_input.c`/
+`ops/menu_input.c` are ALREADY one-shot ops in spirit (invoked, run,
+exit), just still reached through the interact_relay.txt/persistent-
+prisc+x-module path inherited from before sec. 16's fix, not through
+chtpm's own real `OP:`/`SET_` synchronous dispatch. Converting them to
+true `OP:`-style invocation (removing `prisc+x`/`main_loop_chtpm.pal`
+from their own flow entirely) is a real, separate follow-up - named
+here so it isn't silently forgotten, not done in this pass.
+
+========================================================================
+1. SHARED-OPS: genuinely project-agnostic ops are SHARED SOURCE, not
+   re-typed per project
+========================================================================
+
+THE RULE: if an op has zero hardcoded game content and zero hardcoded
+per-project constants (map ids, world names, game ids) - i.e. it would
+behave identically no matter which project's PRISC_PROJECT_ROOT it's
+pointed at - its SOURCE lives once, at
+`2.muchi-verse/shared-ops/<name>.c`, and every consuming project's own
+`scripts/build.sh` compiles that file directly into its own
+`ops/+x/<name>.+x`. Runtime behavior is unaffected: `pal/main_loop.pal`
+still calls `ops/+x/<name>.+x` exactly like any other op, and the op
+still resolves `PRISC_PROJECT_ROOT` (and `PRISC_PROJECT_ID` where
+relevant) at runtime the same way a private op would. The only thing
+that moves is where the .c file lives - one file edited once, instead
+of N copies that silently drift apart.
+
+THE CORRECTION THIS RULE MAKES: this project family's older "one op =
+one binary, no shared headers" convention was being over-applied to
+mean "never share any op across projects, ever" - re-typing the same
+logic into every new project's own ops/ directory, even when the logic
+was already 100% generic. That was wrong. "No shared headers" was
+always about not coupling files WITHIN one project via fragile
+.h-based structs (still true, still followed - see §1a below) - it was
+never a mandate to duplicate genuinely identical, project-agnostic
+logic forever. The concrete tell this had gone too far:
+muchipal-editor-0.0's own `ops/piece_viewer.c` (before this refactor)
+had a header comment reading "Identical in shape to
+mutaclsym/ops/pdl_reader.c's own parse_method_line() - intentionally
+duplicated, not shared, per this project family's doctrine" while ALSO
+describing itself as "the concrete proof of cross-project
+compatibility this editor exists to establish" - a THIRD independent
+retyping of the same parser, in a project whose whole purpose is
+proving cross-project compatibility.
+
+THE REAL PRECEDENT (not invented - confirmed by direct code reads):
+real 1.TPMOS's own `projects/fuzz-op/manager/fuzz-op_manager.c` (line
+716) calls `'%s/pieces/system/pdl/+x/pdl_reader.+x' %s list_methods` -
+fuzz-op has no private pdl_reader copy of its own; it calls a SHARED
+implementation living under `pieces/system/pdl/`, exactly the way
+`pieces/system/` already hosts other shared infrastructure
+(`input_dispatcher/`, `master_ledger/`'s `piece_manager.+x`, also
+called directly from fuzz-op_manager.c). `pieces/system/emoji_extract/`
+is likewise used by wraith-alpha AND was used directly, this same
+session, for both mutaclsym's and zoo_0000's own asset generation.
+op-ed's own README calls itself a "Thin Engine" - a genuine
+multi-consumer engine, not a single-purpose game with private copies of
+everything. The real structure being mirrored:
+`projects/<name>/` = project-specific content + project-specific ops;
+`pieces/system/<service>/` = shared, project-agnostic infrastructure
+any project calls into via a path outside any single project's own
+directory. `2.muchi-verse/shared-ops/` is this family's own equivalent
+of `pieces/system/`.
+
+§1a. WHAT "NO SHARED HEADERS" STILL MEANS (unchanged, not touched by
+     this correction): don't couple files WITHIN a project via a
+     shared `.h` defining structs both files reach into - that's still
+     real, live doctrine (cdda-tpm-std-fast.txt sec. 1) and still
+     followed by every project's own `scripts/build.sh` (each
+     translation unit compiled and linked on its own line, no `.o`
+     intermediaries). Sharing a whole, self-contained, project-agnostic
+     .c file as SOURCE across projects is a completely different thing
+     from that, and was never actually prohibited by the real
+     precedent above.
+
+§1b. THE BAR for "belongs in shared-ops/": zero hardcoded game content,
+     zero hardcoded per-project constants. A hardcoded `#define MAP_ID`
+     or `#define GAME_ID` is disqualifying UNTIL genericized (see
+     `shared-ops-refactor-plan.txt` §2 for the real worked examples:
+     `move_entity.c`/`xlector_input.c`/`pet_export.c`/`pet_import.c`
+     all had this fixed by replacing the hardcoded constant with a
+     dynamic `world_*/map_*/<piece_id>/` directory scan - the same
+     pattern `pdl_reader.c`'s own `resolve_piece_pdl_path()` and real
+     `system/prisc+x.c`'s own `resolve_piece_state_path()` already use
+     - which is a strict improvement, not just a refactor, since it
+     also removes any single-map-only assumption as a free side
+     effect).
+
+§1c. WHAT IS DELIBERATELY NOT SHARED, NAMED NOT SILENT (see
+     `shared-ops-refactor-plan.txt` §3 for the full reasoning):
+     - `compose_frame.c`/`compose_rgb_frame.c` per project - render
+       genuinely different content per project. The font-glyph
+       blit primitives inside ARE generic; factoring those out is a
+       real, separate, smaller follow-up, not yet done.
+     - Genuinely project-specific game content (e.g. zoo_0000's
+       `feed_pet.c`/`pet_pet.c`/`play_pet.c` - mutaclsym has no pets;
+       muchipal-editor isn't a game at all).
+
+§1d. CURRENT shared-ops/ INVENTORY (`2.muchi-verse/shared-ops/`):
+     `pdl_reader.c` (generic piece.pdl METHOD-table reader; also
+     accepts an absolute path directly via `list_methods_full`, for a
+     consumer like muchipal-editor-0.0 that reads an EXTERNAL project's
+     piece.pdl by absolute path, not its own project-root + piece_id),
+     `dump_rgb_png.c` + `lib/stb_image_write.h` (debug PNG dump of
+     whatever a project's own `compose_rgb_frame.c` wrote),
+     `move_entity.c` (generic single-tile mover, any piece, any map),
+     `xlector_input.c` (the full xlector active-target reference
+     implementation - see `z0.zoo_0000/dox/xlector-standard.md`),
+     `pet_export.c`/`pet_import.c` (the cross-game piece transfer shim
+     - see `z0.zoo_0000/dox/pet-import-export-standard.md`).
+
+========================================================================
+2. THE XLECTOR ACTIVE-TARGET STANDARD
+========================================================================
+Full write-up: `z0.zoo_0000/dox/xlector-standard.md`. Reference
+implementation: `shared-ops/xlector_input.c` (ported faithfully from
+real 1.TPMOS's `projects/fuzz-op/manager/fuzz-op_manager.c`'s own
+`route_input()`). Core idea: a single global cursor piece (`xlector`)
+is the DEFAULT thing movement/method-hotkeys act on; Enter retargets to
+whatever's sitting on xlector's own tile (gated per-piece by that
+piece's own `piece.pdl` declaring a `select` METHOD row - a
+project/piece-authored gate, not a hardcoded name-pattern exclusion);
+`9`/Escape unconditionally snaps back to xlector first, before
+anything else, every tick.
+
+========================================================================
+3. THE PET IMPORT/EXPORT (CROSS-GAME TRADE) STANDARD
+========================================================================
+Full write-up: `z0.zoo_0000/dox/pet-import-export-standard.md`.
+Reference implementation: `shared-ops/pet_export.c` /
+`shared-ops/pet_import.c`. Core idea: exporting a piece physically
+`rename()`s its whole directory out of the game's own `pieces/` tree
+into a shared `exchange/` directory one level above any single game's
+project root (override via `PRISC_EXCHANGE_ROOT`); a neutral
+`trade_envelope.txt` (origin_game/kind/payload_id/display_name/etc,
+shape proposed in mutaclsym's own `platform-vision.txt` §2) is written
+into the piece's own directory before the move, so any importing game
+reads just the envelope, not the origin game's own state.txt field
+names. Zero-sum, not a copy - the piece is gone from the origin game
+the instant export succeeds.
+
+========================================================================
+4. NAMED, NOT-YET-UNIFIED DUPLICATION (a real next step, tracked here
+   on purpose so it isn't silently forgotten)
+========================================================================
+The digit-accumulator + Enter-commit menu dispatch pattern (jump to a
+numbered option by typing its digits, commit with Enter, abandon the
+accumulator on any other key) is currently implemented FOUR separate
+times, each over a differently-shaped state struct:
+mutaclsym's `ops/choice.c`, egg-pals' `ops/menu_input.c`,
+zoo_0000's `shared-ops/xlector_input.c` (the method-hotkey portion),
+and muchipal-editor-0.0's `ops/project_browser.c`. This is real,
+identified duplication of the exact kind §1 exists to eliminate - but
+unifying four already-working, differently-shaped systems safely is a
+bigger, riskier job than a single pass should take on blind. Not done
+yet. Whoever picks this up next: read all four implementations in
+full first, not just one, before designing a shared shape - they don't
+all key their accumulator off the same struct field names today.
+
+========================================================================
+5. VERIFICATION BAR (applies to every change under this file)
+========================================================================
+Zero compiler warnings is the bar, not "it compiles" (`-Wall -Wextra`,
+every project's own `scripts/build.sh`). Test through the real
+playable interface - keycodes appended to a live
+`pieces/apps/player_app/history.txt`, verified against
+`pieces/display/current_frame.txt` and the relevant piece's own
+`state.txt` - never op-CLI-only. See `shared-ops-refactor-plan.txt` §5
+for the specific regression suite re-run after the shared-ops switch
+(xlector select/menu-switch-per-active-target, pet export/import
+round-trip, emoji toggle both renderers, and - added when
+muchipal-editor-0.0 was wired to the shared `pdl_reader.c` - the real
+title->projects->project_menu->pieces->piece_detail flow against a real
+external project's piece.pdl, confirmed byte-for-byte against that
+piece.pdl's own METHOD rows).
+
+========================================================================
+6. CHTPM-TO-PAL LAYOUT BRIDGE: real 1.TPMOS's own declarative UI
+   markup, usable directly - a fork, not a rewrite
+========================================================================
+Full rationale, the empirical test that justified this, and the exact
+patch sites: `chtpm-to-pal-layout-plan.txt` (its own "STATUS UPDATE"
+section supersedes the modular-rewrite design further down that same
+file - read the status update). Real 1.TPMOS's `.chtpm` declarative
+layout format (`<panel>`/`<text>`/`<button onClick= href=>`, `${var}`
+interpolation) is directly usable by any pal-native project via two
+shared files - NOT a from-scratch reimplementation, and NOT the
+5-op modular rewrite an earlier pass in this same doc proposed before
+testing the real thing first.
+
+- `shared-ops/chtpm_parser_pal.c` - a TRACKED FORK of real
+  `chtpm_parser.c`, exactly 2 patches (search "PAL-NATIVE PATCH" in
+  that file for each): (1) `is_modern_layout()` detects a pal-native
+  project via the real `PRISC_PROJECT_ID` env var instead of guessing
+  from the layout path's own substrings; (2) `inject_command()` routes
+  onClick-dispatched commands to `pieces/display/pending_command.txt`
+  instead of the file prisc+x's own `OP_READ_HISTORY` reads - a
+  CRITICAL correctness fix (confirmed by reading `prisc+x.c` directly:
+  a non-numeric line left in that file would permanently wedge that
+  opcode's own read cursor, not just misread once). The file's own
+  input-reading loop is untouched, still reads its real, native
+  `pieces/keyboard/history.txt` in `KEY_PRESSED: N` format.
+- `shared-ops/keyboard_input.c` - `append_key()` dual-writes: the
+  original bare-int line to `pieces/apps/player_app/history.txt`
+  (unchanged, zero risk to any pal script's own `read_history`) AND a
+  second `KEY_PRESSED: N` line to `pieces/keyboard/history.txt` for
+  `chtpm_parser_pal.c` to read. wsr-pal's own `keyboard_input.c` is NOT
+  switched onto this shared file (it genuinely differs on quit-key
+  handling - see §1c's own "don't force-share" principle) but got the
+  identical dual-write addition applied locally instead.
+- Runs as a PERSISTENT process (`system/chtpm_parser_pal`), same
+  category as `system/renderer.c`/`system/gl_mirror.c`, NOT a one-shot
+  op. Needs `-Wno-unused-result -Wno-stringop-truncation` on its own
+  compile line only (~20 pre-existing real-upstream warnings, none
+  touched by either patch - confirmed via test build this reaches zero
+  warnings with those two flags; every other file in each project
+  still builds under plain `-Wall -Wextra`).
+- onClick verbs: `send_command()`'s real upstream code only relays a
+  SPECIFIC recognized set of prefixes (`SET_*`, `OP:`, `MP3:`,
+  `LAUNCH:`, `LOAD_PROJECT:`, `KEY:n`, `BACK`, `RELEASE`,
+  `PROJECT_ACTION:`, `SETTINGS_PAGE:`, `PROJECT_PAGE:`) to
+  `inject_command()` - anything else is silently rejected before ever
+  reaching the pal-native redirect (hit this live: a `GOTO:projects`
+  onClick was silently dropped until renamed to `SET_SCREEN:projects`,
+  which matches the recognized `SET_` prefix). Pick a recognized prefix
+  for any onClick a pal-native layout needs relayed.
+- REAL, LIVE-CAUGHT PITFALL when converting an existing screen to
+  chtpm and handing off to an existing pal-driven flow (as done for
+  muchipal-editor-0.0's own title screen): prisc+x's own pal script
+  always starts its `read_history` cursor at byte 0 on a fresh launch.
+  Since `keyboard_input` dual-writes every keystroke unconditionally,
+  any keys pressed during the chtpm phase are ALSO still sitting at the
+  start of `pieces/apps/player_app/history.txt`, unconsumed by prisc+x -
+  starting prisc+x without truncating that file first replays those
+  same keystrokes into the pal-driven side the instant it launches,
+  silently double-dispatching (confirmed live: a single '1'+Enter used
+  to leave the chtpm title screen landed the pal-driven side two
+  screens deep instead of one, because it replayed that exact
+  keystroke itself). Always truncate `pieces/apps/player_app/history.txt`
+  at the moment of handoff, right before launching the pal-driven
+  process.
+- WHAT'S NOT DONE YET, named: no dynamic-length screen (a project list,
+  a piece list) has been converted - chtpm's own markup has no
+  repeat/loop construct, so a screen whose row count varies at runtime
+  needs a small generator step (analogous to `load_dynamic_methods()`'s
+  own "build a var containing pre-formatted `<button>` HTML" trick) not
+  yet built. `inject_raw_key()`'s pal-native behavior is also
+  undecided (would `onClick="KEY:n"` double-dispatch through both
+  prisc+x's own pal script and this process's own `process_key()`?) -
+  flagged in the fork's own header comment, not silently assumed safe.
+
+========================================================================
+7. THE INTERACT + MODULE PATTERN (real game-map control handoff -
+   direct user priority, "a big deal")
+========================================================================
+Full mechanism (exact real code, exact mapping onto this family):
+`chtpm-to-pal-layout-plan.txt` §8. Summary: a layout's
+`<module>${module_path}</module>` + `<interact src="...history.txt" />`
++ a button `onClick="INTERACT"` together let arrow/number keys pass
+STRAIGHT THROUGH a live game (a SEPARATE, PARALLEL persistent process,
+launched by `launch_module()`) instead of being consumed by chtpm's own
+UI nav - this is how real fuzz-op/wraith-alpha put a real, controllable
+game map inside a chtpm menu shell. Every piece of this already exists,
+completely unpatched, in `shared-ops/chtpm_parser_pal.c` - nothing
+about the fork itself needs to change again for this.
+
+For a pal-native project, THE MODULE = a second `system/prisc+x`
+process running that project's own real `pal/game_loop.pal` (not a
+hand-written manager.c). THE VIEW BRIDGE = an additive dual-write in a
+project's own EXISTING `compose_frame.c` (writes
+`pieces/apps/player_app/view.txt` alongside its normal output), not a
+new op. `module_path` gets set directly in
+`pieces/apps/player_app/state.txt` (already read unconditionally) -
+zero chtpm_parser_pal.c patch needed. `onClick="INTERACT"` (verbatim,
+not `SET_`-prefixed) is what process_key() actually checks for this -
+separate from and unrelated to the recognized-prefix gotcha in §6
+above.
+
+REAL BUG, LIVE-CAUGHT, CORRECTED (built and verified in zoo_0000,
+2026-07-17 - full account: `chtpm-to-pal-layout-plan.txt` §8.4):
+`<interact src>` must NEVER point at the same file
+`shared-ops/keyboard_input.c` already writes to directly
+(`pieces/apps/player_app/history.txt`) - that file already gets every
+keystroke unconditionally, for the project's own regular "run" mode.
+Relaying interact-mode keys into the SAME file double-dispatches every
+one of them (confirmed live: 2 right+1 down moved the game 4 rights+2
+downs). Fix: `<interact src>` points at a genuinely separate file
+(`pieces/apps/player_app/interact_relay.txt`), and the module reads it
+via `read_history`'s NEWLY-FIXED literal-path 3-arg form,
+`read_history <path> xD, xS` - `shared-ops/prisc+x.c`'s own literal-path
+parsing used to silently default the position register to x0 (reset to
+0 every instruction by this VM's own main loop), permanently breaking
+incremental reads; fixed, with every existing 2-register
+`read_history xD, xS` call completely untouched.
+`shared-ops/prisc+x.c` was moved here the same way `keyboard_input.c`
+was (confirmed byte-identical across all 4 projects first) - a real VM
+fix belongs in one place. A project's own regular `pal/main_loop.pal`
+stays completely unmodified; a NEW, separate `pal/main_loop_chtpm.pal`
+(identical except the one `read_history` line) is what the module
+launches instead - zero risk to the already-proven gameplay path.
+
+Built and live-verified in zoo_0000, mutaclsym, AND egg-pals
+(`./button.sh chtpm`), full round-trip through the real playable
+interface each time (full detail: chtpm-to-pal-layout-plan.txt §8.4-
+8.5). egg-pals is a genuinely different case worth knowing about: purely
+digit-menu-driven (no map/movement), and its own `prisc+x.c`/
+`keyboard_input.c` are NOT switched to shared-ops (real Windows/MinGW
+support + a documented bug fix neither shared version has) - the same
+literal-path `read_history` bug was patched in its own local copy
+directly instead, matching §1c's "genuinely different, patch locally"
+principle. wsr-pal has the base bridge only, not yet the full
+interact+module pattern.
+
+========================================================================
+8. KILL_ALL.SH: family-wide surgical process cleanup
+========================================================================
+Real incident, this session: a Ctrl+C'd mutaclsym session left a
+genuinely orphaned `system/prisc+x` + `system/keyboard_input` pair
+running, found only by accident via `ps aux` - not by any project's
+own `button.sh kill` action (which had independently been matching an
+absolute path that never appears in these processes' real, relative-
+launched command lines - see [[feedback_pkill_relative_path_gotcha]]).
+Per direct instruction ("maybe it should run a kill_all.sh script like
+1.tpmos does") - confirmed real 1.TPMOS has exactly this precedent,
+`pieces/os/kill_all.sh`, including its own past real incidents with
+this same class of bug (`#.dev-storage/#.dox/cpu-issues_/
+emergency_kill.sh`/`sanity_kill.sh`).
+
+`2.muchi-verse/kill_all.sh` - modeled directly on real 1.TPMOS's own
+file (same `surgical_kill()` shape, SIGKILL, a nuclear-option
+catch-all fallback at the end). Family-wide, not per-project - every
+pal-native project shares the same binary names now (mostly literally
+the same shared-ops/ source), so one script here is callable from any
+project's directory instead of five near-identical copies. Every
+project's own `button.sh kill` action calls it (`bash
+".../2.muchi-verse/kill_all.sh"`) as the authoritative cleanup step,
+in addition to (not instead of) that project's own fast local
+`pkill -f "system/<name>"` pass.
+
+WHY SIGKILL, NOT PLAIN `kill`: `chtpm_parser_pal.c` registers a SIGINT
+handler but no SIGTERM handler - a plain `kill` still terminates it via
+SIGTERM's own default disposition, but skips its own `cleanup_module()`
+(only runs on SIGINT), potentially orphaning its own spawned module.
+`kill_all.sh` doesn't rely on any process's own signal handling running
+cleanly at all.
+
+========================================================================
+9. TWO MORE REAL BUGS, USER-REPORTED, FOUND VIA DIRECT KEY INJECTION
+========================================================================
+Both found testing a live "unresponsive ascii, no GL window" report in
+mutaclsym's own `chtpm` mode - full account:
+`chtpm-to-pal-layout-plan.txt` §8.6-8.7.
+
+9.1 THE MODULE MUST NOT OWN A QUIT PATH OF ITS OWN
+------------------------------------------------------------------------
+Every `main_loop_chtpm.pal` originally kept the real `main_loop.pal`'s
+own `beq x2, x9, quit` ('q' halts). chtpm's own `onClick="INTERACT"`
+relays EVERY key through while engaged - including 'q' - so pressing
+'q' while controlling the hero/pets (reasonable, since 'q' IS the real
+quit key in normal gameplay) halted the MODULE specifically, while
+chtpm itself had no way to notice and kept relaying keys into a file
+nothing was reading anymore. Fixed by removing the quit path from all
+3 `main_loop_chtpm.pal` variants entirely - the module never owns
+quitting; that's chtpm's job alone (top-level 'q', or
+`system/keyboard_input`'s own unconditional exit-on-'q', which takes
+the whole session down together regardless of chtpm's own internal
+state).
+
+9.2 `pieces/system/quit_flag.txt` MUST BE RESET, NOT JUST AT "run"'s
+    OWN TOP
+------------------------------------------------------------------------
+`system/renderer.c`'s own loop is `while (!quit_requested())`, checking
+whether this file is non-empty - written by `keyboard_input.c` on
+EVERY exit, any session. Every project's own `run` action already
+resets it at its own top, but the new `chtpm` actions (and, found in
+the same pass, zoo_0000's own pre-existing `run` action) did NOT. Once
+ANY session anywhere was ever quit via 'q', this file stays non-empty
+forever - so the NEXT launch's own renderer sees
+`quit_requested()==true` before its own loop even starts: it prints
+exactly one frame (the unconditional `render_frame()` call before the
+loop) and exits immediately. Everything else (`chtpm_parser_pal`, the
+module, `keyboard_input`) keeps running fine underneath, correctly
+updating `current_frame.txt` - but nothing is left to print it to the
+terminal, giving the EXACT "looks unresponsive" symptom reported live.
+Fixed by adding `: > pieces/system/quit_flag.txt` to every `chtpm`
+action (and to zoo_0000's own `run` action, which never had it at
+all).
+
+9.3 THE TEST METHOD THAT ACTUALLY FOUND BOTH (direct user request -
+    "include that test method in our standards doc, it works much
+    better") - PREFER THIS OVER A FIFO-SIMULATED KEYBOARD
+------------------------------------------------------------------------
+Earlier live tests in this family drove input through a real
+`system/keyboard_input` process fed via a named FIFO, simulating an
+actual terminal. That works, but is genuinely flaky for single,
+isolated bytes (confirmed repeatedly: a lone ESC byte needed 2-4
+retries before `read_key()`'s own follow-up timeout reads registered
+it) - real timing noise, not a logic bug, but it wastes real test
+cycles and can mask or manufacture false negatives.
+
+THE BETTER METHOD, matching real 1.TPMOS's own `inject_raw_key()`/
+`inject_command()` naming and spirit: skip `keyboard_input` (and any
+FIFO) entirely. Launch `system/renderer` and `system/chtpm_parser_pal`
+directly, then INJECT KEYS BY WRITING DIRECTLY to whichever file the
+next consumer reads - `pieces/keyboard/history.txt` with
+`KEY_PRESSED: N` lines for chtpm's own top-level nav (exactly the
+bytes `keyboard_input.c` would have written), or
+`pieces/apps/player_app/interact_relay.txt` directly with a bare
+integer if testing the module's own reading in isolation. This is
+strictly more deterministic (a plain `echo "KEY_PRESSED: 1001" >>
+pieces/keyboard/history.txt` either lands or it doesn't - no raw-tty
+timeout window to race against) and is EXACTLY how this file's own §9.1
+and §9.2 bugs were actually found and confirmed fixed: inject Enter,
+check the frame; inject an arrow, check the real piece `state.txt`
+changed by exactly one step; inject 'q' while "in control," confirm
+the module process is STILL alive via `ps aux` afterward, then inject
+another arrow and confirm it still responds. Prefer this method for any
+future interact+module work in this family; reserve the FIFO/real-
+keyboard_input method only for the rare case of testing
+`keyboard_input.c` itself (its own escape-sequence decoding, raw-mode
+handling, etc.) rather than what's downstream of it.
+
+========================================================================
+10. PAL VS. C - READ PAL-VS-C-ARCHITECTURE.txt BEFORE ASSUMING "OPS ARE
+    ALWAYS C"
+========================================================================
+
+Every op today is a C binary (sec. 1's own convention) - but that is
+the CURRENT STATE, not the permanent design. `prisc+x` is named after
+RISC-V on purpose, and the real, confirmed direction is eventually
+compiling pal+ops directly to real RISC-V, gated on the architecture
+staying in reasonably correct shape. `shared-ops/prisc+x.c` now has a
+real `ecall` syscall instruction (file I/O + a `SYS_GET_KV_INT`/
+`SYS_SET_KV_INT` pair matching every op's own duplicated `read_kv_int`/
+`set_kv_int` idiom), and a real op's core logic (`ops/pet_pet.c`'s own
+state mutation) has been prototyped running as native pal instructions
+against zoo_0000's own live data, verified working.
+
+Full rationale, the ECALL design, and - most importantly - which
+projects are the CONFIRMED first real-conversion targets (zoo_0000 and
+muchipal-editor-0.0, per direct instruction) and which kinds of ops are
+good/bad candidates: see `PAL-VS-C-ARCHITECTURE.txt` in this same
+directory. Read it before assuming a new op has to be C, and before
+assuming an existing C op is untouchable architecture rather than "not
+converted yet."
+
+========================================================================
+11. GL/RGB RENDERING FOR CHTPM MODE - shared-ops/chtpm_rgb_render.c,
+    real wraith-alpha's own two-stage pulse pattern, and the mistakes
+    that cost a full day of user-reported "still doesn't look right"
+========================================================================
+
+Full account, all real bugs found via live testing (not guessed), all
+fixed and re-verified: `!.handoff-july17.txt` sec. 1-9c. This section
+is the durable, going-forward RULE version of that whole thread - read
+it before touching `shared-ops/chtpm_rgb_render.c`, any project's own
+`system/gl_mirror.c`, or `ops/compose_rgb_frame.c` again.
+
+11.1 THE TWO-STAGE PULSE IS MANDATORY, NOT OPTIONAL
+------------------------------------------------------------------------
+A renderer that writes `pieces/display/rgb_frame.raw` must grow
+`pieces/display/rgb_frame_changed.txt` (a fixed name, matching real
+`wraith_gl.c`'s own `WRAITH_FRAME_TRIGGER` convention closely) ONLY
+AFTER that write is fully complete - `system/gl_mirror.c` watches
+ONLY this file, NEVER `pieces/display/frame_changed.txt` (the
+UPSTREAM trigger a renderer itself reacts to). Confirmed via a live
+checksum trace (compare `rgb_frame.receipt.txt`'s own checksum against
+`gl_display.receipt.txt`'s loaded checksum, sampled every ~30ms
+through a keypress burst) that using the SAME file for both causes a
+real, PERMANENT stall - not a brief lag - because the GL reader can
+"consume" the upstream trigger before the renderer has even started
+its own work, and then has no further signal once real output is
+ready. `ops/compose_rgb_frame.c` and `shared-ops/chtpm_rgb_render.c`
+both already grow this file correctly - copy that shape for any new
+renderer, don't reinvent.
+
+11.2 WRITE rgb_frame.raw AND rgb_frame.receipt.txt ATOMICALLY
+------------------------------------------------------------------------
+`fopen(path, "wb")` truncates before writing - a reader polling
+frequently (a daemon re-rendering ~60/sec, unlike `compose_rgb_frame.c`
+which only writes on an actual keypress) can catch a torn read.
+`system/gl_mirror.c`'s own `load_texture()` does a plain `fread()` with
+no retry and zero-fills on a short read - confirmed via reproduction,
+not assumed. Write to `<path>.tmp` then `rename()` into place -
+`write_file_atomic()` in `shared-ops/chtpm_rgb_render.c` is the
+reference implementation.
+
+11.3 SETTLE BEFORE READING A SEPARATELY-WRITTEN INPUT FILE
+------------------------------------------------------------------------
+`chtpm_parser_pal.c` grows `frame_changed.txt` and writes
+`current_frame.txt` as two unsynchronized writes - a renderer that
+reads `current_frame.txt` the instant it sees the pulse move can catch
+it mid-rewrite (confirmed live: a real torn read showing a MIX of old
+and new footer text). Real `wraith_rgb_daemon.c` has NO protection
+against this at all (checked directly - not something to copy from
+there). Fix used here: after detecting the pulse changed, poll the
+TARGET file's own size until it reads the same value twice in a row
+(capped at ~20 attempts) before reading its content - a direct check
+on the actual file being read, not a blind fixed delay on an unrelated
+proxy file.
+
+11.4 gl_mirror.c MUST READ frame_w/frame_h FROM THE RECEIPT, NEVER
+     HARDCODE THEM
+------------------------------------------------------------------------
+Different renderers writing the SAME `rgb_frame.raw` path can have
+genuinely different real dimensions (`ops/compose_rgb_frame.c`'s own
+640x304 game-viewport size vs. `chtpm_rgb_render.c`'s own taller
+640x768 real-chrome-content size) - `gl_mirror.c` reads `frame_w`/
+`frame_h` from `rgb_frame.receipt.txt` before every texture load
+(same pattern `shared-ops/dump_rgb_png.c` already used successfully),
+reallocating its buffer and calling `glutReshapeWindow()` on a real
+size change, so window pixels always map 1:1 to texture pixels. Do
+not reintroduce hardcoded `WIDTH`/`HEIGHT` `#define`s here - that was
+the root cause of a real, confirmed "bottom of the map cut off" bug.
+
+11.5 TILE-SHAPED CONTENT RENDERS AT NATIVE PIXEL WIDTH, NOT A TEXT-
+     COLUMN WIDTH
+------------------------------------------------------------------------
+A matched emoji/tile glyph blits at its own real `VOXEL_PX` (16px)
+width with NO downscaling - plain ASCII chrome text still advances by
+the narrower `GLYPH_W` (8px). `blit_text()` tracks a running PIXEL
+x-position, not a fixed column count, for exactly this reason (mixed
+widths on one line break a fixed-column model). Confirmed via direct
+math this isn't arbitrary: `VIEWPORT_W(40) * TILE_PX(16) = 640 =
+FRAME_W` exactly - a full map row already fits the frame perfectly at
+native tile size. Downscaling tiles to fit a uniform 8px grid (an
+earlier, wrong version of this file) visibly squishes every icon for
+no reason - real wraith-alpha's own precedent is a variable
+`emoji_glyph_size`, not one fixed width for everything.
+
+11.6 REAL EMOJI/TILE COLORS COME FROM THE REGISTRY, NEVER A HASH
+------------------------------------------------------------------------
+`terrain_types.txt`/`furniture_types.txt` already carry a real,
+curated `rgb_top_emoji` field - read it (plus `unicode` for the
+reverse lookup) instead of inventing an arbitrary hashed color per
+glyph. Items/monsters (`items.txt`/`monster_types.txt`) have no such
+field - `chtpm_rgb_render.c`'s own `load_emoji_assets_from()` gives
+them a neutral flat backdrop instead, real voxel pixel art
+(`pieces/registry/emoji_assets/<asset_id>/voxels_16.csv`, ported
+`load_emoji_voxels()`/`blit_emoji_tile()` directly from `ops/
+compose_rgb_frame.c`) drawn on top either way. Hero (🧑) and xlector
+(🎯) have no registry row at all (hardcoded chars in every project's
+own `compose_frame.c`) - hardcoded color-table entries for these two
+specific real emoji strings are safe (they never collide with
+ordinary chrome text, unlike special-casing the literal ASCII letters
+'@'/'X' would - chrome text DOES contain real letters like 'X', e.g.
+"MUTACLSXM").  Only fall back to a hashed color for a genuinely
+unrecognized glyph.
+
+========================================================================
+12. CHTPM-LEVEL MENU NAV MUST BE ${piece_methods}-DRIVEN, NOT A
+    HARDCODED BUTTON LIST - the SAME rule as section 10's own PAL-VS-C
+    doc, applied to layouts, not ops
+========================================================================
+
+A chtpm layout with only ONE navigable `<button>` (e.g. a bare
+"Control Hero") makes arrow-key/digit menu nav LOOK broken even though
+the underlying mechanism (`chtpm_parser_pal.c`'s own real, unmodified
+`focus_index` nav) is completely correct - there's simply nothing to
+move between. Real `fuzz-op_manager.c` (confirmed via a full, not
+excerpted, read) has ZERO menu-cursor logic of its own at all - the
+"[>]"-navigable menu a real player sees is ENTIRELY `chtpm_parser.c`'s
+own generic top-level nav, applied to `${piece_methods}` - a real,
+already-present, unmodified mechanism (`load_dynamic_methods()` in
+`shared-ops/chtpm_parser_pal.c`) that reads the CURRENT `active_target_id`
+piece's own `piece.pdl` METHOD table and generates real
+`<button onClick="KEY:n">` rows automatically. `onClick="KEY:n"`
+dispatch is already fully wired (`send_command()` -> `inject_raw_key()`
+-> writes straight to whatever `<interact src>` names) - a layout
+just has to USE `${piece_methods}`, no other code changes needed.
+
+To wire a new project's own piece up to this (mutaclsym's own real
+walkthrough, see `!.handoff-july17.txt` sec. 9c for the full account):
+  1. Confirm the piece already has a real `piece.pdl` with METHOD
+     rows for its own real actions (most already do, for existing
+     footer text generation via `pdl_reader.+x list_methods`).
+  2. Check every non-reserved METHOD key against
+     `load_dynamic_methods()`'s own real reserved-key list (`move`/
+     `select`/`interact`/`stat_decay`/`on_turn_end`) - rename any
+     internal/non-player-facing method (e.g. a literal `end_turn` key)
+     to match if it isn't already recognized, so it doesn't show up
+     as a spurious extra numbered button and shift every real option's
+     digit binding by one.
+  3. `resolve_dynamic_pdl_path()` (real, unmodified upstream) only
+     tries wraith-alpha-shaped candidate paths - if a project's own
+     piece.pdl doesn't live at one of those, add a SYMLINK matching
+     one of the resolver's own EXISTING fallback paths (its very last
+     one is `pieces/<id>/<id>.pdl`) rather than patching the fork with
+     a new candidate path - keeps the "exactly 2 patches" discipline
+     (sec. 6) intact.
+  4. Add `active_target_id=<piece_id>` to whatever state file the
+     project's own `load_vars()` "vars bridge" already reads
+     unconditionally (`pieces/apps/player_app/state.txt` for a
+     single-controllable-entity project like mutaclsym's own hero) -
+     for a project where the controllable entity CHANGES at runtime
+     (zoo_0000's own xlector/pet switching), this needs to track the
+     CURRENT selection, not a fixed value - a real, separate piece of
+     wiring, not yet done anywhere in this family as of 2026-07-17.
+  5. Use `${piece_methods}` directly in the layout instead of
+     hardcoding `<button onClick="KEY:n">` rows - matches real
+     `fuzz-op.chtpm`'s own exact usage.
+
+A static, hardcoded button list (matching each project's own existing
+digit numbering) is an acceptable SHORT-TERM stopgap while the above
+isn't wired up yet - but treat it as a stopgap, not the target design.
+
+========================================================================
+13. VARIABLE-LENGTH SUBMENUS (craft/inventory-shaped panels) MUST BE
+    REAL CHTPM ACTIVATE CONTAINERS - NOT A HAND-DRAWN TEXT OVERLAY WITH
+    ITS OWN CURSOR
+========================================================================
+
+Real, authoritative reference: `DYNAMIC_SUBMENUS_FUNCTIONAL_STD.md`
+(1.TPMOS, dated 2026-05-19, cited against `projects/groq-ollama/
+manager/groq-ollama_manager.c`). Core rule: the PARSER owns nav/focus/
+highlighting entirely; the MANAGER only ever PROJECTS raw button
+markup - always, never gated behind a mode flag, and never hand-drawing
+its own "[>]"/"[ ]" markers. mutaclsym's craft/inventory panels
+originally violated this (compose_frame.c drew a text box with its own
+`panel_cursor`-based "[>]"/"[ ]" markers OVER the map) - real, live
+symptom this caused: the outer flat menu's own "1. [Control Hero]" and
+the panel's own hand-drawn "1. [Close]" visually collided, and the
+panel's items were fundamentally unreachable by chtpm's real arrow/
+digit nav (which only ever knew about the 8 static outer items) -
+confirmed against a direct request to research fuzz-op/+-demo/
+wraith-alpha's own real "dynamically scaling" submenu mechanism.
+
+Real fix, mutaclsym's own walkthrough (2026-07-17):
+  1. Hide the panel's OUTER trigger method from `${piece_methods}`'s
+     auto-generated flat list via `load_dynamic_methods()`'s existing,
+     unmodified leading-underscore skip rule (rename the piece.pdl
+     METHOD key, e.g. `craft` -> `_craft` - update every op/choice.c
+     strcmp that reads it by name to match).
+  2. Hand-author the trigger as a real `<button onClick="ACTIVATE">`
+     directly in the layout (NOT derived from piece.pdl - matches real
+     groq-ollama.chtpm's own "[3] Switch API" example, which is fully
+     bespoke markup too), with a `<button label="Close" onClick="BACK"
+     />` child (chtpm's own native submenu-exit, no relay to the
+     module at all) followed by a `${some_panel_items}` variable.
+  3. The manager (this project's own compose_frame.c-equivalent) must
+     build `${some_panel_items}` as REAL `<button onClick="KEY:n">`
+     rows (no hand-drawn cursor markers) and write it into
+     `pieces/apps/player_app/manager/gui_state.txt` EVERY frame,
+     unconditionally - confirmed real, already-loaded unconditionally
+     by `load_vars()` for a modern-layout project with no project_id
+     (mutaclsym/zoo_0000's own shape).
+  4. NAMED, ACCEPTED FRAGILITY (mutaclsym's prisc+x has no
+     string-command relay capability - `read_history`'s own pal
+     contract is integer-only, confirmed via direct read of
+     `main_loop_chtpm.pal`): every ACTIVATE submenu's items end up
+     reusing the SAME single-ASCII-digit relay space as every OTHER
+     submenu (mutually exclusive since only one can be entered at
+     once) - this caps each submenu at 9 real entries, and means the
+     RECEIVING op cannot tell which submenu a bare relayed digit came
+     from by the digit's value alone. Disambiguate using the real,
+     already-exported `pieces/display/active_gui_index.txt` (written
+     by `chtpm_parser_pal.c`'s own `export_active_index()` on every
+     focus/active change) - hardcode each submenu's own expected
+     interactive_idx (verified EMPIRICALLY via a live isolated test
+     reading this exact file while entering each submenu, never
+     assumed from the layout's own document order) as a named
+     constant. Re-verify these constants any time the layout's own
+     element order changes. A real string-command relay (matching the
+     doctrine's own preferred, uncapped `SET_`/`OP:` mechanism) is the
+     honest long-term fix, not yet built anywhere in this family.
+  5. GOTCHA - method-numbering PARITY: if the receiving op ALSO has
+     its own independent, non-chtpm digit-dispatch path (mutaclsym's
+     own `choice.c`, still used by direct terminal "run" mode with no
+     chtpm layer at all), that path's own piece.pdl-driven numbering
+     MUST apply the identical skip rules `load_dynamic_methods()`
+     uses (same reserved keys, same leading-underscore skip) - a
+     shared, generic tool like `pdl_reader.+x list_methods` is
+     deliberately RAW/unfiltered (other consumers rely on that), so
+     this filtering has to happen in the OP's own consumption of it,
+     not upstream. REAL BUG hit live: after hiding `_craft`/`_examine`
+     from chtpm's own list only, chtpm's rendered "6. [toggle_emoji]"
+     button relayed a raw '6' that the op's own UNFILTERED numbering
+     resolved to a completely different method - the two numbering
+     schemes had silently drifted apart.
+  6. GOTCHA - stale cross-mode state: if the OLD (pre-ACTIVATE) design
+     used a project-state field (mutaclsym's own `active_panel`) to
+     track "is a panel open," and the NEW ACTIVATE-based design has NO
+     way to ever reset that field again (native `BACK` never relays to
+     the module), a value left over from ANY earlier session using the
+     old mechanism (or old testing) will PERMANENTLY misroute every
+     future digit dispatch through dead code, forever, in a real chtpm
+     session - confirmed live. Gate any reliance on that old field on
+     which mode is actually running (`pieces/apps/player_app/
+     state.txt`'s own `module_path` - contains "main_loop_chtpm" for
+     chtpm mode) so a stale value can never apply outside the mode
+     that still writes it.
+  7. The OLD hand-drawn text-overlay code doesn't need deleting - it's
+     still the real, correct renderer for "run" mode (no chtpm layer
+     to provide real focusable elements at all there). Gate it the
+     same way (`module_path` check) so it can never ALSO fire
+     underneath the new real submenu in chtpm mode on a stale
+     `active_panel` value - confirmed live as a real ghost-overlay bug
+     otherwise (an old panel's text box drawn ON TOP OF the map, over
+     the real chtpm-native submenu, in a session that never opened any
+     panel at all this run).
+
+========================================================================
+14. XLECTOR POSSESSION - REAL v1 (piece.pdl-driven) vs. THE FULL
+    GENERIC MECHANISM (a real, deliberately deferred future step)
+========================================================================
+
+Real, authoritative reference: `projects/fuzz-op/manager/
+fuzz-op_manager.c`, lines 505-852 (read in full, not excerpted, per
+direct instruction to "look at it very closely"). The REAL mechanism:
+
+  - A single global `active_target_id` (default `"xlector"`).
+    Movement/dispatch are FULLY GENERIC - `execl(move_entity_trait,
+    active_target_id, dir_str, ...)` and `pdl_reader.+x
+    <active_target_id> get_method <name>` operate on WHATEVER
+    active_target_id currently names. There is no per-entity-type
+    special-casing anywhere in the movement/dispatch path itself.
+  - Enter, while `active_target_id == "xlector"`: scan every piece
+    directory for one sitting at xlector's own current tile
+    (excluding "xlector" itself and anything matching a hardcoded
+    "zombie" substring - real fuzz-op's own AI-exclusion rule).
+    Redirect `active_target_id` to the found piece's directory name -
+    this alone IS "possession," nothing else changes.
+  - `'9'`/ESC/joystick button 8, checked FIRST, unconditionally: if
+    active_target_id != "xlector", snap back to "xlector" immediately.
+  - "Shadow xlector sync": after moving a POSSESSED entity, xlector's
+    OWN position is silently updated to match it, so un-possessing
+    always drops the cursor exactly where you were.
+  - xlector is a REAL, standalone piece (own directory/state.txt/
+    piece.pdl) in the real reference - NOT two fields bolted onto
+    another piece's state file.
+
+Mutaclsym's own v1 (2026-07-17, direct instruction): real fuzz-op's
+hardcoded "zombie" substring exclusion is a WORSE fit for THIS
+family's own piece.pdl-driven philosophy (already established this
+same session for METHOD tables/§12) - a real, DECLARATIVE
+`STATE | possessable | 1` field a piece.pdl author sets is the
+better-idiomatic equivalent, checked via a generic
+`piece_pdl_state_int()` helper (defaults to possessable=1 when the
+field is absent - "opt out, not opt in," matching the spirit of real
+fuzz-op only excluding a NAMED thing, not requiring an explicit
+allow-list). Mutaclsym has exactly ONE real player-controllable piece
+today (hero - monsters are pure AI, the same real exclusion fuzz-op
+itself applies) - so v1 possession, gated on this real check,
+functionally collapses to "exit interact_mode" (hero IS what you
+default to controlling outside interact_mode already) - but the CHECK
+is now real and piece.pdl-driven, not assumed, and already correctly
+refuses to "possess" a monster standing on the same tile as hero.
+
+NOT YET BUILT - the full generic mechanism, needed the moment a SECOND
+real player-controllable piece exists (a companion/pet, matching real
+fuzz-op's own pets):
+  1. `ops/move_player.c` and `ops/choice.c` are both currently
+     hardcoded to `pieces/world_01/map_start/hero/` - genericize both
+     to take a piece_id argument (or resolve it from a real
+     `active_target_id` field) instead, matching real
+     `move_entity.+x <piece_id> <dir>`'s own shape.
+  2. Give xlector a real, standalone piece (own directory/state.txt) -
+     mutaclsym's current `xlector_pos_x`/`xlector_pos_y` fields bolted
+     onto hero/state.txt are a deliberate v1 simplification (see
+     ops/move_player.c's own header comment) that stops being
+     sufficient once xlector needs to exist independently of any one
+     possessable entity.
+  3. Port the real "shadow xlector sync" (xlector's own position
+     follows whatever's currently possessed) and the unconditional
+     `'9'`/ESC-returns-to-xlector precedence check.
+  4. Every OTHER possessable piece needs its own `possessable` STATE
+     field (or relies on the same default-possessable-if-absent rule) -
+     audit this explicitly once a second controllable piece exists,
+     don't assume the default silently does the right thing.
+
+========================================================================
+15. pieces/keyboard/history.txt MUST BE CLEARED EVERY LAUNCH - IT IS
+    NOT PROJECT-SPECIFIC, DO NOT SKIP IT WHEN CLEANING UP A PROJECT'S
+    OWN button.sh
+========================================================================
+
+REAL BUG, LIVE-CAUGHT (mutaclsym, 2026-07-18): `chtpm_parser_pal.c`'s
+own main loop reads `pieces/keyboard/history.txt` from byte 0 on every
+fresh launch (matching real `chtpm_parser.c` exactly - confirmed via
+direct read, `last_history_position` starts at 0, never seeks to EOF at
+startup). This is the universal `keyboard_input.c` <-> `chtpm_parser_pal`
+bridge file (the `KEY_PRESSED: N` line format, `append_key()`'s own
+"CHTPM-BRIDGE ADDITION") - it exists in EVERY project using
+`chtpm_parser_pal`, regardless of whether that project has a map,
+regardless of the `<interact>` target. It is unrelated to the
+map-vs-menu `interact_relay.txt` question (sec. 7/16 below) entirely.
+
+THE MISTAKE THAT CAUSED THIS: an earlier pass, correctly identifying
+that `pieces/apps/player_app/interact_relay.txt` was being
+over-applied to menu-only (no-map) projects (copied wholesale from
+mutaclsym without checking whether it was actually needed - see sec. 16
+below), ALSO deleted the `mkdir -p pieces/keyboard` + `: >
+pieces/keyboard/history.txt` lines from those same projects' `button.sh`
+in the same edit - conflating "this file's CONTENTS aren't
+project-specific" with "this file isn't needed." Result: stale
+`KEY_PRESSED: N` lines from a previous session sat in the file, and the
+very next launch replayed them immediately on startup (confirmed live:
+old movement/quit keys fired before the player ever touched anything).
+
+THE RULE: every project's own `button.sh` `run`/`chtpm` action must
+include, unconditionally, regardless of whether that project has a map:
+```
+mkdir -p pieces/keyboard
+: > pieces/keyboard/history.txt
+```
+Do not remove this when cleaning up a project's interact-mode setup -
+it is orthogonal to whatever `<interact src>` the project's own layout
+uses.
+
+========================================================================
+16. INTERACT MODE IS ONLY FOR CONTINUOUS, FREE-FORM KEY RELAY (A REAL
+    MAP) - A PURE DISCRETE MENU (NO MAP) SHOULD NEVER USE onClick=
+    "INTERACT" AT ALL, USE ${piece_methods} INSTEAD (see sec. 12)
+========================================================================
+
+REAL MISTAKE, CORRECTED (egg-pals/wsr-pal, 2026-07-18): an earlier pass
+copied mutaclsym's own `<button label="Control Hero" onClick="INTERACT"
+/>` gate pattern wholesale into egg-pals ("Control Pets") and wsr-pal
+("Control Sim") - projects with NO map/movement concept at all, purely
+digit-menu-driven (Feed/Clean/Sleep, Buy/Sell/Financing, etc). This was
+overzealous copy-paste, not a considered design choice, and produced a
+real, user-visible symptom: a needless manual "engage" step before ANY
+menu option could be selected, for a project where every action is
+already a single discrete choice - INTERACT's entire reason to exist
+(let raw keys stream continuously to a live game loop, bypassing
+chtpm's own nav, for map/cursor movement - sec. 7) simply does not
+apply.
+
+THE FIX, confirmed against real `chtpm_parser.c`'s own `process_key()`
+(pieces/chtpm/plugins/chtpm_parser.c ~2589-2880): nav-mode button clicks
+(`active_index == -1`, arrows/digits move `focus_index`, Enter fires
+`send_command(el->onClick)`) ALREADY relay through to the module via
+`inject_raw_key()` -> whatever `<interact src>` names, with ZERO need
+for `active_index` to ever leave -1. INTERACT (`active_index` set to the
+button's own index, gating ALL subsequent keys into the module
+regardless of nav) is a SEPARATE, ADDITIONAL mechanism needed ONLY when
+raw keys must stream continuously without a discrete per-key dispatch -
+i.e., real-time map/cursor movement. A pure menu needs NONE of that:
+remove the INTERACT button/gate entirely, and drive 100% of the menu
+via `${piece_methods}` (sec. 12) - real fuzz-op's own layout proves the
+combination (piece_methods for discrete pet actions, a SEPARATE "Control
+Map" INTERACT button ONLY for actual map movement) is the intended,
+proven shape - never piece_methods OR interact alone as a blanket
+default; pick per-mechanism based on whether continuous relay is
+genuinely needed.
+
+16.1 `${piece_methods}` REQUIRES project_id + active_target_id SEEDED
+     BEFORE THE FIRST FRAME, NOT JUST ON THE FIRST KEYPRESS
+------------------------------------------------------------------------
+REAL BUG, LIVE-CAUGHT (wsr-pal): `load_dynamic_methods()` resolves via
+`get_var("project_id")` + `get_var("active_target_id")`, both loaded
+from `pieces/apps/player_app/state.txt`. A project's own menu-input op
+(this family's `wsr_menu_input.c`-shaped ops) naturally only writes
+these fields AFTER processing a keypress - but chtpm renders its FIRST
+frame BEFORE any key has ever been pressed. `button.sh`'s own initial
+`state.txt` write (alongside `module_path=...`) must ALSO seed
+`project_id=<project>` and `active_target_id=<default_screen_piece_id>`
+directly, or `${piece_methods}` renders empty on first launch.
+
+16.2 KEY:n ENCODING BREAKS ABOVE 9 ITEMS - THE RECEIVING OP MUST TREAT
+     EVERY INCOMING VALUE AS AN ALREADY-RESOLVED SELECTION, NEVER
+     RE-ACCUMULATE IT
+------------------------------------------------------------------------
+REAL BUG, LIVE-CAUGHT (wsr-pal, 32-item menu): `send_command()`'s own
+`KEY:` handling (confirmed via direct read, both real `chtpm_parser.c`
+and the `chtpm_parser_pal.c` fork) is `if (k >= 0 && k <= 9)
+inject_raw_key('0' + k); else inject_raw_key(k);` - indices 1-9 get
+ASCII-digit-encoded (so they look like an ordinary typed keystroke to
+older/simpler receivers), but 10+ is written as the BARE INTEGER, since
+no single ASCII byte represents two digits. `inject_raw_key()` writes
+that value verbatim (`"%d\n"`) to whatever `<interact src>` names either
+way. This is NOT a partial keystroke to re-accumulate - chtpm's own
+nav-mode `digit_accum` (typing "1" then "3" moves ITS OWN focus to item
+13) ALREADY resolved the full multi-digit selection, entirely inside
+`chtpm_parser_pal.c`, before Enter ever fired `send_command("KEY:13")`
+as ONE event. A receiving op with its own pre-existing digit-accumulator
+(built for raw multi-keystroke terminal typing, predating this project's
+own chtpm conversion) will mishandle this: indices 1-9 happen to still
+look like a normal ASCII digit (harmless), but 10+ either falls through
+every check silently, or - worse - the specific values 10 and 13
+collide with real ASCII LF/CR and misfire as a stale Enter.
+
+THE FIX: collapse any such op's own digit-accumulation + separate-Enter
+dispatch into ONE immediate-dispatch branch: `resolved_item = (key >=
+'0' && key <= '9') ? key - '0' : (key > 9 && key < 1000) ? key : 0;`
+then dispatch immediately if `1 <= resolved_item <= item_count` - no
+accumulator, no waiting for a second event, since chtpm never sends one
+for the same selection. (Upper bound `< 1000` avoids colliding with this
+family's own `ARROW_UP`/`ARROW_DOWN` = 1002/1003 codes, which arrive
+separately and should stay handled by whatever `is_up`/`is_down` check
+already exists.) This makes the true ceiling on `${piece_methods}` menu
+size whatever `MAX_MENU_ITEMS`/buffer limits the layout and receiving op
+otherwise allow - not 9.
+
+16.2a A SECOND, SEPARATE OFF-BY-ONE: `load_dynamic_methods()`'s OWN
+      `method_idx` STARTS AT 2, NOT 1 - CHECK THIS EXPLICITLY WHENEVER
+      ${piece_methods} IS THE *ONLY* CONTENT IN A LAYOUT (NO HAND-
+      AUTHORED BUTTON BEFORE IT)
+------------------------------------------------------------------------
+REAL BUG, LIVE-CAUGHT (wsr-pal, confirmed via direct key injection per
+sec. 9.3's own test method - not guessed): `load_dynamic_methods()`
+(`shared-ops/chtpm_parser_pal.c` ~line 992) initializes `method_idx = 2`
+for any non-"loader" `active_id` - it assumes nav slot 1 is ALWAYS
+already occupied by a hand-authored button before `${piece_methods}`
+(true for mutaclsym's own "Control Hero" - sec. 12's own worked example
+places it first in the layout, `${piece_methods}` after). Once sec. 16's
+own fix removes an unnecessary INTERACT gate/button entirely (a pure
+menu with nothing before `${piece_methods}`), this hardcoded offset is
+now WRONG for that layout: every generated `onClick="KEY:n"` is exactly
+ONE HIGHER than the piece.pdl's own 1-based METHOD row order. Confirmed
+live: the visually-13th menu row ("Financing") actually generates and
+dispatches `KEY:14`, silently selecting row 14 ("Private", an unrelated
+no-op) instead - the screen never appeared to navigate anywhere,
+looking exactly like a dead button, not an off-by-one.
+
+THE FIX: when `${piece_methods}` is the ONLY navigable content in a
+layout (no other button occupies slot 1), the receiving op's own
+`resolved_item` computation (16.2 above) must subtract 1 uniformly:
+`resolved_item = (key >= '0' && key <= '9') ? (key - '0') - 1 : (key >
+9 && key < 1000) ? key - 1 : 0;`. Both the ASCII-digit and raw-integer
+forms carry the IDENTICAL +1 offset (it comes from `method_idx`, not
+from either encoding), so the same `- 1` applies to both branches
+uniformly. Do NOT assume this offset only affects large menus (>9) -
+verify item 1 dispatches as expected too, since the shift applies to
+every row equally.
+
+VERIFY THIS EXPLICITLY, DON'T ASSUME, whenever wiring a NEW project
+onto `${piece_methods}`: if the layout has a hand-authored button
+before it (mutaclsym's shape), `method_idx=2`'s start is already
+correct, no compensation needed. If `${piece_methods}` is the first and
+only thing (a pure-menu project with the INTERACT gate removed per
+sec. 16), the receiving op MUST compensate by 1, or every selection
+silently fires the WRONG menu row - a symptom (looks like a dead/no-op
+button) easy to misdiagnose as something else entirely.
+
+16.4 PERSISTED MENU-NAVIGATION STATE MUST BE RESET ON EVERY LAUNCH,
+     NEVER JUST ON A SEPARATE "new-game"-STYLE ACTION - A CLASS OF BUG,
+     CHECK EVERY FIELD, NOT JUST THE ONE THAT GOT REPORTED
+========================================================================
+REAL BUG, USER-REPORTED (wsr-pal, "starts from last open menu ... make
+sure this never happens again for any reason"): a project's own
+menu-input op (`wsr_menu_input.c`-shaped) persists its CURRENT screen
+(`active_menu_piece`) and nav position (`cursor`, `digit_accum`) to a
+state file that ALSO holds real game progress (`turn_number`, `cash`,
+`ticker_on`, `active_corp_index`) - by necessary design, since quitting
+mid-session must not lose real progress. But `button.sh`'s own "run"
+action only ever reset `pieces/apps/player_app/history.txt`/
+`interact_relay.txt`/`quit_flag.txt`/`gl_focus.lock` (all SESSION-
+mechanics files) - it never touched THIS file at all. Whatever screen
+was showing at the exact moment of the LAST quit (via a working Back
+button, a direct 'q', a crash, anything) is exactly where the NEXT
+launch starts too, because "which screen" and "session progress" were
+never actually treated as separate concerns in the reset logic, only in
+the data model.
+
+THE FIX: `button.sh`'s "run" action must reset EVERY navigation-position
+field in this file (`active_menu_piece`, `cursor`, `digit_accum`,
+`prompt_active` if present) to their fresh-launch defaults, via a
+targeted `sed -i 's/^field=.*/field=default/'` per field - and must NOT
+touch any REAL progress field (`turn_number`, `cash`, `ticker_on`,
+`active_corp_index`, anything else representing actual game state) -
+those must survive a restart, matching what the project's own separate
+"new-game" action already does correctly for `active_menu_piece` alone
+(a real, working precedent this fix generalizes, not invents).
+
+THE STANDING RULE, general to any future project built this way: when a
+single state file mixes "where am I" (navigation/UI position) with
+"what happened" (real progress), the LAUNCH reset must enumerate and
+reset every navigation field explicitly - do not assume resetting one
+field (the one a bug report happened to name) covers the class. Audit
+the WHOLE file's own field list against "is this navigation-position, or
+real progress" every time a new field is added to it, and add it to the
+launch-reset list if it's the former - a silently-added new nav field
+later reintroduces this exact bug for that field specifically, even
+after this fix.
+
+========================================================================
+17. system/renderer.c / chtpm_rgb_render.c MUST WATCH
+    renderer_pulse.txt - THE MARKER chtpm_parser_pal.c'S OWN
+    compose_frame() ALREADY GROWS UNCONDITIONALLY - NOT
+    state_changed.txt (CORRECTED ENTRY - the original version of this
+    section recommended the wrong marker, causing a NEW regression;
+    see the correction below)
+========================================================================
+REAL BUG, USER-REPORTED (wsr-pal, "had to press Enter twice" - a screen
+transition looked blank/stale until an UNRELATED next keypress fixed
+it): `system/renderer.c` (project-local per sec. 1c) polls exactly ONE
+marker, `pieces/display/frame_changed.txt`, and only re-reads/re-prints
+`current_frame.txt` when THAT file's size grows. `chtpm_parser_pal.c`'s
+own `process_key()` grows this marker on every KEYPRESS-driven
+recompose - but a module-driven recompose (chtpm noticing
+`active_target_id` changed via a relayed `GOTO:` command, reloading on
+its own `state_changed.txt`-triggered path, sec. 16.1/16.2 - NOT
+synchronous with the keypress that triggered it) does NOT also grow
+`frame_changed.txt`. Confirmed via direct testing (sec. 9.3's own
+method): the CORRECT, fully-populated `current_frame.txt` was already
+sitting on disk the whole time this looked "stuck blank" -
+`system/renderer.c` simply never knew to re-read it.
+
+THE WRONG FIX THIS SECTION ORIGINALLY RECOMMENDED: also watch
+`pieces/apps/player_app/state_changed.txt`. This "fixed" the stale-
+submenu symptom but caused a DIFFERENT, real regression, found live in
+mutaclsym after sec. 0's own synchronous-dispatch fix: a brief BLACK
+FLASH on every INTERACT-mode keypress. Root cause: `state_changed.txt`
+is grown by a PROJECT'S OWN compose op BEFORE chtpm has actually
+reloaded/recomposed anything - it is a pre-trigger, not a completion
+signal. For a project whose own module ALSO writes `current_frame.txt`
+directly as part of the same op (mutaclsym's own `compose_frame.c`,
+sec. 0.1/16.3's own dual-write pattern - correct and needed there),
+that op grows `state_changed.txt` too - so watching it here caught the
+module's own INTERMEDIATE, chrome-less write and rendered/displayed
+THAT, before chtpm's own subsequent correction landed. Under the OLD,
+asynchronous-module architecture this race window happened to be wide
+enough to rarely matter for mutaclsym; sec. 0's own synchronous-
+dispatch fix made the two writes happen close enough together in real
+time that this renderer (now polling both markers at ~16ms) reliably
+caught the intermediate one and displayed it as a visible flash.
+
+THE REAL FIX: `chtpm_parser_pal.c`'s own internal `compose_frame()`
+(shared-ops/chtpm_parser_pal.c ~line 2575 - NOT a project's own
+`ops/compose_frame.c`, a same-named but different function inside the
+parser itself) grows `pieces/display/renderer_pulse.txt`
+UNCONDITIONALLY, every single time it runs - regardless of whether a
+keypress or a `state_changed.txt`-triggered reload caused it. This is
+the authoritative "the CORRECT, chrome-composed `current_frame.txt` is
+ready" signal chtpm itself already emits, and it was sitting unused the
+whole time. Watch THIS instead of `state_changed.txt`: it never fires
+early, and it never fires for a project's own intermediate/direct write
+- only for chtpm's own finished composition, regardless of what
+triggered it. The existing settle-loop (current_frame.txt's own size
+stable across 2 consecutive checks, sec. 11.3's pattern) still applies
+identically on top of this marker.
+
+APPLIES TO ANY PROJECT with a module that can change
+`active_target_id`/trigger a `${piece_methods}` reload mid-session, AND
+to any GL/RGB rendering daemon reading the same `current_frame.txt`
+(`shared-ops/chtpm_rgb_render.c` got the identical fix) - audit for
+this single-marker gap, but use `renderer_pulse.txt`, never
+`state_changed.txt`, as the fix.
+
+16.3 DUAL-WRITING current_frame.txt + view.txt IS CORRECT AND NEEDED -
+     THE REAL RULE IS "DON'T LET THE TWO OUTPUTS VISUALLY CONFLICT,"
+     NOT "ONLY CHTPM MAY EVER WRITE current_frame.txt" (CORRECTED
+     ENTRY - the original version of this section, written same-day,
+     had the wrong fix)
+------------------------------------------------------------------------
+REAL BUG, LIVE-CAUGHT (wsr-pal): a project's own compose op (called
+every tick from `main_loop_chtpm.pal`'s own loop) writing
+`pieces/display/current_frame.txt` DIRECTLY, in addition to
+`pieces/apps/player_app/view.txt`, produced visible flicker/duplicate-
+menu artifacts - `${piece_methods}` buttons and the op's own old
+hand-drawn text menu both appeared, alternating.
+
+THE WRONG FIX THIS SECTION ORIGINALLY RECOMMENDED: stop writing
+`current_frame.txt` from the compose op entirely, relying solely on
+`chtpm_parser_pal`'s own delayed, separate-process
+`state_changed.txt`-triggered reload to eventually pick up
+`view.txt`'s new content. This "fixed" the flicker but introduced a
+DIFFERENT real bug, also live-caught: a perceptible one-keypress INPUT
+LAG - the screen only reflects a keypress once chtpm's own loop
+notices the marker grew on its OWN poll cycle, not the instant the
+module's compose op finishes. Confirmed by direct comparison against
+mutaclsym's own `ops/compose_frame.c`, which shows NO such lag and
+ALSO writes `current_frame.txt` directly, on purpose (see that file's
+own header comment, "REAL BUG FIX ... this used to fopen(out_path)
+... write ... re-open ... to READ ... that read-back is a real race
+... Fix: build the whole frame in memory (open_memstream) ... write
+the SAME buffer to both current_frame.txt and view.txt directly,
+in-process, with no read-back and therefore no race window at all").
+
+THE ACTUAL RULE: the flicker's real cause was never "two writers of
+current_frame.txt" - `chtpm_parser_pal` (a separate process) ALREADY
+writes that file on its own render cycle in EVERY project using this
+pattern, mutaclsym included, and always has. The real cause was this
+compose op's own output CONTENT visibly conflicting with chtpm's own
+composed frame (a hand-drawn text menu duplicate of what
+`${piece_methods}` already renders as real buttons). Writing the SAME
+data to both `current_frame.txt` and `view.txt` is not just safe, it's
+NEEDED - it's what makes fresh state visible immediately, without
+waiting on chtpm's own separate poll-and-reload cycle to catch up.
+
+THE REAL, VERIFIED FIX: keep dual-writing both files from every render
+call (mutaclsym's own open_memstream-then-fwrite-twice shape, or an
+equivalent - e.g. two `FILE*` targets written in parallel from the
+same call sites, confirmed working). Just make sure whatever gets
+written is something chtpm's own LATER recompose (from the SAME
+underlying data, once its own marker check fires) will be consistent
+with - i.e., don't hand-draw a numbered menu list a `${piece_methods}`
+placeholder elsewhere in the layout already renders as real buttons.
+Status/banner/message content (turn count, cash, wallet, etc.) is safe
+to write to both outputs identically; menu-navigation UI is not, once
+chtpm owns rendering it natively.
+
+========================================================================
+18. SWITCHING BETWEEN SCREENS MUST BE REAL `href`, ONE `.chtpm` FILE PER
+    SCREEN - NOT A CUSTOM "GOTO:" STRING THAT SWAPS WHICH piece.pdl A
+    SINGLE SHARED LAYOUT POINTS AT (DRIFT, CONFIRMED - wsr-pal)
+========================================================================
+Think of it like HTML: each screen is its own page (its own `.chtpm`
+file), and a link between two screens is a real `<button href="...">`
+- NOT a piece of app state that tells one page to pretend to be a
+different page. Real chtpm/wraith-alpha has always worked this way -
+confirmed by directly reading real wraith-alpha's own
+`settings.chtpm`: `<button label="Back to Wraith Desktop"
+href="projects/wraith-alpha/layouts/alpha-shell.chtpm" />`. chtpm's own
+`process_key()` (`shared-ops/chtpm_parser_pal.c`, the `strlen(el->href)
+> 0` branch) already handles the ENTIRE transition natively and
+synchronously - sets `current_layout`, calls `parse_chtm()`,
+`initialize_focus()`, `export_active_index()`, `compose_frame()` - zero
+custom state, zero extra C code, one proven code path shared by every
+screen transition in the whole family.
+
+Section 12 (`${piece_methods}`) and this section are NOT the same
+concern and do not replace each other: §12 is about rendering ONE
+screen's OWN action list (a single piece's METHOD rows, still correct,
+still keep using it); this section is about moving to a DIFFERENT
+screen entirely. Confusing the two - building the multi-screen jump out
+of the same machinery meant for a single screen's own button list - is
+exactly the mistake below.
+
+THE DRIFT, CONFIRMED (wsr-pal): every one of its 6 menu "screens"
+(`wsr_main_menu`, `wsr_trade_menu`, `wsr_management_menu`,
+`wsr_search_menu`, `wsr_derivatives_menu`, `wsr_financing_menu`) is
+really just ONE `.chtpm` file (`pieces/chtpm/layouts/wsr.chtpm`) with a
+single `${piece_methods}` placeholder. "Switching screens" means a
+METHOD row's command is the string `GOTO:<piece_id>`, hand-parsed by
+`wsr_menu_input.c`, which overwrites an `active_menu_piece` app-state
+variable so `${piece_methods}` starts reading a DIFFERENT piece's own
+`piece.pdl` on the next render - the same physical layout file,
+pretending to be six different pages. This is a hand-rolled
+reimplementation of exactly what `href` already does for free, built
+before this correction existed - the SAME category of unintentional
+architectural drift named in section 0 (this family's only deliberate
+deviation from classic chtpm is "use more pal," never "reinvent a
+mechanism chtpm already has natively").
+
+CONCRETE DAMAGE THIS DRIFT CAUSED, VERIFIED (not theoretical): 3 of the
+6 `piece.pdl` files (`wsr_management_menu`, `wsr_derivatives_menu`,
+`wsr_financing_menu`) were authored with a 4-field METHOD row
+(`METHOD | N | label | command`) while the other 3 use the real 3-field
+format (`METHOD | label | command`). BOTH parsers that read these rows
+(chtpm's own `load_dynamic_methods()` AND `wsr_menu_input.c`'s own
+`load_menu_items()`) split on exactly the first two `|` characters -
+confirmed by replicating the exact C split logic: on a 4-field row, the
+"command" field ends up as `"8.Back to main menu | GOTO:wsr_main_menu"`
+(the real label text plus a stray leftover pipe), which does not match
+`GOTO:`/`RUN:`/`STUB`/anything - so EVERY button on those 3 screens
+silently no-ops (shelled as a bogus literal command), not just Back.
+This is the direct, likely explanation for this session's own
+inconclusively-reproduced "Back doesn't work for wsr-pal" reports - a
+custom hand-rolled format with no schema, drifting out of sync with
+itself, exactly the kind of bug a proven native mechanism (a real
+`.chtpm` file per screen, hand-authored, no row-format to get wrong)
+does not have room for in the first place.
+
+THE FIX (not yet done - named here so it isn't lost): split
+`wsr.chtpm` into one real `.chtpm` file per screen (mirroring each
+existing `piece.pdl`'s own content), with every `GOTO:<piece_id>` row
+becoming a real `<button label="..." href="pieces/chtpm/layouts/
+<piece_id>.chtpm" />` and every real action row becoming whatever
+`onClick` prefix `send_command()` already recognizes (`OP:`, etc. -
+see section 6's own reserved-prefix list). This retires
+`wsr_menu_input.c`'s entire `GOTO:` dispatch branch, the
+`active_menu_piece` app-state variable, and the piece.pdl-as-menu-
+source indirection for NAVIGATION specifically (a piece.pdl can still
+be kept as data for other purposes if still needed) - collapsing it
+into the same one proven code path every other screen transition in
+this family already uses.

@@ -1,0 +1,1664 @@
+
+--- FRAME at 2026-07-18 22:55:47 ---
++============================================================+
+|  wsr_main_menu   Turn:0   Active: corp_AFL                 |
++============================================================+
+|                                                            |
+|----------------------------------                          |
+|Your Wallet:                                                |
+|Cash..........           1613                               |
+|----------------------------------                          |
+|Active Corp Balance Sheet:                                  |
+|Cash (CD's)..            5000                               |
+|Stock Price...           115.04                             |
+|Owned By......           (independent)                      |
+|----------------------------------------------              |
+|FINANCIAL NEWS [CMZ: $0.10 (-99.38%)]                       |
+|                                                            |
+|WORLD STATUS                                                |
+|Population: 10000          Temperature: 15C                 |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
+
+--- FRAME at 2026-07-18 22:55:47 ---
++============================================================+
+|  wsr_main_menu   Turn:0   Active: corp_AFL                 |
++============================================================+
+|                                                            |
+|----------------------------------                          |
+|Your Wallet:                                                |
+|Cash..........           1613                               |
+|----------------------------------                          |
+|Active Corp Balance Sheet:                                  |
+|Cash (CD's)..            5000                               |
+|Stock Price...           115.04                             |
+|Owned By......           (independent)                      |
+|----------------------------------------------              |
+|FINANCIAL NEWS [CMZ: $0.10 (-99.38%)]                       |
+|                                                            |
+|WORLD STATUS                                                |
+|Population: 10000          Temperature: 15C                 |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
+
+--- FRAME at 2026-07-18 22:55:47 ---
++============================================================+
+|                 W A L L   S T R E E T   R A I D E R        |
++============================================================+
+[>] 1. [File]
+[ ] 2. [Game Options]
+[ ] 3. [Settings]
+[ ] 4. [Help]
+[ ] 5. [Select Player]
+[ ] 6. [Culture]
+[ ] 7. [Entity Info]
+[ ] 8. [Select Corp.]
+[ ] 9. [History]
+[ ] 10. [General]
+[ ] 11. [Tools]
+[ ] 12. [Private]
+[ ] 13. [Other Trans]
+[ ] 14. [End Turn]
+[ ] 15. [Misc. Menu]
+[ ] 16. [Chart]
+[ ] 17. [Auto]
+[ ] 18. [Watchlist]
+[ ] 19. [TICKER]
+[ ] 20. [Research Report]
+[ ] 21. [List Portfolio]
+[ ] 22. [Financial Profile]
+[ ] 23. [List Options]
+[ ] 24. [Earnings Report]
+[ ] 25. [Shareholder List]
+[ ] 26. [My Corporations]
+[ ] 27. [New Game]
+[ ] 28. [Buy/Sell]
+[ ] 29. [Financing]
+[ ] 30. [Management]
+[ ] 31. [List Futures]
+[ ] 32. [DB Search]
++============================================================+
++============================================================+
+|  wsr_main_menu   Turn:0   Active: corp_AFL                 |
++============================================================+
+|                                                            |
+|----------------------------------                          |
+|Your Wallet:                                                |
+|Cash..........           1613                               |
+|----------------------------------                          |
+|Active Corp Balance Sheet:                                  |
+|Cash (CD's)..            5000                               |
+|Stock Price...           115.04                             |
+|Owned By......           (independent)                      |
+|----------------------------------------------              |
+|FINANCIAL NEWS [CMZ: $0.10 (-99.38%)]                       |
+|                                                            |
+|WORLD STATUS                                                |
+|Population: 10000          Temperature: 15C                 |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
++============================================================+
+ [q] Quit
+
++=========================================================+
+Nav > _
+
+
+--- FRAME at 2026-07-18 22:55:54 ---
++============================================================+
+|                 W A L L   S T R E E T   R A I D E R        |
++============================================================+
+[ ] 1. [File]
+[ ] 2. [Game Options]
+[>] 3. [Settings]
+[ ] 4. [Help]
+[ ] 5. [Select Player]
+[ ] 6. [Culture]
+[ ] 7. [Entity Info]
+[ ] 8. [Select Corp.]
+[ ] 9. [History]
+[ ] 10. [General]
+[ ] 11. [Tools]
+[ ] 12. [Private]
+[ ] 13. [Other Trans]
+[ ] 14. [End Turn]
+[ ] 15. [Misc. Menu]
+[ ] 16. [Chart]
+[ ] 17. [Auto]
+[ ] 18. [Watchlist]
+[ ] 19. [TICKER]
+[ ] 20. [Research Report]
+[ ] 21. [List Portfolio]
+[ ] 22. [Financial Profile]
+[ ] 23. [List Options]
+[ ] 24. [Earnings Report]
+[ ] 25. [Shareholder List]
+[ ] 26. [My Corporations]
+[ ] 27. [New Game]
+[ ] 28. [Buy/Sell]
+[ ] 29. [Financing]
+[ ] 30. [Management]
+[ ] 31. [List Futures]
+[ ] 32. [DB Search]
++============================================================+
++============================================================+
+|  wsr_main_menu   Turn:0   Active: corp_AFL                 |
++============================================================+
+|                                                            |
+|----------------------------------                          |
+|Your Wallet:                                                |
+|Cash..........           1613                               |
+|----------------------------------                          |
+|Active Corp Balance Sheet:                                  |
+|Cash (CD's)..            5000                               |
+|Stock Price...           115.04                             |
+|Owned By......           (independent)                      |
+|----------------------------------------------              |
+|FINANCIAL NEWS [CMZ: $0.10 (-99.38%)]                       |
+|                                                            |
+|WORLD STATUS                                                |
+|Population: 10000          Temperature: 15C                 |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
++============================================================+
+ [q] Quit
+
++=========================================================+
+Nav > 3_
+
+
+--- FRAME at 2026-07-18 22:55:54 ---
++============================================================+
+|                 W A L L   S T R E E T   R A I D E R        |
++============================================================+
+[ ] 1. [File]
+[ ] 2. [Game Options]
+[>] 3. [Settings]
+[ ] 4. [Help]
+[ ] 5. [Select Player]
+[ ] 6. [Culture]
+[ ] 7. [Entity Info]
+[ ] 8. [Select Corp.]
+[ ] 9. [History]
+[ ] 10. [General]
+[ ] 11. [Tools]
+[ ] 12. [Private]
+[ ] 13. [Other Trans]
+[ ] 14. [End Turn]
+[ ] 15. [Misc. Menu]
+[ ] 16. [Chart]
+[ ] 17. [Auto]
+[ ] 18. [Watchlist]
+[ ] 19. [TICKER]
+[ ] 20. [Research Report]
+[ ] 21. [List Portfolio]
+[ ] 22. [Financial Profile]
+[ ] 23. [List Options]
+[ ] 24. [Earnings Report]
+[ ] 25. [Shareholder List]
+[ ] 26. [My Corporations]
+[ ] 27. [New Game]
+[ ] 28. [Buy/Sell]
+[ ] 29. [Financing]
+[ ] 30. [Management]
+[ ] 31. [List Futures]
+[ ] 32. [DB Search]
++============================================================+
++============================================================+
+|  wsr_main_menu   Turn:0   Active: corp_AFL                 |
++============================================================+
+|                                                            |
+|----------------------------------                          |
+|Your Wallet:                                                |
+|Cash..........           1613                               |
+|----------------------------------                          |
+|Active Corp Balance Sheet:                                  |
+|Cash (CD's)..            5000                               |
+|Stock Price...           115.04                             |
+|Owned By......           (independent)                      |
+|----------------------------------------------              |
+|FINANCIAL NEWS [CMZ: $0.10 (-99.38%)]                       |
+|                                                            |
+|WORLD STATUS                                                |
+|Population: 10000          Temperature: 15C                 |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
++============================================================+
+ [q] Quit
+
++=========================================================+
+Nav > 3_
+
+
+--- FRAME at 2026-07-18 22:55:54 ---
++============================================================+
+|                 W A L L   S T R E E T   R A I D E R        |
++============================================================+
+[ ] 1. [File]
+[ ] 2. [Game Options]
+[ ] 3. [Settings]
+[ ] 4. [Help]
+[ ] 5. [Select Player]
+[ ] 6. [Culture]
+[ ] 7. [Entity Info]
+[ ] 8. [Select Corp.]
+[ ] 9. [History]
+[ ] 10. [General]
+[ ] 11. [Tools]
+[ ] 12. [Private]
+[ ] 13. [Other Trans]
+[ ] 14. [End Turn]
+[ ] 15. [Misc. Menu]
+[ ] 16. [Chart]
+[ ] 17. [Auto]
+[ ] 18. [Watchlist]
+[ ] 19. [TICKER]
+[ ] 20. [Research Report]
+[ ] 21. [List Portfolio]
+[ ] 22. [Financial Profile]
+[ ] 23. [List Options]
+[ ] 24. [Earnings Report]
+[ ] 25. [Shareholder List]
+[ ] 26. [My Corporations]
+[ ] 27. [New Game]
+[ ] 28. [Buy/Sell]
+[ ] 29. [Financing]
+[ ] 30. [Management]
+[>] 31. [List Futures]
+[ ] 32. [DB Search]
++============================================================+
++============================================================+
+|  wsr_main_menu   Turn:0   Active: corp_AFL                 |
++============================================================+
+|                                                            |
+|----------------------------------                          |
+|Your Wallet:                                                |
+|Cash..........           1613                               |
+|----------------------------------                          |
+|Active Corp Balance Sheet:                                  |
+|Cash (CD's)..            5000                               |
+|Stock Price...           115.04                             |
+|Owned By......           (independent)                      |
+|----------------------------------------------              |
+|FINANCIAL NEWS [CMZ: $0.10 (-99.38%)]                       |
+|                                                            |
+|WORLD STATUS                                                |
+|Population: 10000          Temperature: 15C                 |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
++============================================================+
+ [q] Quit
+
++=========================================================+
+Nav > 31_
+
+
+--- FRAME at 2026-07-18 22:55:54 ---
++============================================================+
+|                 W A L L   S T R E E T   R A I D E R        |
++============================================================+
+[ ] 1. [File]
+[ ] 2. [Game Options]
+[ ] 3. [Settings]
+[ ] 4. [Help]
+[ ] 5. [Select Player]
+[ ] 6. [Culture]
+[ ] 7. [Entity Info]
+[ ] 8. [Select Corp.]
+[ ] 9. [History]
+[ ] 10. [General]
+[ ] 11. [Tools]
+[ ] 12. [Private]
+[ ] 13. [Other Trans]
+[ ] 14. [End Turn]
+[ ] 15. [Misc. Menu]
+[ ] 16. [Chart]
+[ ] 17. [Auto]
+[ ] 18. [Watchlist]
+[ ] 19. [TICKER]
+[ ] 20. [Research Report]
+[ ] 21. [List Portfolio]
+[ ] 22. [Financial Profile]
+[ ] 23. [List Options]
+[ ] 24. [Earnings Report]
+[ ] 25. [Shareholder List]
+[ ] 26. [My Corporations]
+[ ] 27. [New Game]
+[ ] 28. [Buy/Sell]
+[ ] 29. [Financing]
+[ ] 30. [Management]
+[>] 31. [List Futures]
+[ ] 32. [DB Search]
++============================================================+
++============================================================+
+|  wsr_main_menu   Turn:0   Active: corp_AFL                 |
++============================================================+
+|                                                            |
+|----------------------------------                          |
+|Your Wallet:                                                |
+|Cash..........           1613                               |
+|----------------------------------                          |
+|Active Corp Balance Sheet:                                  |
+|Cash (CD's)..            5000                               |
+|Stock Price...           115.04                             |
+|Owned By......           (independent)                      |
+|----------------------------------------------              |
+|FINANCIAL NEWS [CMZ: $0.10 (-99.38%)]                       |
+|                                                            |
+|WORLD STATUS                                                |
+|Population: 10000          Temperature: 15C                 |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
++============================================================+
+ [q] Quit
+
++=========================================================+
+Nav > 31_
+
+
+--- FRAME at 2026-07-18 22:55:56 ---
++============================================================+
+|                 W A L L   S T R E E T   R A I D E R        |
++============================================================+
+[ ] 1. [File]
+[ ] 2. [Game Options]
+[ ] 3. [Settings]
+[ ] 4. [Help]
+[ ] 5. [Select Player]
+[ ] 6. [Culture]
+[ ] 7. [Entity Info]
+[ ] 8. [Select Corp.]
+[ ] 9. [History]
+[ ] 10. [General]
+[ ] 11. [Tools]
+[ ] 12. [Private]
+[ ] 13. [Other Trans]
+[ ] 14. [End Turn]
+[ ] 15. [Misc. Menu]
+[ ] 16. [Chart]
+[ ] 17. [Auto]
+[ ] 18. [Watchlist]
+[ ] 19. [TICKER]
+[ ] 20. [Research Report]
+[ ] 21. [List Portfolio]
+[ ] 22. [Financial Profile]
+[ ] 23. [List Options]
+[ ] 24. [Earnings Report]
+[ ] 25. [Shareholder List]
+[ ] 26. [My Corporations]
+[ ] 27. [New Game]
+[ ] 28. [Buy/Sell]
+[ ] 29. [Financing]
+[ ] 30. [Management]
+[ ] 31. [List Futures]
+[>] 32. [DB Search]
++============================================================+
++============================================================+
+|  wsr_main_menu   Turn:0   Active: corp_AFL                 |
++============================================================+
+|                                                            |
+|----------------------------------                          |
+|Your Wallet:                                                |
+|Cash..........           1613                               |
+|----------------------------------                          |
+|Active Corp Balance Sheet:                                  |
+|Cash (CD's)..            5000                               |
+|Stock Price...           115.04                             |
+|Owned By......           (independent)                      |
+|----------------------------------------------              |
+|FINANCIAL NEWS [CMZ: $0.10 (-99.38%)]                       |
+|                                                            |
+|WORLD STATUS                                                |
+|Population: 10000          Temperature: 15C                 |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
++============================================================+
+ [q] Quit
+
++=========================================================+
+Nav > _
+
+
+--- FRAME at 2026-07-18 22:55:56 ---
++============================================================+
+|                 W A L L   S T R E E T   R A I D E R        |
++============================================================+
+[ ] 1. [File]
+[ ] 2. [Game Options]
+[ ] 3. [Settings]
+[ ] 4. [Help]
+[ ] 5. [Select Player]
+[ ] 6. [Culture]
+[ ] 7. [Entity Info]
+[ ] 8. [Select Corp.]
+[ ] 9. [History]
+[ ] 10. [General]
+[ ] 11. [Tools]
+[ ] 12. [Private]
+[ ] 13. [Other Trans]
+[ ] 14. [End Turn]
+[ ] 15. [Misc. Menu]
+[ ] 16. [Chart]
+[ ] 17. [Auto]
+[ ] 18. [Watchlist]
+[ ] 19. [TICKER]
+[ ] 20. [Research Report]
+[ ] 21. [List Portfolio]
+[ ] 22. [Financial Profile]
+[ ] 23. [List Options]
+[ ] 24. [Earnings Report]
+[ ] 25. [Shareholder List]
+[ ] 26. [My Corporations]
+[ ] 27. [New Game]
+[ ] 28. [Buy/Sell]
+[ ] 29. [Financing]
+[ ] 30. [Management]
+[ ] 31. [List Futures]
+[>] 32. [DB Search]
++============================================================+
++============================================================+
+|  wsr_main_menu   Turn:0   Active: corp_AFL                 |
++============================================================+
+|                                                            |
+|----------------------------------                          |
+|Your Wallet:                                                |
+|Cash..........           1613                               |
+|----------------------------------                          |
+|Active Corp Balance Sheet:                                  |
+|Cash (CD's)..            5000                               |
+|Stock Price...           115.04                             |
+|Owned By......           (independent)                      |
+|----------------------------------------------              |
+|FINANCIAL NEWS [CMZ: $0.10 (-99.38%)]                       |
+|                                                            |
+|WORLD STATUS                                                |
+|Population: 10000          Temperature: 15C                 |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
++============================================================+
+ [q] Quit
+
++=========================================================+
+Nav > _
+
+
+--- FRAME at 2026-07-18 22:55:56 ---
++============================================================+
+|                      D B   S E A R C H                     |
++============================================================+
+[>] 1. [File]
+[ ] 2. [Game Options]
+[ ] 3. [Settings]
+[ ] 4. [Help]
+[ ] 5. [Select Player]
+[ ] 6. [Culture]
+[ ] 7. [Entity Info]
+[ ] 8. [Select Corp.]
+[ ] 9. [History]
+[ ] 10. [General]
+[ ] 11. [Tools]
+[ ] 12. [Private]
+[ ] 13. [Other Trans]
+[ ] 14. [End Turn]
+[ ] 15. [Misc. Menu]
+[ ] 16. [Chart]
+[ ] 17. [Auto]
+[ ] 18. [Watchlist]
+[ ] 19. [TICKER]
+[ ] 20. [Research Report]
+[ ] 21. [List Portfolio]
+[ ] 22. [Financial Profile]
+[ ] 23. [List Options]
+[ ] 24. [Earnings Report]
+[ ] 25. [Shareholder List]
+[ ] 26. [My Corporations]
+[ ] 27. [New Game]
+[ ] 28. [Back to main menu]
++============================================================+
++============================================================+
+|  wsr_main_menu   Turn:0   Active: corp_AFL                 |
++============================================================+
+|                                                            |
+|----------------------------------                          |
+|Your Wallet:                                                |
+|Cash..........           1613                               |
+|----------------------------------                          |
+|Active Corp Balance Sheet:                                  |
+|Cash (CD's)..            5000                               |
+|Stock Price...           115.04                             |
+|Owned By......           (independent)                      |
+|----------------------------------------------              |
+|FINANCIAL NEWS [CMZ: $0.10 (-99.38%)]                       |
+|                                                            |
+|WORLD STATUS                                                |
+|Population: 10000          Temperature: 15C                 |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
++============================================================+
+ [q] Quit
+
++=========================================================+
+Nav > _
+
+
+--- FRAME at 2026-07-18 22:55:56 ---
++============================================================+
+|  wsr_search_menu   Turn:0   Active: corp_AFL               |
++============================================================+
+|                                                            |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
+
+--- FRAME at 2026-07-18 22:55:56 ---
++============================================================+
+|                      D B   S E A R C H                     |
++============================================================+
+[>] 1. [High ROE (]
+[ ] 2. [Low P/E (<)]
+[ ] 3. [Price < % of Book]
+[ ] 4. [Min Div Yield (%)]
+[ ] 5. [Min Market Cap (M)]
+[ ] 6. [Max Market Cap (M)]
+[ ] 7. [Debt/Equity <]
+[ ] 8. [Beta <]
+[ ] 9. [Payout Ratio < %]
+[ ] 10. [Growth Rate ]
+[ ] 11. [Current Ratio ]
+[ ] 12. [Public Co]
+[ ] 13. [Has Bonds]
+[ ] 14. [Display Results]
+[ ] 15. [Clear Criteria]
+[ ] 16. [Back to main menu]
++============================================================+
++============================================================+
+|  wsr_search_menu   Turn:0   Active: corp_AFL               |
++============================================================+
+|                                                            |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
++============================================================+
+ [q] Quit
+
++=========================================================+
+Nav > _
+
+
+--- FRAME at 2026-07-18 22:55:56 ---
++============================================================+
+|                      D B   S E A R C H                     |
++============================================================+
+[>] 1. [High ROE (]
+[ ] 2. [Low P/E (<)]
+[ ] 3. [Price < % of Book]
+[ ] 4. [Min Div Yield (%)]
+[ ] 5. [Min Market Cap (M)]
+[ ] 6. [Max Market Cap (M)]
+[ ] 7. [Debt/Equity <]
+[ ] 8. [Beta <]
+[ ] 9. [Payout Ratio < %]
+[ ] 10. [Growth Rate ]
+[ ] 11. [Current Ratio ]
+[ ] 12. [Public Co]
+[ ] 13. [Has Bonds]
+[ ] 14. [Display Results]
+[ ] 15. [Clear Criteria]
+[ ] 16. [Back to main menu]
++============================================================+
++============================================================+
+|  wsr_search_menu   Turn:0   Active: corp_AFL               |
++============================================================+
+|                                                            |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
++============================================================+
+ [q] Quit
+
++=========================================================+
+Nav > _
+
+
+--- FRAME at 2026-07-18 22:55:58 ---
++============================================================+
+|                      D B   S E A R C H                     |
++============================================================+
+[>] 1. [High ROE (]
+[ ] 2. [Low P/E (<)]
+[ ] 3. [Price < % of Book]
+[ ] 4. [Min Div Yield (%)]
+[ ] 5. [Min Market Cap (M)]
+[ ] 6. [Max Market Cap (M)]
+[ ] 7. [Debt/Equity <]
+[ ] 8. [Beta <]
+[ ] 9. [Payout Ratio < %]
+[ ] 10. [Growth Rate ]
+[ ] 11. [Current Ratio ]
+[ ] 12. [Public Co]
+[ ] 13. [Has Bonds]
+[ ] 14. [Display Results]
+[ ] 15. [Clear Criteria]
+[ ] 16. [Back to main menu]
++============================================================+
++============================================================+
+|  wsr_search_menu   Turn:0   Active: corp_AFL               |
++============================================================+
+|                                                            |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
++============================================================+
+ [q] Quit
+
++=========================================================+
+Nav > 1_
+
+
+--- FRAME at 2026-07-18 22:55:58 ---
++============================================================+
+|                      D B   S E A R C H                     |
++============================================================+
+[>] 1. [High ROE (]
+[ ] 2. [Low P/E (<)]
+[ ] 3. [Price < % of Book]
+[ ] 4. [Min Div Yield (%)]
+[ ] 5. [Min Market Cap (M)]
+[ ] 6. [Max Market Cap (M)]
+[ ] 7. [Debt/Equity <]
+[ ] 8. [Beta <]
+[ ] 9. [Payout Ratio < %]
+[ ] 10. [Growth Rate ]
+[ ] 11. [Current Ratio ]
+[ ] 12. [Public Co]
+[ ] 13. [Has Bonds]
+[ ] 14. [Display Results]
+[ ] 15. [Clear Criteria]
+[ ] 16. [Back to main menu]
++============================================================+
++============================================================+
+|  wsr_search_menu   Turn:0   Active: corp_AFL               |
++============================================================+
+|                                                            |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
++============================================================+
+ [q] Quit
+
++=========================================================+
+Nav > 1_
+
+
+--- FRAME at 2026-07-18 22:55:58 ---
++============================================================+
+|                      D B   S E A R C H                     |
++============================================================+
+[ ] 1. [High ROE (]
+[ ] 2. [Low P/E (<)]
+[ ] 3. [Price < % of Book]
+[ ] 4. [Min Div Yield (%)]
+[ ] 5. [Min Market Cap (M)]
+[ ] 6. [Max Market Cap (M)]
+[ ] 7. [Debt/Equity <]
+[ ] 8. [Beta <]
+[ ] 9. [Payout Ratio < %]
+[ ] 10. [Growth Rate ]
+[ ] 11. [Current Ratio ]
+[ ] 12. [Public Co]
+[ ] 13. [Has Bonds]
+[ ] 14. [Display Results]
+[ ] 15. [Clear Criteria]
+[>] 16. [Back to main menu]
++============================================================+
++============================================================+
+|  wsr_search_menu   Turn:0   Active: corp_AFL               |
++============================================================+
+|                                                            |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
++============================================================+
+ [q] Quit
+
++=========================================================+
+Nav > 16_
+
+
+--- FRAME at 2026-07-18 22:55:58 ---
++============================================================+
+|                      D B   S E A R C H                     |
++============================================================+
+[ ] 1. [High ROE (]
+[ ] 2. [Low P/E (<)]
+[ ] 3. [Price < % of Book]
+[ ] 4. [Min Div Yield (%)]
+[ ] 5. [Min Market Cap (M)]
+[ ] 6. [Max Market Cap (M)]
+[ ] 7. [Debt/Equity <]
+[ ] 8. [Beta <]
+[ ] 9. [Payout Ratio < %]
+[ ] 10. [Growth Rate ]
+[ ] 11. [Current Ratio ]
+[ ] 12. [Public Co]
+[ ] 13. [Has Bonds]
+[ ] 14. [Display Results]
+[ ] 15. [Clear Criteria]
+[>] 16. [Back to main menu]
++============================================================+
++============================================================+
+|  wsr_search_menu   Turn:0   Active: corp_AFL               |
++============================================================+
+|                                                            |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
++============================================================+
+ [q] Quit
+
++=========================================================+
+Nav > 16_
+
+
+--- FRAME at 2026-07-18 22:55:59 ---
++============================================================+
+|  wsr_main_menu   Turn:0   Active: corp_AFL                 |
++============================================================+
+|                                                            |
+|----------------------------------                          |
+|Your Wallet:                                                |
+|Cash..........           1613                               |
+|----------------------------------                          |
+|Active Corp Balance Sheet:                                  |
+|Cash (CD's)..            5000                               |
+|Stock Price...           115.04                             |
+|Owned By......           (independent)                      |
+|----------------------------------------------              |
+|FINANCIAL NEWS [CMZ: $0.10 (-99.38%)]                       |
+|                                                            |
+|WORLD STATUS                                                |
+|Population: 10000          Temperature: 15C                 |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
+
+--- FRAME at 2026-07-18 22:55:59 ---
++============================================================+
+|                 W A L L   S T R E E T   R A I D E R        |
++============================================================+
+[>] 1. [File]
+[ ] 2. [Game Options]
+[ ] 3. [Settings]
+[ ] 4. [Help]
+[ ] 5. [Select Player]
+[ ] 6. [Culture]
+[ ] 7. [Entity Info]
+[ ] 8. [Select Corp.]
+[ ] 9. [History]
+[ ] 10. [General]
+[ ] 11. [Tools]
+[ ] 12. [Private]
+[ ] 13. [Other Trans]
+[ ] 14. [End Turn]
+[ ] 15. [Misc. Menu]
+[ ] 16. [Chart]
+[ ] 17. [Auto]
+[ ] 18. [Watchlist]
+[ ] 19. [TICKER]
+[ ] 20. [Research Report]
+[ ] 21. [List Portfolio]
+[ ] 22. [Financial Profile]
+[ ] 23. [List Options]
+[ ] 24. [Earnings Report]
+[ ] 25. [Shareholder List]
+[ ] 26. [My Corporations]
+[ ] 27. [New Game]
+[ ] 28. [Buy/Sell]
+[ ] 29. [Financing]
+[ ] 30. [Management]
+[ ] 31. [List Futures]
+[ ] 32. [DB Search]
++============================================================+
++============================================================+
+|  wsr_main_menu   Turn:0   Active: corp_AFL                 |
++============================================================+
+|                                                            |
+|----------------------------------                          |
+|Your Wallet:                                                |
+|Cash..........           1613                               |
+|----------------------------------                          |
+|Active Corp Balance Sheet:                                  |
+|Cash (CD's)..            5000                               |
+|Stock Price...           115.04                             |
+|Owned By......           (independent)                      |
+|----------------------------------------------              |
+|FINANCIAL NEWS [CMZ: $0.10 (-99.38%)]                       |
+|                                                            |
+|WORLD STATUS                                                |
+|Population: 10000          Temperature: 15C                 |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
++============================================================+
+ [q] Quit
+
++=========================================================+
+Nav > _
+
+
+--- FRAME at 2026-07-18 22:55:59 ---
++============================================================+
+|                 W A L L   S T R E E T   R A I D E R        |
++============================================================+
+[>] 1. [File]
+[ ] 2. [Game Options]
+[ ] 3. [Settings]
+[ ] 4. [Help]
+[ ] 5. [Select Player]
+[ ] 6. [Culture]
+[ ] 7. [Entity Info]
+[ ] 8. [Select Corp.]
+[ ] 9. [History]
+[ ] 10. [General]
+[ ] 11. [Tools]
+[ ] 12. [Private]
+[ ] 13. [Other Trans]
+[ ] 14. [End Turn]
+[ ] 15. [Misc. Menu]
+[ ] 16. [Chart]
+[ ] 17. [Auto]
+[ ] 18. [Watchlist]
+[ ] 19. [TICKER]
+[ ] 20. [Research Report]
+[ ] 21. [List Portfolio]
+[ ] 22. [Financial Profile]
+[ ] 23. [List Options]
+[ ] 24. [Earnings Report]
+[ ] 25. [Shareholder List]
+[ ] 26. [My Corporations]
+[ ] 27. [New Game]
+[ ] 28. [Buy/Sell]
+[ ] 29. [Financing]
+[ ] 30. [Management]
+[ ] 31. [List Futures]
+[ ] 32. [DB Search]
++============================================================+
++============================================================+
+|  wsr_main_menu   Turn:0   Active: corp_AFL                 |
++============================================================+
+|                                                            |
+|----------------------------------                          |
+|Your Wallet:                                                |
+|Cash..........           1613                               |
+|----------------------------------                          |
+|Active Corp Balance Sheet:                                  |
+|Cash (CD's)..            5000                               |
+|Stock Price...           115.04                             |
+|Owned By......           (independent)                      |
+|----------------------------------------------              |
+|FINANCIAL NEWS [CMZ: $0.10 (-99.38%)]                       |
+|                                                            |
+|WORLD STATUS                                                |
+|Population: 10000          Temperature: 15C                 |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
++============================================================+
+ [q] Quit
+
++=========================================================+
+Nav > _
+
+
+--- FRAME at 2026-07-18 22:55:59 ---
++============================================================+
+|                 W A L L   S T R E E T   R A I D E R        |
++============================================================+
+[>] 1. [File]
+[ ] 2. [Game Options]
+[ ] 3. [Settings]
+[ ] 4. [Help]
+[ ] 5. [Select Player]
+[ ] 6. [Culture]
+[ ] 7. [Entity Info]
+[ ] 8. [Select Corp.]
+[ ] 9. [History]
+[ ] 10. [General]
+[ ] 11. [Tools]
+[ ] 12. [Private]
+[ ] 13. [Other Trans]
+[ ] 14. [End Turn]
+[ ] 15. [Misc. Menu]
+[ ] 16. [Chart]
+[ ] 17. [Auto]
+[ ] 18. [Watchlist]
+[ ] 19. [TICKER]
+[ ] 20. [Research Report]
+[ ] 21. [List Portfolio]
+[ ] 22. [Financial Profile]
+[ ] 23. [List Options]
+[ ] 24. [Earnings Report]
+[ ] 25. [Shareholder List]
+[ ] 26. [My Corporations]
+[ ] 27. [New Game]
+[ ] 28. [Buy/Sell]
+[ ] 29. [Financing]
+[ ] 30. [Management]
+[ ] 31. [List Futures]
+[ ] 32. [DB Search]
++============================================================+
++============================================================+
+|  wsr_main_menu   Turn:0   Active: corp_AFL                 |
++============================================================+
+|                                                            |
+|----------------------------------                          |
+|Your Wallet:                                                |
+|Cash..........           1613                               |
+|----------------------------------                          |
+|Active Corp Balance Sheet:                                  |
+|Cash (CD's)..            5000                               |
+|Stock Price...           115.04                             |
+|Owned By......           (independent)                      |
+|----------------------------------------------              |
+|FINANCIAL NEWS [CMZ: $0.10 (-99.38%)]                       |
+|                                                            |
+|WORLD STATUS                                                |
+|Population: 10000          Temperature: 15C                 |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
++============================================================+
+ [q] Quit
+
++=========================================================+
+Nav > _
+
+
+--- FRAME at 2026-07-18 22:58:56 ---
++============================================================+
+|                 W A L L   S T R E E T   R A I D E R        |
++============================================================+
+[>] 1. [File]
+[ ] 2. [Game Options]
+[ ] 3. [Settings]
+[ ] 4. [Help]
+[ ] 5. [Select Player]
+[ ] 6. [Culture]
+[ ] 7. [Entity Info]
+[ ] 8. [Select Corp.]
+[ ] 9. [History]
+[ ] 10. [General]
+[ ] 11. [Tools]
+[ ] 12. [Private]
+[ ] 13. [Other Trans]
+[ ] 14. [End Turn]
+[ ] 15. [Misc. Menu]
+[ ] 16. [Chart]
+[ ] 17. [Auto]
+[ ] 18. [Watchlist]
+[ ] 19. [TICKER]
+[ ] 20. [Research Report]
+[ ] 21. [List Portfolio]
+[ ] 22. [Financial Profile]
+[ ] 23. [List Options]
+[ ] 24. [Earnings Report]
+[ ] 25. [Shareholder List]
+[ ] 26. [My Corporations]
+[ ] 27. [New Game]
+[ ] 28. [Buy/Sell]
+[ ] 29. [Financing]
+[ ] 30. [Management]
+[ ] 31. [List Futures]
+[ ] 32. [DB Search]
++============================================================+
++============================================================+
+|  wsr_main_menu   Turn:0   Active: corp_AFL                 |
++============================================================+
+|                                                            |
+|----------------------------------                          |
+|Your Wallet:                                                |
+|Cash..........           1613                               |
+|----------------------------------                          |
+|Active Corp Balance Sheet:                                  |
+|Cash (CD's)..            5000                               |
+|Stock Price...           115.04                             |
+|Owned By......           (independent)                      |
+|----------------------------------------------              |
+|FINANCIAL NEWS [CMZ: $0.10 (-99.38%)]                       |
+|                                                            |
+|WORLD STATUS                                                |
+|Population: 10000          Temperature: 15C                 |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
++============================================================+
+ [q] Quit
+
++=========================================================+
+Nav > _
+
+
+--- FRAME at 2026-07-18 22:58:57 ---
++============================================================+
+|                 W A L L   S T R E E T   R A I D E R        |
++============================================================+
+[ ] 1. [File]
+[ ] 2. [Game Options]
+[>] 3. [Settings]
+[ ] 4. [Help]
+[ ] 5. [Select Player]
+[ ] 6. [Culture]
+[ ] 7. [Entity Info]
+[ ] 8. [Select Corp.]
+[ ] 9. [History]
+[ ] 10. [General]
+[ ] 11. [Tools]
+[ ] 12. [Private]
+[ ] 13. [Other Trans]
+[ ] 14. [End Turn]
+[ ] 15. [Misc. Menu]
+[ ] 16. [Chart]
+[ ] 17. [Auto]
+[ ] 18. [Watchlist]
+[ ] 19. [TICKER]
+[ ] 20. [Research Report]
+[ ] 21. [List Portfolio]
+[ ] 22. [Financial Profile]
+[ ] 23. [List Options]
+[ ] 24. [Earnings Report]
+[ ] 25. [Shareholder List]
+[ ] 26. [My Corporations]
+[ ] 27. [New Game]
+[ ] 28. [Buy/Sell]
+[ ] 29. [Financing]
+[ ] 30. [Management]
+[ ] 31. [List Futures]
+[ ] 32. [DB Search]
++============================================================+
++============================================================+
+|  wsr_main_menu   Turn:0   Active: corp_AFL                 |
++============================================================+
+|                                                            |
+|----------------------------------                          |
+|Your Wallet:                                                |
+|Cash..........           1613                               |
+|----------------------------------                          |
+|Active Corp Balance Sheet:                                  |
+|Cash (CD's)..            5000                               |
+|Stock Price...           115.04                             |
+|Owned By......           (independent)                      |
+|----------------------------------------------              |
+|FINANCIAL NEWS [CMZ: $0.10 (-99.38%)]                       |
+|                                                            |
+|WORLD STATUS                                                |
+|Population: 10000          Temperature: 15C                 |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
++============================================================+
+ [q] Quit
+
++=========================================================+
+Nav > 3_
+
+
+--- FRAME at 2026-07-18 22:58:57 ---
++============================================================+
+|                 W A L L   S T R E E T   R A I D E R        |
++============================================================+
+[ ] 1. [File]
+[ ] 2. [Game Options]
+[ ] 3. [Settings]
+[ ] 4. [Help]
+[ ] 5. [Select Player]
+[ ] 6. [Culture]
+[ ] 7. [Entity Info]
+[ ] 8. [Select Corp.]
+[ ] 9. [History]
+[ ] 10. [General]
+[ ] 11. [Tools]
+[ ] 12. [Private]
+[ ] 13. [Other Trans]
+[ ] 14. [End Turn]
+[ ] 15. [Misc. Menu]
+[ ] 16. [Chart]
+[ ] 17. [Auto]
+[ ] 18. [Watchlist]
+[ ] 19. [TICKER]
+[ ] 20. [Research Report]
+[ ] 21. [List Portfolio]
+[ ] 22. [Financial Profile]
+[ ] 23. [List Options]
+[ ] 24. [Earnings Report]
+[ ] 25. [Shareholder List]
+[ ] 26. [My Corporations]
+[ ] 27. [New Game]
+[ ] 28. [Buy/Sell]
+[ ] 29. [Financing]
+[>] 30. [Management]
+[ ] 31. [List Futures]
+[ ] 32. [DB Search]
++============================================================+
++============================================================+
+|  wsr_main_menu   Turn:0   Active: corp_AFL                 |
++============================================================+
+|                                                            |
+|----------------------------------                          |
+|Your Wallet:                                                |
+|Cash..........           1613                               |
+|----------------------------------                          |
+|Active Corp Balance Sheet:                                  |
+|Cash (CD's)..            5000                               |
+|Stock Price...           115.04                             |
+|Owned By......           (independent)                      |
+|----------------------------------------------              |
+|FINANCIAL NEWS [CMZ: $0.10 (-99.38%)]                       |
+|                                                            |
+|WORLD STATUS                                                |
+|Population: 10000          Temperature: 15C                 |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
++============================================================+
+ [q] Quit
+
++=========================================================+
+Nav > 30_
+
+
+--- FRAME at 2026-07-18 22:58:57 ---
++============================================================+
+|                 W A L L   S T R E E T   R A I D E R        |
++============================================================+
+[ ] 1. [File]
+[ ] 2. [Game Options]
+[ ] 3. [Settings]
+[ ] 4. [Help]
+[ ] 5. [Select Player]
+[ ] 6. [Culture]
+[ ] 7. [Entity Info]
+[ ] 8. [Select Corp.]
+[ ] 9. [History]
+[ ] 10. [General]
+[ ] 11. [Tools]
+[ ] 12. [Private]
+[ ] 13. [Other Trans]
+[ ] 14. [End Turn]
+[ ] 15. [Misc. Menu]
+[ ] 16. [Chart]
+[ ] 17. [Auto]
+[ ] 18. [Watchlist]
+[ ] 19. [TICKER]
+[ ] 20. [Research Report]
+[ ] 21. [List Portfolio]
+[ ] 22. [Financial Profile]
+[ ] 23. [List Options]
+[ ] 24. [Earnings Report]
+[ ] 25. [Shareholder List]
+[ ] 26. [My Corporations]
+[ ] 27. [New Game]
+[ ] 28. [Buy/Sell]
+[ ] 29. [Financing]
+[>] 30. [Management]
+[ ] 31. [List Futures]
+[ ] 32. [DB Search]
++============================================================+
++============================================================+
+|  wsr_main_menu   Turn:0   Active: corp_AFL                 |
++============================================================+
+|                                                            |
+|----------------------------------                          |
+|Your Wallet:                                                |
+|Cash..........           1613                               |
+|----------------------------------                          |
+|Active Corp Balance Sheet:                                  |
+|Cash (CD's)..            5000                               |
+|Stock Price...           115.04                             |
+|Owned By......           (independent)                      |
+|----------------------------------------------              |
+|FINANCIAL NEWS [CMZ: $0.10 (-99.38%)]                       |
+|                                                            |
+|WORLD STATUS                                                |
+|Population: 10000          Temperature: 15C                 |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
++============================================================+
+ [q] Quit
+
++=========================================================+
+Nav > 30_
+
+
+--- FRAME at 2026-07-18 22:58:57 ---
++============================================================+
+|                     M A N A G E M E N T                    |
++============================================================+
+[>] 1. [Elect me as CEO]
+[ ] 2. [Resign as CEO]
+[ ] 3. [Increase Dividend +10%]
+[ ] 4. [Increase R&D Spend +10%]
+[ ] 5. [Increase Marketing +10%]
+[ ] 6. [Increase Growth +10%]
+[ ] 7. [Toggle AutoPilot]
+[ ] 8. [Back to main menu]
++============================================================+
++============================================================+
+|  wsr_main_menu   Turn:0   Active: corp_AFL                 |
++============================================================+
+|                                                            |
+|----------------------------------                          |
+|Your Wallet:                                                |
+|Cash..........           1613                               |
+|----------------------------------                          |
+|Active Corp Balance Sheet:                                  |
+|Cash (CD's)..            5000                               |
+|Stock Price...           115.04                             |
+|Owned By......           (independent)                      |
+|----------------------------------------------              |
+|FINANCIAL NEWS [CMZ: $0.10 (-99.38%)]                       |
+|                                                            |
+|WORLD STATUS                                                |
+|Population: 10000          Temperature: 15C                 |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
++============================================================+
+ [q] Quit
+
++=========================================================+
+Nav > _
+
+
+--- FRAME at 2026-07-18 22:58:57 ---
++============================================================+
+|  wsr_management_menu   Turn:0   Active: corp_AFL           |
++============================================================+
+|                                                            |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
+
+--- FRAME at 2026-07-18 22:58:57 ---
++============================================================+
+|                     M A N A G E M E N T                    |
++============================================================+
+[>] 1. [Elect me as CEO]
+[ ] 2. [Resign as CEO]
+[ ] 3. [Increase Dividend +10%]
+[ ] 4. [Increase R&D Spend +10%]
+[ ] 5. [Increase Marketing +10%]
+[ ] 6. [Increase Growth +10%]
+[ ] 7. [Toggle AutoPilot]
+[ ] 8. [Back to main menu]
++============================================================+
++============================================================+
+|  wsr_management_menu   Turn:0   Active: corp_AFL           |
++============================================================+
+|                                                            |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
++============================================================+
+ [q] Quit
+
++=========================================================+
+Nav > _
+
+
+--- FRAME at 2026-07-18 22:59:08 ---
++============================================================+
+|                     M A N A G E M E N T                    |
++============================================================+
+[ ] 1. [Elect me as CEO]
+[ ] 2. [Resign as CEO]
+[ ] 3. [Increase Dividend +10%]
+[ ] 4. [Increase R&D Spend +10%]
+[ ] 5. [Increase Marketing +10%]
+[ ] 6. [Increase Growth +10%]
+[ ] 7. [Toggle AutoPilot]
+[>] 8. [Back to main menu]
++============================================================+
++============================================================+
+|  wsr_management_menu   Turn:0   Active: corp_AFL           |
++============================================================+
+|                                                            |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
++============================================================+
+ [q] Quit
+
++=========================================================+
+Nav > 8_
+
+
+--- FRAME at 2026-07-18 22:59:08 ---
++============================================================+
+|                     M A N A G E M E N T                    |
++============================================================+
+[ ] 1. [Elect me as CEO]
+[ ] 2. [Resign as CEO]
+[ ] 3. [Increase Dividend +10%]
+[ ] 4. [Increase R&D Spend +10%]
+[ ] 5. [Increase Marketing +10%]
+[ ] 6. [Increase Growth +10%]
+[ ] 7. [Toggle AutoPilot]
+[>] 8. [Back to main menu]
++============================================================+
++============================================================+
+|  wsr_management_menu   Turn:0   Active: corp_AFL           |
++============================================================+
+|                                                            |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
++============================================================+
+ [q] Quit
+
++=========================================================+
+Nav > 8_
+
+
+--- FRAME at 2026-07-18 22:59:09 ---
++============================================================+
+|                 W A L L   S T R E E T   R A I D E R        |
++============================================================+
+[>] 1. [File]
+[ ] 2. [Game Options]
+[ ] 3. [Settings]
+[ ] 4. [Help]
+[ ] 5. [Select Player]
+[ ] 6. [Culture]
+[ ] 7. [Entity Info]
+[ ] 8. [Select Corp.]
+[ ] 9. [History]
+[ ] 10. [General]
+[ ] 11. [Tools]
+[ ] 12. [Private]
+[ ] 13. [Other Trans]
+[ ] 14. [End Turn]
+[ ] 15. [Misc. Menu]
+[ ] 16. [Chart]
+[ ] 17. [Auto]
+[ ] 18. [Watchlist]
+[ ] 19. [TICKER]
+[ ] 20. [Research Report]
+[ ] 21. [List Portfolio]
+[ ] 22. [Financial Profile]
+[ ] 23. [List Options]
+[ ] 24. [Earnings Report]
+[ ] 25. [Shareholder List]
+[ ] 26. [My Corporations]
+[ ] 27. [New Game]
+[ ] 28. [Buy/Sell]
+[ ] 29. [Financing]
+[ ] 30. [Management]
+[ ] 31. [List Futures]
+[ ] 32. [DB Search]
++============================================================+
++============================================================+
+|  wsr_management_menu   Turn:0   Active: corp_AFL           |
++============================================================+
+|                                                            |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
++============================================================+
+ [q] Quit
+
++=========================================================+
+Nav > _
+
+
+--- FRAME at 2026-07-18 22:59:09 ---
++============================================================+
+|  wsr_main_menu   Turn:0   Active: corp_AFL                 |
++============================================================+
+|                                                            |
+|----------------------------------                          |
+|Your Wallet:                                                |
+|Cash..........           1613                               |
+|----------------------------------                          |
+|Active Corp Balance Sheet:                                  |
+|Cash (CD's)..            5000                               |
+|Stock Price...           115.04                             |
+|Owned By......           (independent)                      |
+|----------------------------------------------              |
+|FINANCIAL NEWS [CMZ: $0.10 (-99.38%)]                       |
+|                                                            |
+|WORLD STATUS                                                |
+|Population: 10000          Temperature: 15C                 |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
+
+--- FRAME at 2026-07-18 22:59:09 ---
++============================================================+
+|  wsr_main_menu   Turn:0   Active: corp_AFL                 |
++============================================================+
+|                                                            |
+|----------------------------------                          |
+|Your Wallet:                                                |
+|Cash..........           1613                               |
+|----------------------------------                          |
+|Active Corp Balance Sheet:                                  |
+|Cash (CD's)..            5000                               |
+|Stock Price...           115.04                             |
+|Owned By......           (independent)                      |
+|----------------------------------------------              |
+|FINANCIAL NEWS [CMZ: $0.10 (-99.38%)]                       |
+|                                                            |
+|WORLD STATUS                                                |
+|Population: 10000          Temperature: 15C                 |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
+
+--- FRAME at 2026-07-18 22:59:09 ---
++============================================================+
+|                 W A L L   S T R E E T   R A I D E R        |
++============================================================+
+[>] 1. [File]
+[ ] 2. [Game Options]
+[ ] 3. [Settings]
+[ ] 4. [Help]
+[ ] 5. [Select Player]
+[ ] 6. [Culture]
+[ ] 7. [Entity Info]
+[ ] 8. [Select Corp.]
+[ ] 9. [History]
+[ ] 10. [General]
+[ ] 11. [Tools]
+[ ] 12. [Private]
+[ ] 13. [Other Trans]
+[ ] 14. [End Turn]
+[ ] 15. [Misc. Menu]
+[ ] 16. [Chart]
+[ ] 17. [Auto]
+[ ] 18. [Watchlist]
+[ ] 19. [TICKER]
+[ ] 20. [Research Report]
+[ ] 21. [List Portfolio]
+[ ] 22. [Financial Profile]
+[ ] 23. [List Options]
+[ ] 24. [Earnings Report]
+[ ] 25. [Shareholder List]
+[ ] 26. [My Corporations]
+[ ] 27. [New Game]
+[ ] 28. [Buy/Sell]
+[ ] 29. [Financing]
+[ ] 30. [Management]
+[ ] 31. [List Futures]
+[ ] 32. [DB Search]
++============================================================+
++============================================================+
+|  wsr_main_menu   Turn:0   Active: corp_AFL                 |
++============================================================+
+|                                                            |
+|----------------------------------                          |
+|Your Wallet:                                                |
+|Cash..........           1613                               |
+|----------------------------------                          |
+|Active Corp Balance Sheet:                                  |
+|Cash (CD's)..            5000                               |
+|Stock Price...           115.04                             |
+|Owned By......           (independent)                      |
+|----------------------------------------------              |
+|FINANCIAL NEWS [CMZ: $0.10 (-99.38%)]                       |
+|                                                            |
+|WORLD STATUS                                                |
+|Population: 10000          Temperature: 15C                 |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
++============================================================+
+ [q] Quit
+
++=========================================================+
+Nav > _
+
+
+--- FRAME at 2026-07-18 23:00:00 ---
++============================================================+
+|                 W A L L   S T R E E T   R A I D E R        |
++============================================================+
+[>] 1. [File]
+[ ] 2. [Game Options]
+[ ] 3. [Settings]
+[ ] 4. [Help]
+[ ] 5. [Select Player]
+[ ] 6. [Culture]
+[ ] 7. [Entity Info]
+[ ] 8. [Select Corp.]
+[ ] 9. [History]
+[ ] 10. [General]
+[ ] 11. [Tools]
+[ ] 12. [Private]
+[ ] 13. [Other Trans]
+[ ] 14. [End Turn]
+[ ] 15. [Misc. Menu]
+[ ] 16. [Chart]
+[ ] 17. [Auto]
+[ ] 18. [Watchlist]
+[ ] 19. [TICKER]
+[ ] 20. [Research Report]
+[ ] 21. [List Portfolio]
+[ ] 22. [Financial Profile]
+[ ] 23. [List Options]
+[ ] 24. [Earnings Report]
+[ ] 25. [Shareholder List]
+[ ] 26. [My Corporations]
+[ ] 27. [New Game]
+[ ] 28. [Buy/Sell]
+[ ] 29. [Financing]
+[ ] 30. [Management]
+[ ] 31. [List Futures]
+[ ] 32. [DB Search]
++============================================================+
++============================================================+
+|  wsr_main_menu   Turn:0   Active: corp_AFL                 |
++============================================================+
+|                                                            |
+|----------------------------------                          |
+|Your Wallet:                                                |
+|Cash..........           1613                               |
+|----------------------------------                          |
+|Active Corp Balance Sheet:                                  |
+|Cash (CD's)..            5000                               |
+|Stock Price...           115.04                             |
+|Owned By......           (independent)                      |
+|----------------------------------------------              |
+|FINANCIAL NEWS [CMZ: $0.10 (-99.38%)]                       |
+|                                                            |
+|WORLD STATUS                                                |
+|Population: 10000          Temperature: 15C                 |
+|                                                            |
+|  >                                                         |
+|  (type digit(s), Enter to select, q to quit)               |
++============================================================+
+
++============================================================+
+ [q] Quit
+
++=========================================================+
+Nav > _
+

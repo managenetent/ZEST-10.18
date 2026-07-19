@@ -1,0 +1,27 @@
+# piececraft-3d-pal main loop - v0. No movement/camera yet (map_01 is
+# rendered whole, flat top-down, no hero) - this loop's only job right
+# now is the bootstrap render + a quit key, same minimal shape
+# mutaclsym's own main_loop.pal started from before Phase 1 added
+# movement. x9 = 'q' (113), same quit-key convention as every other
+# project in this family - see mutaclsym/pal/main_loop.pal's own
+# header comment for the citation trail on why 'q' is never part of
+# the numbered/digit dispatch.
+li x1, 0
+li x9, 113
+
+compose_rgb_frame
+hit_frame
+
+loop:
+read_history x2, x1
+beq x2, x0, no_key
+beq x2, x9, quit
+camera_input x2
+compose_rgb_frame
+hit_frame
+no_key:
+sleep 30000
+j loop
+
+quit:
+halt

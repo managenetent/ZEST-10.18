@@ -1,0 +1,40 @@
+# single_tick.pal - the SAME FSM dispatch body as main_loop.pal, but
+# exactly ONE tick, no batch loop, then halt. Needed for human-driven
+# control to be meaningfully interactive: main_loop.pal's 12-iteration
+# batch loop runs to completion inside one prisc+x process with no
+# pause point, so a human can't intervene mid-run. This script is
+# invoked repeatedly, once per button.sh invocation (button.sh step),
+# so a human can alternate `step` / `choose eat|evolve` / `step` across
+# separate shell commands - the real, honest way this architecture
+# supports human-in-the-loop control (see decision_mode=4 in
+# ops/bot_choose.c and fsm/states.txt).
+li x3, 0
+li x4, 1
+li x5, 2
+li x6, 3
+
+read_state creature_01 current_state x2
+beq x2, x3, do_idle
+beq x2, x4, do_deciding
+beq x2, x5, do_eating
+beq x2, x6, do_evolving
+j done
+
+do_idle:
+bot_tick_idle creature_01
+j done
+
+do_deciding:
+bot_choose creature_01
+j done
+
+do_eating:
+bot_eat creature_01
+j done
+
+do_evolving:
+bot_evolve creature_01
+j done
+
+done:
+halt

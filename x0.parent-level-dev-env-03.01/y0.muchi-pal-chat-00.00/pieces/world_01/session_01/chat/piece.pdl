@@ -1,0 +1,14 @@
+SECTION      | KEY                | VALUE
+----------------------------------------
+META         | piece_id           | chat
+META         | version            | 0.1
+
+STATE        | current_model_id     | groq-tool-use-mac
+STATE        | ai_state             | IDLE
+
+METHOD       | send_message         | ops/+x/send_message.+x
+METHOD       | switch_model         | ops/+x/switch_model.+x
+METHOD       | execute_tool         | ops/+x/execute_tool.+x
+METHOD       | deny_tool            | ops/+x/deny_tool.+x
+
+RESPONSE     | default              | *waiting...*

@@ -1,0 +1,369 @@
+3D VIEW - real v1 built and live-verified 2026-07-17, this handoff
+covers exactly what's done, what's a real named simplification, and
+what the concrete next steps are for whoever continues this.
+
+========================================================================
+0. THE REAL REFERENCE - READ THIS FIRST IF YOU HAVEN'T
+========================================================================
+
+Direct user correction this session: the project named
+`projects/piececraft-3d` (using a `.gltpm` layout + `gltpm_parser.c`) is
+DEAD, LEGACY KRUFT - a precursor to wraith-alpha that was "done wrong",
+same relationship gl-os has to wraith-alpha's own real desktop. DO NOT
+build toward that project or its gltpm format.
+
+The REAL reference is:
+  - `wraith-alpha/wraith-projects/piececraft-wraith/manager/
+    piececraft-wraith_manager.c` - the input/state manager. Confirms
+    the real control scheme: arrows move the xelector/hero (`↑↓←→ Move
+    xelector`), X/Z ascend/descend, '8' toggles 2D/3D (mutaclsym uses
+    '0' instead, per direct user preference - the MECHANISM matters,
+    not the literal key), '1'/'2'/'3' switch camera POV, W/A/S/D pan
+    the camera (forward/back/left/right), X/Z pan the camera vertically.
+  - `wraith-alpha/plugins/wraith_rgb_daemon.c`'s `draw_tile_zmap_
+    preview_3d()` (~line 1821) and `project_world_point_ex()`
+    (~line 992) - the REAL 3D rendering math (a genuine software
+    perspective-projection engine: world->camera translate, pitch
+    rotate, perspective divide, then a per-pixel depth buffer + ray
+    marching for the actual tile geometry). This is a big, sophisticated
+    file (3300+ lines) - read the relevant sections in full before
+    changing anything in mutaclsym's own port, don't guess from this
+    handoff alone.
+
+Neither of the above design docs referenced in code comments
+(`ARCHITECTURE-RGB-RENDERING.md`, `py3d-inspo.md`) exist in this
+machine's own `/home/no/Downloads/1.TPMOS_c_+rmmp.0100.0110/` snapshot -
+the actual C code is the only available ground truth; don't go looking
+for those docs, they're not there.
+
+========================================================================
+1. WHAT'S BUILT (real, working, live-verified via dump_rgb_png.+x)
+========================================================================
+
+1.1 Controls (per DIRECT, EXPLICIT instruction - not the reference's
+    own key choices where they conflicted):
+  - Arrows: movement, ALWAYS - both the hero (normal mode) and the
+    xlector cursor (interact_mode=1), in BOTH 2D and 3D. This is a
+    REAL BEHAVIOR CHANGE: wasd used to also move the hero (see
+    ops/move_player.c's old `case 'w': case ARROW_UP:` etc.) - it no
+    longer does, anywhere, per direct instruction ("wasd should never
+    work for movement").
+  - '0': toggles `render_mode` (0=2D, 1=3D) - a pure display
+    preference, same shape as 'e' (emoji toggle). GL-only in effect -
+    ops/compose_frame.c (ASCII) never reads render_mode at all, so
+    toggling it changes nothing in the terminal view, matching real
+    wraith's own convention.
+  - '1'/'2'/'3' (only while render_mode==1 - see is_pov_key in
+    ops/choice.c): set `camera_mode` (1=1st person, 2=3rd person,
+    3=free camera). Outside 3D mode these keys keep their EXISTING
+    meaning (pickup='2' still works normally in 2D - '1' was already
+    unused by the action bar).
+  - wasd (only while render_mode==1 AND camera_mode==3 - free camera):
+    pan the camera. w/s = forward/back, a/d = left/right, x/z = up/down
+    on the vertical axis. See ops/move_player.c's "CAMERA PAN" block.
+    A no-op in 2D and in POV 1/2 (those are fixed presets the renderer
+    itself computes).
+
+1.2 New hero/state.txt fields (all in
+    pieces/world_01/map_start/hero/state.txt, and its _template/saves
+    copies - NOT yet propagated to those copies, see §3.1):
+  - `render_mode` (int, 0/1) - written by ops/choice.c.
+  - `camera_mode` (int, 1/2/3) - written by ops/choice.c.
+  - `cam_pan_x`/`cam_pan_y`/`cam_pan_z` (double, "%.2f" text) - written
+    by ops/move_player.c's new CAMERA PAN block. Only meaningful in
+    camera_mode==3.
+  - `facing` (int, one of the ARROW_* sentinel values 1000-1003) -
+    written by ops/move_player.c on every actual arrow-driven hero
+    move (NOT on xlector-cursor movement - facing represents the
+    HERO's own orientation). Drives the 3D view's yaw (which direction
+    "forward" means) for POV 1/2.
+
+1.3 The renderer itself: ops/compose_rgb_frame.c, new functions
+    (grouped under one big header comment, search
+    "3D VIEW - real, direct instruction" in that file):
+  - `project_3d()` - the real perspective-projection formula
+    (translate + pitch rotate + perspective divide), ported from
+    project_world_point_ex().
+  - `yaw_rotate()` / `facing_to_yaw()` - horizontal rotation so
+    "forward" always means "into the screen" regardless of which
+    absolute map direction the hero (or camera) faces. The reference
+    does an equivalent rotation for MOUSE-ORBIT; this reuses the idea
+    for facing-direction instead (mutaclsym has no mouse input at all).
+  - `fill_quad_3d()` - a plain scanline convex-quad fill (NOT the
+    reference's own depth-interpolated, frustum-clipped face fill -
+    see §2 below for why this is a named simplification, not an
+    oversight).
+  - `draw_quad_3d()` - projects 4 world corners and fills, REJECTING
+    the whole quad if any corner is behind the near plane (again, see
+    §2 - the reference properly CLIPS instead of rejecting).
+  - `glyph_walkable_3d()` - reads the registry's own `walkable` field
+    (duplicated from move_player.c's own glyph_walkable(), same "no
+    shared headers" convention every op in this project already
+    follows).
+  - `render_3d_view()` - the actual per-frame render: sets up camera
+    position/pitch per camera_mode (three hardcoded presets, see §2.1
+    for the real tuning story), then walks a `VIEW_3D_RADIUS`-tile
+    square around the hero in painter's-algorithm (far-to-near row)
+    order, drawing each non-walkable tile as a simple extruded box
+    (top face + ONE camera-facing side face, shaded darker) and each
+    walkable tile as a flat floor quad, using the SAME real registry
+    colors (`glyph_rgb_top()`) the 2D view already uses.
+  - Hooked into `main()`: the old flat-tile-blit loop is now inside
+    `if (render_mode == 0) { ... } else { render_3d_view(...); }` -
+    the 2D code path itself is BYTE-FOR-BYTE unchanged, just moved
+    inside the else branch. emoji_mode/emoji rendering is completely
+    irrelevant to the 3D path (real terrain colors either way).
+
+1.4 Build: `scripts/build.sh` now links compose_rgb_frame.c against
+    `-lm` (needed for `math.h`'s sin/cos) - this is the only build.sh
+    change. `./button.sh compile` reaches zero warnings.
+
+========================================================================
+2. NAMED SIMPLIFICATIONS vs. the real reference (confirmed via direct
+   read of wraith_rgb_daemon.c - these are real, deliberate scope cuts
+   for a first working pass, not silently-assumed equivalents)
+========================================================================
+
+  - PAINTER'S ALGORITHM, not a real per-pixel depth buffer. Overlapping
+    geometry can occasionally draw in the wrong order (e.g. a near
+    wall's corner under a far wall's edge). The reference's own
+    history shows THIS was its own real first stage too (ray marching
+    + depth buffer was a later upgrade on top of exactly this same
+    box-per-tile approach) - a legitimate v1, not a corner cut.
+  - NEAR-PLANE REJECT, not clip. A wall extremely close to the camera
+    can visibly vanish (whole quad skipped) rather than clip smoothly
+    at the frustum edge. The reference's own `draw_clipped_face()`
+    does real polygon clipping - a genuine, separate upgrade.
+  - ONE side face per wall (whichever edge faces the camera's own
+    row), not a real 4-side visibility test (the reference's own
+    `draw_box()` checks all 4 side planes plus the bottom). Still
+    gives a real sense of wall height/depth, just not fully correct
+    from every angle.
+  - NO ray marching, NO translucency pass, NO mouse-driven orbit (this
+    project has no mouse input at all - `facing` from arrow keys does
+    the job real wraith's mouse-yaw does there).
+  - NO ground wireframe grid (the reference draws one for visual
+    reference beyond the tile edges themselves) - floor tiles' own
+    flat color quads currently do this job implicitly.
+  - Camera preset pitch/height/scale values were TUNED EMPIRICALLY via
+    `dump_rgb_png.+x`, not derived analytically from the reference's
+    own numbers (which are tuned to ITS OWN world-unit scale, not
+    verified to transfer). See §2.1 - if these ever look wrong again
+    after an unrelated change, re-verify the same way, don't assume
+    the current numbers are load-bearing constants.
+
+2.1 REAL BUG FOUND AND FIXED DURING THIS SESSION'S OWN TESTING, worth
+    understanding if camera tuning ever needs revisiting: the first
+    POV-2/3 attempt (pitch=28°, cam_y=2.2, using the SAME `scale=210`
+    POV-1 uses) rendered a completely BLACK frame - not a wrong angle,
+    NOTHING drew at all. Root cause, confirmed by adding a temporary
+    stderr print of the computed camera position/pitch and hand-
+    computing `project_3d()`'s own math for a real floor tile: `y2 *
+    scale * persp` (the vertical screen offset) grows with BOTH pitch
+    and cam_y - the steeper/higher combination pushed every visible
+    tile's projected Y position to ~587px, far outside the real
+    304px-tall frame, so literally everything was projecting off-
+    screen. Fixed by tuning pitch/cam_y down (7°/0.9 for POV 2/3,
+    matching POV 1's own already-working numbers closely) rather than
+    changing `scale` itself. If a future POV wants a dramatically
+    different angle/height, expect to re-tune `scale` too, not just
+    assume 210 is universal - verify with a real PNG dump before
+    trusting new numbers.
+
+========================================================================
+3. REAL, NAMED, NOT-YET-DONE WORK
+========================================================================
+
+3.1 The new hero/state.txt fields (render_mode, camera_mode,
+    cam_pan_x/y/z, facing) have NOT been added to `pieces/
+    world_01_template/map_start/hero/state.txt` or `pieces/saves/
+    save_1/world_01/map_start/hero/state.txt`. They don't strictly
+    need to be (every reader has a real default via read_kv_int's own
+    `def` argument), but a fresh New Game currently starts in 2D by
+    default (render_mode absent -> 0) - confirm this is really the
+    desired default before shipping, and if a different default is
+    wanted, update all 3 copies together (matching this project's own
+    established "update all 3 on-disk copies" convention from earlier
+    work this same day).
+
+3.2 ops/compose_frame.c (the ASCII renderer) never reads render_mode
+    at all - confirmed this is the CORRECT behavior (3D is GL-only,
+    matching real wraith), not an oversight, but worth stating
+    explicitly so a future session doesn't "fix" it by mistake.
+
+3.3 chtpm mode's OWN GL rendering (`shared-ops/chtpm_rgb_render.c`)
+    does NOT go through render_3d_view() at all - that daemon only
+    ever font-rasterizes `current_frame.txt` (chtpm chrome + the flat
+    ASCII/emoji map, as TEXT), completely independent of
+    compose_rgb_frame.c. The 3D toggle currently only affects
+    mutaclsym's own regular "run" mode GL window (`./button.sh run`,
+    NOT `./button.sh chtpm`). Whether chtpm mode should ALSO get a 3D
+    view (and how - chtpm's own render pipeline has no concept of
+    perspective/camera at all right now) is a real, separate, bigger
+    design question, not started.
+
+3.4 Real depth buffer / ray marching / proper frustum clipping / full
+    4-side wall visibility / ground wireframe grid / translucency pass -
+    all named in §2 above as real gaps vs. the reference, none started.
+    If any of these become a real, visible problem in actual play
+    (not just "the reference has it so we should too"), that's the
+    signal to prioritize the specific one that's actually biting,
+    rather than porting the whole reference wholesale.
+
+3.5 No visual indicator in the chrome/footer showing current
+    render_mode/camera_mode (the reference's own scene.objects.pdl has
+    a real `cam_hud`/`coords_hud` text object showing "Camera: POV1"
+    etc.) - a player currently has no on-screen confirmation of which
+    mode they're in besides the view itself looking different. Real,
+    small, worth adding to ops/compose_rgb_frame.c's own header/footer
+    text blit alongside HP/Hunger/etc.
+
+3.6 VIEW_3D_RADIUS (12 tiles) and the camera presets are single global
+    constants - no per-map tuning, no consideration for a map bigger
+    than mutaclsym's current ones. Should be fine for now (matches
+    this project's own existing camera-clamp conventions elsewhere)
+    but flagging since it wasn't stress-tested against map_gen_01 or
+    the multi-Z buildings.
+
+========================================================================
+4. VERIFICATION DONE THIS SESSION
+========================================================================
+
+  - `gcc -Wall -Wextra -O2` on both changed ops (move_player.c,
+    choice.c) and the renderer (compose_rgb_frame.c, with -lm): zero
+    warnings, all three.
+  - Full `./button.sh compile`-equivalent (scripts/build.sh): zero
+    new warnings/errors (only compose_rgb_frame.c/move_player.c/
+    choice.c were touched; nothing else regressed).
+  - Live `dump_rgb_png.+x` visual verification (in an isolated scratch
+    copy, never the live project tree) for all 3 camera modes:
+      - POV 1 (1st person): floor + a distant wall silhouette, correct
+        perspective convergence toward a vanishing point.
+      - POV 2 (3rd person): floor plane, a wall corner, and a door
+        tile, all in real registry colors, correct perspective -
+        this is the mode that surfaced and got the black-frame bug
+        fixed (see §2.1).
+      - POV 3 (free camera): confirmed `cam_pan_y` actually shifts the
+        rendered view (raised the camera, view angle visibly changed).
+  - ALSO verified through the REAL playable interface (title screen ->
+    game_start -> real key relay -> choice.c/move_player.c -> state
+    written), in an isolated scratch copy, via direct history.txt
+    injection (prisc+x running pal/main_loop.pal for real, not a
+     one-shot op call): '0' -> render_mode=1 (confirmed via last_key=48
+    too); '2' -> camera_mode=2 with inventory UNTOUCHED (confirming '2'
+    means POV-switch, not pickup, while render_mode==1); 'w' while
+    camera_mode==2 -> correctly a NO-OP (xlector position unchanged);
+    '3' -> camera_mode=3; 'w' while camera_mode==3 -> cam_pan_z
+    correctly became 0.50; ARROW_UP -> xlector_pos_y correctly
+    decremented. This covers the full real control-scheme chain (mode-
+    gated key reinterpretation + wasd-only-in-free-cam + arrows-always-
+    move), not just the renderer's own pixel output. What's STILL only
+    verified via direct op call + dump_rgb_png.+x, not the live
+    keyboard path: the actual 3D PIXEL OUTPUT changing in response to a
+    live camera_mode/pan change (i.e. gl_mirror.c actually showing a
+    different frame after a real '0'/'1'/'2'/'3'/wasd keypress,
+    end-to-end through the two-stage pulse) - the renderer itself was
+    only re-invoked manually between dumps, not driven by the live
+    main_loop.pal tick that would normally call it. Real, remaining,
+    but narrower than "not tested at all."
+
+========================================================================
+5. CHTPM-MODE 3D WIRING (2026-07-17, direct instruction: "wire it into
+   chtpm mode. the normal mode will be deprecated once this is proven")
+========================================================================
+
+WHAT'S BUILT: a generic, project-agnostic MAP3D_MARKER compositing
+protocol, so chtpm mode's own chrome-rendering path (shared-ops/
+chtpm_rgb_render.c, which font-rasterizes current_frame.txt verbatim,
+zero .chtpm awareness) can still show the real 3D view without needing
+any game-state awareness of its own:
+
+  - `ops/compose_frame.c`: when render_mode==1, emits a single 0x01
+    (SOH) byte as its own line, right after the "MUTACLSYM map:..."
+    header, before the viewport rows.
+  - `ops/compose_rgb_frame.c`: in chtpm mode (detected via player_app/
+    state.txt's own module_path field), if render_mode==1, renders the
+    real 3D view into a SEPARATE overlay file
+    (pieces/display/rgb_frame_3d_overlay.raw, ov_w=640 ov_h=256) plus a
+    receipt (.receipt.txt: overlay_w/overlay_h) - never touches
+    rgb_frame.raw directly in chtpm mode, avoiding a two-writer race on
+    THAT file.
+  - `shared-ops/chtpm_rgb_render.c` (SHARED - see its own header
+    comment): its line-render loop detects a line whose first byte is
+    0x01, blits the overlay file at that row instead of rendering it as
+    text, and skips ahead in its own row counter by the overlay's own
+    height (round up to whole glyph rows) so text below the 3D view
+    stays aligned. Fully generic - no mutaclsym-specific code in this
+    shared file.
+  - `pal/main_loop_chtpm.pal`: compose_rgb_frame is called again
+    (previously removed - see that file's own header comment for the
+    full history of why it was removed, then why it's safe to re-add
+    now that it never touches rgb_frame.raw in chtpm mode).
+
+REAL BUG FOUND AND FIXED DURING VERIFICATION (not guessed - found by
+grep'ing for the literal 0x01 marker byte in current_frame.txt/view.txt
+and finding it MISSING despite compose_frame.c definitely writing it):
+
+  `ops/compose_frame.c`'s existing "CHTPM VIEW BRIDGE" (which lets a
+  .chtpm layout's own `${game_map}` var show this project's game by
+  writing pieces/apps/player_app/view.txt) used to work by writing
+  current_frame.txt, closing it, then RE-OPENING current_frame.txt for
+  READING to copy its own just-written content into view.txt. This is
+  a genuine race: chtpm_parser_pal.c (a separate, persistent process)
+  ALSO writes current_frame.txt on its own render cycle (its fully
+  chrome-wrapped final frame, built by substituting view.txt's content
+  into game.chtpm's `${game_map}` slot) - and can land a write in the
+  exact gap between compose_frame.c's own fclose and its re-open.  When
+  that happens, compose_frame.c's "read back what I just wrote" instead
+  reads chtpm_parser_pal's ALREADY chrome-wrapped output, and copies
+  THAT into view.txt - which then gets embedded AGAIN inside a fresh
+  chrome wrapper on the next chtpm_parser_pal cycle. Confirmed live:
+  view.txt was found starting with the chrome border/title instead of
+  compose_frame.c's own "MUTACLSYM map:..." header, and current_frame.txt
+  showed the full chrome block twice before reaching the map content
+  once. This is a real, PRE-EXISTING architectural race in the shared
+  view-bridge mechanism (not new to 3D, not gltpm/piececraft-3d related)
+  - the MAP3D_MARKER verification is just what surfaced it, because the
+  marker byte reliably vanished whenever the race fired.
+
+  FIX (in `ops/compose_frame.c`): build the entire frame in memory via
+  `open_memstream()` instead of writing straight to current_frame.txt
+  (every existing fprintf/fputc/fputs call is unchanged - it's still a
+  FILE*), then write the SAME in-memory buffer to BOTH
+  current_frame.txt and view.txt directly, with no read-back through
+  either file. This removes the race window entirely: nothing this
+  process writes is ever re-derived from a file another process might
+  have touched in between.
+
+VERIFIED after the fix, real playable-interface test (isolated scratch
+copy, prisc+x + chtpm_parser_pal + chtpm_rgb_render all launched for
+real via absolute paths, never the live project tree):
+  - `grep -c $'\x01'` on both current_frame.txt and view.txt: exactly 1
+    each (was 0 before the fix, despite render_mode=1 being set).
+  - view.txt's first line: "MUTACLSYM   map: map_start  turn: 47" (was:
+    the chrome border, before the fix).
+  - `dump_rgb_png.+x` against the REAL composited rgb_frame.raw (the
+    actual thing gl_mirror/GL reads, not just the overlay file in
+    isolation): shows the chtpm chrome (title, numbered menu 1-9,
+    borders) exactly once, correctly followed by the "MUTACLSYM map:..."
+    line, then a real 3D corridor view (perspective walls, floor,
+    a visible item) composited in the right place, then HP/inventory/
+    message-log/footer lines, all exactly once - no duplication,
+    marker fully consumed. This is the direct visual proof the earlier
+    "once this is proven" bar asked for.
+
+NOT YET DONE (real, named, not urgent):
+  - The regular "run"-mode 3D path (§1-§4 above) was NOT touched by
+    this chtpm-mode work and still renders exactly as before - the
+    user's own framing ("the normal mode will be deprecated once this
+    is proven") means run-mode's own eventual removal/simplification is
+    a still-future decision, not done here.
+  - The §3 items from the original handoff (template/save propagation
+    of the new hero/state.txt fields, on-screen POV/render_mode HUD
+    indicator, VIEW_3D_RADIUS stress-testing) are still open, unchanged
+    by this section.
+  - Wraith's own 8x8x8-voxel emoji-face extrusion for richer 3D visuals
+    (explicitly named as a FUTURE step, "we will do that after") has not
+    been started - investigate the real reference (likely also in
+    wraith_rgb_daemon.c or a related voxel-loading file) before building
+    it, matching this project's own research-before-building convention.

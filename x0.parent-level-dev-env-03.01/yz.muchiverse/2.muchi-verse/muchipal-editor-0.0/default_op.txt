@@ -1,0 +1,8 @@
+# Custom Operations for muchipal-editor's prisc+x program
+# Format: name type handler {description}
+
+out void builtin_out {print register to stdout}
+halt void builtin_halt {stop execution}
+compose_title_frame void ops/+x/compose_title_frame.+x {render whichever screen is active into current_frame.txt}
+project_browser void ops/+x/project_browser.+x {dispatch a digit/Enter key across the title/projects/project_menu/pieces/piece_detail screens - no-ops during map_edit}
+map_edit_input void ops/+x/map_edit_input.+x {cursor move/glyph-arm/place+save/back for the map_edit screen - no-ops on every other screen}

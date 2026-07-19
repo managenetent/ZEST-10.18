@@ -1,0 +1,329 @@
+HANDOFF - 2026-07-17, written mid-session because the user reported a
+live regression ("key input no longer seems to control movement or nav
+menu") while I was still in the middle of verifying an UNRELATED
+feature (the ray-marching wall renderer, see below) and asked to stop
+and hand off rather than keep digging. I have NOT reproduced or
+confirmed this failure myself yet - everything below is a ranked set of
+theories from re-reading my own changes, not a confirmed root cause.
+Read this whole file before touching anything.
+
+========================================================================
+0. EVERYTHING CHANGED THIS SESSION (all are suspects, most recent first)
+========================================================================
+
+In the order I made them:
+
+1. `ops/compose_rgb_frame.c` - REWROTE the 3D wall renderer from a
+   quad/painter's-algorithm approach to a real per-pixel DDA ray marcher
+   (`raymarch_walls_3d()`, `ray_aabb_hit_3d()`, `Voxel8Cache`/
+   `get_voxel8_cached()`/`sample_voxel8_pixel()`, `WallGlyphMeta`),
+   ported from wraith-alpha's own `wraith_rgb_daemon.c` (`raymarch_tile_
+   grid()`/`ray_aabb_hit()`/`sample_voxel_pixel()`). Also changed the
+   camera_mode 2/3 presets (they used to be identical - see §2 below).
+   `render_3d_view()` was restructured: floor tiles still drawn as
+   before (unchanged loop), but the old wall-quad-drawing code was
+   DELETED and replaced with a single call to `raymarch_walls_3d()`
+   after the floor pass.
+   **THIS IS THE FRESHEST, LEAST-TESTED CHANGE** - I had only run ONE
+   direct, standalone invocation of `compose_rgb_frame.+x` against a
+   small scratch map (`map_start`, "run" mode, camera_mode=1) before the
+   user's report arrived. It completed in 64ms with no crash - but I had
+   NOT yet:
+     - Looked at the actual output PNG to confirm it's visually correct
+       (I ran `dump_rgb_png.+x` but the interrupt arrived before I read
+       the image).
+     - Tested camera_mode 2 or 3 at all with the new code.
+     - Tested the CHTPM-MODE OVERLAY PATH at all with the new code (see
+       §1 below - this is my top suspect).
+     - Tested on any map other than the small `map_start` test map.
+     - Tested with any cam_pan_x/y/z values other than 0.0.
+
+2. `ops/compose_rgb_frame.c` (earlier in session, BEFORE the ray-march
+   rewrite) - added the MAP3D_MARKER emission wiring, `render_mode`/
+   `camera_mode`/`facing`/`cam_pan_x/y/z` field reads, and the CHTPM
+   MODE 3D OVERLAY block in `main()` (writes
+   `pieces/display/rgb_frame_3d_overlay.raw` + `.receipt.txt` instead of
+   touching `rgb_frame.raw` directly, when in chtpm mode with
+   `render_mode==1`). This path re-derives its OWN local `grid_early`
+   array via a duplicated, minimal terrain+furniture read loop (does
+   NOT reuse the main render loop's own grid, since that hasn't run yet
+   at the point this block executes) - if there's an indexing bug in
+   that duplicated loop, it would ONLY affect chtpm mode, not "run"
+   mode, and would only have started mattering once the ray marcher
+   started actually reading `grid_early` cells (the old quad renderer
+   also read the same grid, so this specific risk isn't brand new, but
+   the NEW ray marcher walks EVERY pixel's DDA over it, which is a
+   different, more exhaustive access pattern than the old per-tile
+   loop).
+
+3. `ops/compose_frame.c` - REWROTE the "CHTPM VIEW BRIDGE" to fix a real,
+   confirmed race (see `project_mutaclsym_status.md`'s 2026-07-17 entry
+   and `dox/06-3d-view-handoff.txt` §5 for the full story): instead of
+   `fopen(out_path,"w")` -> write -> `fclose` -> re-`fopen(out_path,"r")`
+   to copy into `view.txt`, it now builds the whole frame in memory via
+   `open_memstream()` and writes that SAME buffer to both
+   `current_frame.txt` and `view.txt` directly, with no read-back. This
+   was tested and confirmed working via a real playable-interface test
+   (marker byte survives, `dump_rgb_png.+x` showed a correctly
+   composited 3D corridor with no duplicated chrome) - BUT that test was
+   run BEFORE the ray-marching rewrite in items #1/#2 above, so it only
+   proves THIS specific piece was fine at the time, not that it's still
+   fine combined with everything added afterward.
+
+4. `shared-ops/chtpm_rgb_render.c` (SHARED, cross-project file - also
+   used by zoo_0000/egg-pals/wsr-pal) - added `blit_overlay()` and the
+   0x01-marker-detection branch in `render_once()`'s line loop. This is
+   the file most likely to cause damage BEYOND mutaclsym if it has a
+   real bug, since it's shared. Was compiled and tested earlier this
+   session (before the ray-march rewrite) and worked in isolation.
+
+5. `pal/main_loop_chtpm.pal` - re-added `compose_rgb_frame` calls (it
+   had been deliberately removed earlier for an unrelated reason - see
+   that file's own header comment for the full history). If
+   `compose_rgb_frame.+x` now hangs or crashes under some condition,
+   THIS is the file whose unconditional, every-tick call to it would
+   turn that into "the whole game stalls," because both calls
+   (`compose_frame` then `compose_rgb_frame`) happen BEFORE the script
+   ever gets back to `read_history`/checks for new input:
+       compose_frame
+       compose_rgb_frame
+       hit_frame
+       loop:
+       read_history ...
+   If `compose_rgb_frame` hangs, `read_history` never runs again -
+   every future keypress written to `interact_relay.txt` would just sit
+   there unread, which would look EXACTLY like "key input no longer
+   controls movement or nav menu."
+
+6. 8 new voxel asset files generated this turn:
+   `pieces/registry/emoji_assets/{t_wall,t_water_dp,t_tree,t_window,
+   f_table,f_counter,f_sink,f_crate}/voxels_8.csv` (resolution-8 emoji
+   textures for the ray marcher's per-face sampling, via the existing
+   `pieces/system/emoji_extract/emoji_gen_atlas.+x`/`emoji_xtract.+x`
+   tools in the `1.TPMOS_c_+rmmp.0102.0028` reference tree). These are
+   pure new data files, read-only inputs to the renderer - low risk on
+   their own, but their CONTENT (resolution=8, 64 rows) is what
+   `sample_voxel8_pixel()` parses, so a malformed CSV could theoretically
+   cause an out-of-bounds read if the resolution/count fields don't
+   match what was actually written. I spot-checked one (`t_wall`) and it
+   looked correct (68 lines, real non-zero brick-colored pixels) but did
+   NOT check all 8 exhaustively.
+
+Everything compiled clean (`gcc -Wall -Wextra`, zero warnings, on every
+file, every time) and `./button.sh compile` succeeded with no new
+warnings as of the last time I ran it (right before the ray-march
+rewrite's own scratch test, i.e. AFTER change #1 above was already in
+place).
+
+========================================================================
+1. TOP SUSPECT
+========================================================================
+
+**The chtpm-mode overlay render path, combined with the new ray marcher,
+has never been run even once.** Everything I verified today (both the
+compose_frame.c race fix in item #3 AND the ray marcher's own basic
+sanity in item #1) was tested SEPARATELY, at DIFFERENT points in the
+session, never together in the same live process. If the user is
+playing in chtpm mode (the GL window, via `button.sh chtpm` or
+whatever their real launch path is) with `render_mode=1` (3D toggled
+on), EVERY tick now runs:
+  compose_frame.c's open_memstream fix
+    -> writes current_frame.txt + view.txt directly
+  compose_rgb_frame.c's chtpm-mode branch
+    -> re-derives grid_early
+    -> calls render_3d_view() -> NEW raymarch_walls_3d()
+    -> writes rgb_frame_3d_overlay.raw + receipt
+  shared-ops/chtpm_rgb_render.c
+    -> detects the 0x01 marker, blits the overlay, skips ahead
+
+If ANY of these three specifically MISBEHAVE when chained together (as
+opposed to how I tested each one alone), the visible symptom could
+plausibly be exactly what got reported. A hang or crash in
+`compose_rgb_frame.+x` specifically would stall the whole pal script per
+item #5 above.
+
+========================================================================
+2. HOW TO CHECK, IN ORDER, NEXT SESSION
+========================================================================
+
+1. Find out whether the user was testing "run" mode or "chtpm" mode,
+   and whether `render_mode` was 0 or 1 (3D on/off) at the time. If
+   render_mode was 0, the entire ray-march code path never even
+   executes (it's only reached inside `if (!walkable)` territory that
+   `raymarch_walls_3d()` covers, called unconditionally from
+   render_3d_view() itself - but render_3d_view() is ONLY called at all
+   when render_mode==1, both in "run" mode's main() branch and in the
+   chtpm-mode overlay block. So render_mode=0 should rule out
+   EVERYTHING in items #1/#2 above as a cause). This is the fastest way
+   to cut the suspect list roughly in half.
+
+2. Check for a hung or crashed process FIRST, before touching any code:
+     ps aux | grep -E "prisc\+x|chtpm_parser_pal|chtpm_rgb_render|compose_rgb_frame|compose_frame"
+   A `compose_frame.+x`/`compose_rgb_frame.+x` process still alive and
+   consuming CPU (or a defunct/zombie entry) would be direct, immediate
+   confirmation of a hang or crash-without-cleanup.
+
+3. Time a direct, read-only invocation against whatever the user's LIVE
+   state files actually contain (safe - these ops only read state and
+   write display/*, never mutate hero/state.txt):
+     cd <live mutaclsym dir>
+     time ./ops/+x/compose_frame.+x
+     time ./ops/+x/compose_rgb_frame.+x
+   If either takes more than a second or two, or never returns, that's
+   the bug, confirmed - not a theory anymore. cross-check by then
+   running `./ops/+x/dump_rgb_png.+x` and actually looking at the PNG,
+   same as every other verification pass this session used.
+
+4. If compose_rgb_frame.+x is the culprit, bisect by temporarily
+   commenting out just the `raymarch_walls_3d(...)` call at the bottom
+   of `render_3d_view()` (leaving the floor pass and everything else
+   intact) and re-testing - this isolates "the ray marcher itself" from
+   "the chtpm-mode overlay plumbing it now runs inside of," which are
+   two genuinely different suspects bundled under the same top-level
+   theory in §1.
+
+5. If it's NOT a hang/crash in either op (both return fast, correct-
+   looking output), the bug is likely somewhere I haven't thought of -
+   re-read `pieces/keyboard/history.txt` / `pieces/apps/player_app/
+   history.txt` / `interact_relay.txt` directly to confirm real
+   keystrokes ARE landing in the expected file at all (rules out a
+   completely separate input-capture regression, e.g. in gl_mirror.c or
+   keyboard_input.c - neither of which I touched this session, but
+   worth ruling out explicitly rather than assuming).
+
+========================================================================
+3. WHAT I DID CONFIRM WORKING TODAY (so next session doesn't re-litigate)
+========================================================================
+
+- The camera_mode 2/3 identical-preset bug (root cause of the earlier-
+  reported "'123' hotkeys seem to do something other than change the
+  POV") - confirmed via a REAL playable-interface test (actual
+  KEY_PRESSED events through chtpm_parser_pal -> choice.c) that the
+  relay/state-update mechanism itself was ALWAYS correct; camera_mode
+  reliably changed 1->2->3 on real keypresses, with zero side effects.
+  The visible "nothing happens" was fully explained by camera_mode 2
+  and 3 sharing byte-identical pitch/cam_y_off/cam_z_off values - fixed
+  in this session's edits (§0 item #1), giving all three POVs distinct
+  starting frames. This part of the investigation is NOT a suspect for
+  the input-broken regression - it was proven correct via direct testing
+  of the pre-ray-march relay chain.
+
+- The CHTPM VIEW BRIDGE race (compose_frame.c's open_memstream fix) -
+  confirmed via a real playable-interface test BEFORE the ray-march
+  rewrite existed. Marker byte survived, dump_rgb_png.+x showed correct
+  compositing, no duplicated chrome.
+
+- `raymarch_walls_3d()` on a small test map, "run" mode, camera_mode=1,
+  cam_pan=0: completed in 64ms via direct invocation, no crash. Did NOT
+  get to inspect the output image before being interrupted.
+
+========================================================================
+4. IF NONE OF THE ABOVE PANS OUT
+========================================================================
+
+Worth also checking, lower priority: whether the user is testing this
+on the SAME machine/environment this session's work happened in, or a
+different one (e.g. over SSH to another machine) - `open_memstream()`
+is POSIX/glibc-standard and should be fine on any real Linux box, but if
+there's any cross-machine/cross-toolchain mismatch in play it's worth
+ruling out explicitly rather than assumed away.
+
+No git repo exists for this project (checked - `git status` reports
+"not a git repository"), so there's no clean git-stash/bisect available
+if a revert is needed - the exact diffs are only preserved in this
+conversation's own history until an actual revert is done by hand.
+
+========================================================================
+5. DECISION MADE AFTER THIS HANDOFF WAS FIRST WRITTEN: DROP CHTPM MODE
+========================================================================
+
+Direct instruction, same session: "i wish we could get rid of the chtpm
+flag and just run it as normal." Reasoning (mine, not yet independently
+confirmed with the user): chtpm mode is what turned a single-file
+rendering bug into a whole extra layer of plumbing (the CHTPM VIEW
+BRIDGE, the MAP3D_MARKER compositing protocol, the chtpm-mode overlay
+branch in compose_rgb_frame.c, the shared chtpm_rgb_render.c daemon) -
+none of which regular "run" mode needs at all. Regular "run" mode was
+ALSO the thing 3D was originally built and fully verified against
+(§4 of `dox/06-3d-view-handoff.txt`, done BEFORE chtpm mode ever got
+wired in) - so reverting to run-mode-only isn't a downgrade, it's going
+back to the last fully-verified configuration.
+
+**IMPORTANT CAVEAT - do not assume this alone fixes the input
+regression above.** The new ray marcher (`raymarch_walls_3d()` and
+everything in §0 item #1) runs in BOTH modes - `render_3d_view()` is
+called from "run" mode's own main() branch too, not just the chtpm
+overlay block. If the actual bug turns out to be in the ray marcher
+ITSELF (not the chtpm-specific plumbing around it), dropping chtpm mode
+will NOT fix it - it would just remove one of the two places it can
+manifest. Test run-mode-only with 3D toggled on BEFORE assuming this
+regression is resolved, using the same direct-invocation-and-time
+approach in §2.3 above.
+
+**Not yet done, real next-session work, in priority order:**
+1. Decide the concrete mechanics of "getting rid of the chtpm flag" -
+   likely means: `button.sh`'s launch paths / `pal/main_loop_chtpm.pal`
+   / whatever currently lets `pieces/apps/player_app/state.txt`'s
+   `module_path` point at the chtpm variant should be removed or at
+   least de-defaulted, so plain `pal/main_loop.pal` via `button.sh run`
+   is the only supported path going forward. Read `button.sh` and
+   `default_op.txt` fresh before touching anything - don't assume
+   today's summary of them is still accurate.
+2. Decide whether to delete the now-unused chtpm-specific code
+   (`pal/main_loop_chtpm.pal`, the CHTPM MODE 3D OVERLAY block in
+   `compose_rgb_frame.c`, the MAP3D_MARKER detection in the SHARED
+   `shared-ops/chtpm_rgb_render.c`) or just stop launching it. Deleting
+   from a SHARED file affects zoo_0000/egg-pals/wsr-pal too if any of
+   them also use that marker convention - check for other consumers
+   before removing anything there specifically.
+3. Re-verify the regular "run" mode 3D path (ray marcher + camera
+   preset fix) end-to-end, now that it's the ONLY path - this doubles
+   as the first real test of whether the input regression above was
+   chtpm-specific or not.
+
+========================================================================
+6. NEXT FEATURE QUEUED (not started): AN EDITOR MIRRORING OP-ED
+========================================================================
+
+Direct instruction, same session: "we can start working on editor to
+mirror op-ed but use mutaclsym current conventions." op-ed lives at
+`1.TPMOS_c_+rmmp.0102.0028/projects/op-ed/` - read its own
+`README.md` first next session (already skimmed once this session, not
+excerpted in full): it calls itself "The Sovereign RPG Editor," a "Thin
+Engine" map/piece/event editor with a few real, named ideas worth
+checking against mutaclsym's own conventions before copying anything:
+  - "Sovereign Context" - loading a game copies its whole directory
+    into the editor's own working area (op-ed's own project-isolation
+    model - may or may not fit mutaclsym, which is a single game, not
+    a multi-game host like op-ed's own `projects/op-ed/games/`
+    directory implies).
+  - A "Mode 1 vs Mode 2" split: realtime movement is direct C,
+    interaction/events are scripted (PRISC) - this maps fairly directly
+    onto mutaclsym's own existing move_player.c (direct C) vs.
+    piece.pdl METHOD-table dispatch (choice.c) split, worth confirming
+    is a real match and not just a surface-level naming coincidence.
+  - A "One Writer Rule" for `current_frame.txt` ("owned by the Parser,
+    daemons trigger renders via frame_changed.txt") - directly relevant
+    given THIS session's own real CHTPM VIEW BRIDGE race (two writers
+    of current_frame.txt was exactly the bug) - worth reading op-ed's
+    own manager code to see how it enforces this, since mutaclsym just
+    got bitten by violating an equivalent rule.
+  - An in-progress "High-Level Event Editor" (Slice 3, not yet done in
+    op-ed itself either) that generates scripts from an "Op Selection"
+    builder UI - the closest analogue to what a mutaclsym editor would
+    need for building/editing piece.pdl METHOD tables and map content
+    without hand-editing text files.
+
+**Real next-session work, per this project's own established
+research-before-building discipline**: read op-ed's own
+`manager/` source (not just the README) and `dox/00-HANDOFF.md`/
+`01-cdda-architecture.md`'s own existing notes on mutaclsym's
+conventions side by side, THEN design what a mutaclsym-flavored editor
+looks like (very likely: edit map.txt/furniture.txt/piece.pdl/registry
+files directly, matching mutaclsym's own "flat text files, one writer,
+ops-per-verb" shape - NOT op-ed's own PRISC/asm-script-generation
+machinery verbatim, which is built around a different runtime's own
+conventions) - do NOT start writing editor code before that read and
+design pass happens, matching how every other feature this session
+(xlector, 3D view, chtpm wiring) started with reading the real
+reference in full first.

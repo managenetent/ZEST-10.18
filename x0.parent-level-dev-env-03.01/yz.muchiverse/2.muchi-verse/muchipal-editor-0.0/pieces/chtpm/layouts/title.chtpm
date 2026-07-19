@@ -1,0 +1,9 @@
+<panel>
+    <text label="+============================================================+" /><br/>
+    <text label="|                                                            |" /><br/>
+    <text label="|               M U C H I P A L - E D I T O R                |" /><br/>
+    <text label="|                                                            |" /><br/>
+    <button label="Open Project" onClick="SET_SCREEN:projects" /><br/>
+    <text label="|                                                            |" /><br/>
+    <text label="+============================================================+" /><br/>
+</panel>

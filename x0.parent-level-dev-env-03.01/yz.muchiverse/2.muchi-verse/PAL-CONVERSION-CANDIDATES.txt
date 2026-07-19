@@ -1,0 +1,158 @@
+PAL-CONVERSION-CANDIDATES - concrete op-by-op survey, evidence-based, not
+guessed. Matches PAL-VS-C-ARCHITECTURE.txt sec. 4's own criteria: GOOD =
+read an int or two, simple arithmetic/comparison, write an int or a FIXED
+status line (matches ecall's current SYS_OPEN/CLOSE/WRITE_LINE/WRITE_INT/
+READ_INT/GET_KV_INT/SET_KV_INT table exactly). BAD = string parsing/
+building with DYNAMIC content, dirent.h directory scans, persistent
+daemons - leave these as C, don't force them.
+
+zoo_0000 and muchipal-editor-0.0 are the CONFIRMED first real-conversion
+targets (PAL-VS-C-ARCHITECTURE.txt sec. 4, direct instruction) - listed
+first for that reason, not because they happen to be smallest.
+
+Every file below was actually opened and read before being placed in a
+category - none of this is inferred from filename/line-count alone,
+except where explicitly marked "(inferred from shape, not opened)".
+
+========================================================================
+STRONGEST CANDIDATES - convert first, near-zero friction
+========================================================================
+
+zoo_0000/ops/pet_pet.c (98 lines)
+  - ALREADY PROTOTYPED, per PAL-VS-C-ARCHITECTURE.txt sec. 6
+    (z0.zoo_0000/pal/ops_native/pet_pet_prototype.pal) - verified
+    round-tripping real state (happiness +10, clamped to 100) against
+    live pet_mochi/state.txt. Not yet wired in as the real op's
+    replacement (argv-into-pal-registers still unsolved - see below).
+  - Shape: read one int (happiness), clamp-add, write back preserving
+    every other key. Exactly SYS_GET_KV_INT + SYS_SET_KV_INT.
+
+mutaclsym/ops/examine.c (32 lines)
+  - Confirmed dead/unreachable code (own header comment: ops/choice.c
+    special-cases "examine" before this ever execs) kept only so
+    piece.pdl's METHOD table always resolves to a real binary.
+  - Shape: open pieces/display/message_log.txt in append mode, write
+    ONE FIXED LITERAL string ("You look over your gear.\n"), close.
+    Zero dynamic content at all - the simplest possible ecall op:
+    SYS_OPEN(mode=2/append) -> SYS_WRITE_LINE(literal) -> SYS_CLOSE.
+    No named limitation applies here at all (unlike play_pet.c below) -
+    this one has NO dynamic string to interpolate in the first place.
+
+wsr-pal/ops/update_history_cursor.c (40 lines)
+  - Shape: SYS_GET_KV_INT("state.txt", "history_cursor", default=0),
+    increment by 1, SYS_SET_KV_INT back. Exactly the two KV syscalls
+    added specifically to cover this shape (PAL-VS-C-ARCHITECTURE.txt
+    sec. 3's own header comment on SYS_GET_KV_INT/SYS_SET_KV_INT names
+    this exact kind of op as the motivating case).
+
+========================================================================
+GOOD CANDIDATES - same "read int(s), clamp-arithmetic, write int(s)"
+shape as pet_pet.c, ONE caveat: each also appends a message-log line
+with a DYNAMIC field (a pet's own name) interpolated in - ecall's
+SYS_WRITE_LINE only takes a literal string, so converting these means
+either (a) a generic, non-personalized log line as a named
+simplification (exactly what pet_pet_prototype.pal already did for
+the SAME reason), or (b) a future string-interpolation syscall
+========================================================================
+
+zoo_0000/ops/play_pet.c (100 lines) - opened, confirmed: read
+  happiness+energy, clamp(+15)/clamp(-15), write back, log
+  "<name> plays energetically!" (name is the ONE dynamic field).
+
+zoo_0000/ops/feed_pet.c (102 lines) - opened, confirmed near-identical
+  shape to play_pet.c/pet_pet.c (hunger down, small happiness up),
+  same one-dynamic-field log line pattern.
+
+egg-pals-13/ops/feed_pet.c, clean_pet.c, toggle_sleep.c (102/106 lines
+  each, INFERRED FROM SHAPE, NOT OPENED - same per-pet stat-adjust verb
+  family as zoo_0000's own feed_pet.c/play_pet.c, confirmed same
+  project lineage via ops/pet_pet.c's own header comment cross-
+  referencing this family) - verify each individually before
+  converting, but this is the SAME shape, not a guess about a
+  different kind of op.
+
+========================================================================
+GOOD CANDIDATES - simple counter/balance ops, ONE dynamic-value stdout
+result line for the caller to show as last_message (a DIFFERENT gap
+than the log-line one above: SYS_WRITE_LINE has no stdout-capture
+equivalent yet, and the value is dynamic, not just a name)
+========================================================================
+
+egg-pals-13/ops/claim_tokens.c (71 lines) - opened, confirmed: read
+  "tokens" int from owner's state.txt, add a FIXED constant
+  (CLAIM_AMOUNT=10), write back preserving every other key, then
+  printf a dynamic "Claimed 10 tokens! Balance: N" to stdout (N is
+  dynamic) for menu_input.c's own popen() capture to show as
+  last_message. The read/write-int core is a trivial ecall port; the
+  stdout result line needs the same treatment as the log-line caveat
+  above (generic message, or a future syscall) - NOT a blocker for
+  converting the actual state-mutation logic.
+
+wsr-pal/ops/corp_tick_idle.c, gov_tick_idle.c, pop_tick_idle.c,
+  weather_tick_idle.c, realestate_tick_idle.c (50-55 lines each,
+  INFERRED FROM SHAPE/NAMING, NOT OPENED - "_tick_idle" naming
+  convention strongly suggests the same simple per-entity stat-nudge
+  shape as zoo_0000's own tick verbs) - verify each before converting,
+  but these are the smallest files in wsr-pal's own ops/ directory by
+  a wide margin, consistent with this shape.
+
+========================================================================
+BAD CANDIDATES - CONFIRMED, LEAVE AS C - directory scanning (dirent.h)
+========================================================================
+
+zoo_0000/ops/tick_pets.c, compose_frame.c, compose_rgb_frame.c -
+  confirmed via direct grep: all three #include <dirent.h> (scanning
+  pieces/world_01/map_zoo/ for every pet piece present). ecall's
+  syscall table has no directory-listing primitive - forcing this
+  through file syscalls would mean hardcoding piece IDs at PAL-script
+  authoring time, defeating the entire "any number of pets" design
+  these ops exist to support. Leave as C per PAL-VS-C-ARCHITECTURE.txt
+  sec. 4's own explicit bad-candidate rule.
+
+Any project's own compose_frame.c/compose_rgb_frame.c/menu_input.c/
+  <name>_menu_input.c/wsr_compose_frame.c/tick_pets.c equivalent -
+  confirmed by direct read (mutaclsym's own choice.c at 1153 lines,
+  compose_frame.c at 1009 lines, compose_rgb_frame.c at 1784 lines;
+  egg-pals' own menu_input.c at 543 lines, compose_menu.c at 374 lines;
+  wsr-pal's own wsr_menu_input.c/wsr_compose_frame.c) - these are all
+  real string-building/parsing/formatting engines (multi-field
+  formatted output, piece.pdl METHOD-table scanning, dynamic menu
+  text) - the BAD-candidate category PAL-VS-C-ARCHITECTURE.txt sec. 4
+  names explicitly ("anything doing real string parsing/building").
+  Do not attempt these until a genuine string-handling syscall exists.
+
+========================================================================
+BAD CANDIDATES - CONFIRMED, LEAVE AS C - persistent daemons (never
+were op candidates in the first place, per PAL-VS-C-ARCHITECTURE.txt
+sec. 5 - listed here only so a future pass doesn't waste time
+re-checking them)
+========================================================================
+
+shared-ops/chtpm_parser_pal.c, shared-ops/chtpm_rgb_render.c,
+  every project's own system/renderer.c, system/gl_mirror.c -
+  independently-polling, long-running processes launched directly by
+  button.sh, never invoked from any .pal script's own instruction
+  stream. Structurally outside the VM, same as an OS daemon sits
+  outside a CPU's own ISA - not "still needs converting," not
+  applicable to this list at all.
+
+========================================================================
+REAL BLOCKER, NAMED (applies to every candidate above): argv-into-pal
+========================================================================
+
+Every op surveyed above (pet_pet.c, play_pet.c, feed_pet.c,
+claim_tokens.c, update_history_cursor.c, the _tick_idle family) takes
+its target piece_id as argv[1] - a DIFFERENT piece/owner each call
+(hero vs. a specific pet, corp_AFL vs. a different corp). The real,
+live prototype (pet_pet_prototype.pal) sidesteps this by hardcoding
+pet_mochi - a named simplification, not a solved problem
+(PAL-VS-C-ARCHITECTURE.txt sec. 6's own "Concrete next blocker"). A
+real, general-purpose conversion of ANY op in this list needs a way to
+pass a caller-supplied value (the piece_id string, or at minimum an
+integer selecting among a small known set) into a pal script's own
+registers/variables at launch - `prisc+x.c`'s own `main()` argv
+handling only recognizes 4 fixed positions today (script path, mem-in,
+mem-out, ops-file), no argv[5]-into-a-register convention exists yet.
+Solve this ONCE, generically, before converting any of the above from
+"prototype" to "the real op actually wired into default_op.txt" -
+don't solve it per-op.

@@ -1,0 +1,238 @@
+PAL-VS-C-ARCHITECTURE - the real intention behind pal/prisc+x, for any
+future agent who (like the one writing this) might otherwise assume
+"every op is a C binary" is just how this family works and always will.
+Written 2026-07-17 per direct user instruction, after a real
+conversation where the user had to correct that exact assumption:
+"we were trying to move away from c and into prisc so i guess u fooled
+me." That wasn't malicious - nobody had written this down before. This
+file exists so it doesn't happen again.
+
+========================================================================
+0. THE MISUNDERSTANDING THIS FILE CORRECTS
+========================================================================
+
+Every "op" in every pal-native project (mutaclsym, zoo_0000,
+muchipal-editor-0.0, wsr-pal, egg-pals) is, today, a real C program
+compiled to a native binary. `move_player.c`, `compose_frame.c`,
+`tick_pets.c`, `chtpm_parser_pal.c`, `renderer.c`, `gl_mirror.c` -
+all C, all built by each project's own `scripts/build.sh`. This is
+`pal-standards.txt` sec. 1's own established convention ("one op, one
+C binary, no shared headers") and it predates this file.
+
+It is easy to look at that and conclude "pal is just glue around C ops,
+that's the design." IT IS NOT THE DESIGN - it's the CURRENT STATE, and
+the two are not the same claim. `prisc+x` (the VM's own name) is
+already named after RISC-V. Its instruction set (`OP_ADDI`, `OP_BEQ`,
+`OP_LW`, `OP_SW`, `OP_JALR`, `OP_J`, `OP_HALT` - a genuine, real
+register-machine ISA, confirmed by reading `shared-ops/prisc+x.c`'s own
+fetch-decode-execute loop) was deliberately built RISC-V-flavored. The
+REAL, confirmed direction, direct user quote: "one day we can convert
+pal and ops directly to riscv code, but only if the architecture is
+reasonably in the correct shape." That's not a someday-fantasy to
+ignore - it's a live constraint on today's decisions (see sec. 4).
+
+========================================================================
+1. WHAT'S REAL TODAY, PRECISELY
+========================================================================
+
+- `.pal` scripts run on a genuine tiny RISC-V-style ISA, actually
+  interpreted by `prisc+x.c`'s own loop (`OP_ADDI`/`OP_BEQ`/`OP_LW`/
+  `OP_SW`/`OP_JALR`/`OP_J`/`OP_HALT`, plus `OP_ECALL` as of this file -
+  see sec. 3). 16 registers, `x0`-`x15` (`x0` hardwired to 0, reset
+  every instruction - confirmed via `regs[0] = 0` in the main loop).
+  Not a toy in the "doesn't actually run" sense - it's a real
+  interpreter, just a small ISA.
+- Every OTHER named op (`move_player`, `compose_frame`, etc.) is
+  `OP_CUSTOM`. `OP_CUSTOM` works by building a shell command string and
+  `popen()`-ing it - running the external `ops/+x/<name>.+x` ELF binary
+  as a child process, capturing its stdout. This is a real syscall/
+  ecall-like boundary to native code, exactly analogous to a real CPU's
+  `ecall` trapping into OS/firmware code written in C - it is NOT
+  "prisc instructions," and never was.
+- So: the ISA layer is real but currently thin (branching, register
+  math, and - as of this file - real file syscalls). Essentially all
+  actual game logic still lives in C, invisible to the VM as anything
+  but "run this external program."
+
+Neither fact is bad on its own. The mistake would be treating "ops are
+C" as permanent architecture rather than "ops are C for now, because
+the VM didn't have real syscalls until this file's own session."
+
+========================================================================
+2. FILE I/O VIA REAL SYSCALLS IS THE MODEL - NOT SOMETHING TO AVOID
+========================================================================
+
+Direct user clarification, important enough to quote exactly: "sys
+calls are ok. writing to file is ok. i write and read from file all the
+time in assembly. just think of that as our file system. its ok."
+
+This resolves what would otherwise be a real blocker: this whole
+family's state is `pieces/*.txt` files - hero position, map data,
+inventory, chtpm's own `current_frame.txt`, everything. A "convert to
+real RISC-V" story that required abandoning that in favor of some
+from-scratch in-VM memory model would be a total rewrite of the state
+model, not an ISA upgrade. It doesn't need to. Real RISC-V programs
+hit real files through real `ecall`s to the OS; this VM's own ops
+hitting `pieces/*.txt` through its own `ecall` is the exact same shape,
+not a compromise or a shortcut around "real" RISC-V.
+
+========================================================================
+3. ECALL - THE REAL SYSCALL INSTRUCTION (built this session)
+========================================================================
+
+`shared-ops/prisc+x.c` (and egg-pals' own local fork - see
+`pal-standards.txt` sec. 1c for why that copy stays separate) now has a
+genuine `ecall` instruction. Full design rationale is in that file's
+own header comment directly above `exec_ecall()` - summarized here:
+
+Real RISC-V `ecall` takes no operands; the syscall number and args sit
+in fixed ABI registers (`a7`=number, `a0`-`a6`=args, `a0`=return) before
+the bare instruction executes. Same shape here, adapted to this VM's
+own 16-register file (no `a0`-`a7` aliases):
+  x15 = syscall number
+  x12 = arg0 / return value (same register doubles as both, matching
+        real RISC-V's own a0 convention - a script that needs the
+        value AFTER the call must stash it elsewhere first, e.g.
+        `addi x14, x12, 0`, exactly like real assembly does)
+  x13 = arg1
+
+Syscall table (this VM's OWN numbering - NOT Linux/RISC-V ABI numbers;
+there's no real kernel underneath, this VM implements each one
+directly in C, so borrowing Linux's numbers would be false
+compatibility, not real compatibility):
+  1 = SYS_OPEN       ecall "path", x13=mode(0=r,1=w,2=a) -> x12=fd/-1
+  2 = SYS_CLOSE       x12=fd -> x12=0
+  3 = SYS_WRITE_LINE  ecall "text", x12=fd -> x12=bytes written/-1
+  4 = SYS_WRITE_INT   x12=fd, x13=value -> x12=bytes written/-1
+  5 = SYS_READ_INT    x12=fd -> x12=parsed int (atoi of next line)/-1
+
+ONE deliberate departure from pure-register `ecall`: `SYS_OPEN`'s path
+and `SYS_WRITE_LINE`'s text are strings, and this VM's `mem[]` is a
+flat int32 word array with no safe byte/string addressing mode (the
+existing string-variable mechanism already truncates real C pointers
+into int32 on 64-bit hosts - a pre-existing fragility this doesn't try
+to fix or build further on). Passing them as a literal argument on the
+`ecall` line itself (`ecall "text"`) reuses the SAME mechanism
+`read_history`'s own literal-path form already established, and keeps
+this memory-safe without a full byte-addressable-memory VM redesign.
+
+KNOWN, NAMED LIMITATION: `SYS_READ_INT` only reads back a single
+INTEGER, not an arbitrary string. Real string read-back (e.g. reading a
+whole line of text INTO a register-addressable form) needs a genuine
+memory-model upgrade first - flagged here explicitly as real future
+work, not silently glossed over. Don't assume it exists; check
+`shared-ops/prisc+x.c`'s own current syscall table before relying on
+it.
+
+VERIFIED (not just compiled): a real `.pal`-equivalent test program
+opened a file, wrote an int via `SYS_WRITE_INT`, closed it, reopened
+it, read the int back via `SYS_READ_INT`, and closed it again - the
+value round-tripped correctly (42 in, 42 out) through a real file, not
+a simulated one.
+
+Two more syscalls were added immediately after, while prototyping the
+real op conversion in sec. 4/6 below - see `exec_ecall()`'s own comment
+on `SYS_GET_KV_INT`/`SYS_SET_KV_INT` for the full why:
+  6 = SYS_GET_KV_INT  ecall "path" "key", x13=default -> x12=int value
+  7 = SYS_SET_KV_INT  ecall "path" "key", x12=value -> x12=1 ok/0 fail
+These do the read-all-lines/rewrite-one-key/write-back work INTERNALLY
+in C (same as every op's own duplicated `set_kv_int()` helper already
+does), exposed as ONE syscall - the right abstraction level for what
+this family's software actually needs, given nearly every real op's
+state file is multi-key and "preserve every other line" is the norm,
+not the exception. Takes path+key as TWO literal strings on the `ecall`
+line (`ecall "path" "key"`, extending sec. 3's own literal-arg
+mechanism to use both `literal_arg` and `literal_arg2`).
+
+========================================================================
+4. THE CONVERSION PLAN - WHAT TO ACTUALLY DO GOING FORWARD
+========================================================================
+
+Direct instruction: "we can slowly swap over from c to pal for a few
+examples your are comfortable with and definately do so for zoo/editor"
+
+- This is a GRADUAL migration, not a rewrite-everything mandate. Most
+  ops stay C for the foreseeable future. Converting an op to real pal/
+  `ecall` instructions is a deliberate choice made per-op, not a
+  default.
+- zoo_0000 and muchipal-editor-0.0 are the CONFIRMED first targets for
+  real conversion work, per direct instruction ("definately do so for
+  zoo/editor") - not mutaclsym, not wsr-pal, unless later told
+  otherwise. When picking the next op to convert, look there first.
+- Good conversion candidates: ops that are mostly "read an int or two,
+  do simple arithmetic/comparison, write an int or a fixed status
+  line" - `ecall`'s own current syscall table (open/close/write-line/
+  write-int/read-int) covers exactly this shape well already.
+- BAD conversion candidates (leave as C, don't force it): anything
+  doing real string parsing/building (formatted multi-field output,
+  UTF-8 handling, pipe-delimited registry scanning), anything reading
+  directory listings (`dirent.h`), anything that's fundamentally a
+  persistent daemon rather than a one-shot op (see sec. 5) - `ecall`'s
+  syscall table has no primitives for any of this yet, and forcing it
+  through `SYS_WRITE_LINE`'s single literal-string argument would mean
+  building the whole formatted string at PARSE time, which defeats the
+  purpose (the content has to be dynamic, computed from register
+  values, not a fixed compile-time literal).
+- When a genuinely good candidate needs a syscall `ecall`'s current
+  table doesn't have (e.g. reading a string field back, not just an
+  int), that's a real, legitimate reason to extend `exec_ecall()` with
+  a new `SYS_*` number - grow the table deliberately, matching real
+  RISC-V's own extensible syscall-ABI model, rather than working around
+  the gap in the op itself.
+
+========================================================================
+5. WHAT WILL NEVER BECOME "PAL INSTRUCTIONS" - AND THAT'S FINE
+========================================================================
+
+Standalone, independently-polling daemons - `system/renderer.c`,
+`system/gl_mirror.c`, `shared-ops/chtpm_rgb_render.c`,
+`shared-ops/chtpm_parser_pal.c` - are launched directly by `button.sh`
+as their own long-running processes. They are NOT `OP_CUSTOM` handlers,
+are NOT invoked from any `.pal` script's own instruction stream at all,
+and have no reason to ever be. Don't count them as "still needs
+converting" against this file's own goal, and don't try to route them
+through `ecall`/pal instructions - they sit structurally outside the
+VM entirely, same as real OS daemons sit outside a CPU's own ISA.
+
+========================================================================
+6. STATUS
+========================================================================
+
+- ECALL instruction (SYS_OPEN/CLOSE/WRITE_LINE/WRITE_INT/READ_INT/
+  GET_KV_INT/SET_KV_INT): DONE, verified working in both
+  `shared-ops/prisc+x.c` and egg-pals' own local fork (sec. 3).
+
+- Prototype: `z0.zoo_0000/pal/ops_native/pet_pet_prototype.pal` - a
+  real pal-native rebuild of `ops/pet_pet.c`'s own core behavior (pick
+  pet_mochi's own real, live state file, read `happiness`, add 10,
+  clamp to 100, write back preserving every other key, log a message).
+  Run TWICE against the real, live `pieces/world_01/map_zoo/pet_mochi/
+  state.txt` (not a scratch copy), state backed up first and restored
+  after:
+    - happiness 60 -> 70: name/type/species/pos_x/pos_y/pos_z/on_map/
+      map_id/hunger/energy/decision_mode/digit_accum/action_cursor/
+      last_key all confirmed byte-identical before/after - only
+      happiness changed. Log line "A pet enjoys the attention."
+      correctly appended.
+    - happiness 95 -> 100 (not 105): confirmed the clamp-to-100 path
+      specifically, the one branch not exercised by the first run.
+  This is genuinely real op logic - the actual state mutation, not a
+  toy - running as native pal+ecall instructions with ZERO C op
+  involved. Two real, NAMED simplifications (see the file's own header
+  comment): hardcoded to pet_mochi (no argv-into-pal-script value
+  passing exists yet - a real, separate, still-open piece of work) and
+  a generic log line instead of the name-personalized original (needs
+  string read-back, sec. 3's own named limitation). NOT wired into
+  `default_op.txt` as a replacement for the real `pet_pet` op - the
+  real, general, argv-driven `ops/pet_pet.c` stays in service.
+
+- Concrete next blocker for turning this into an actual general-purpose
+  op replacement (not just a proof of concept): a way to pass a value
+  from `argv` (or some other caller-supplied source) into a pal
+  script's own registers/variables at launch. Right now `main()`'s own
+  argv handling only recognizes 4 positions (script path, mem-in,
+  mem-out, ops-file) - there's no argv[5]-into-a-register convention.
+  That's real, separate future work, not solved by this session.
+
+- Everything else: still C, by design, not by oversight. Convert
+  deliberately, per sec. 4's own criteria - don't mass-convert.

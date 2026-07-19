@@ -1,0 +1,22 @@
+📅️july18  : 
+
+1. get rid of need for chtpm flag in mutaclysm
+
+2.mutaclsym, egg-pal, wsr-pal , zoo, editor ? probably all share "ops"
+this would be ok, if they were 'git versionined some how deep in the computers root' 
+(and old versions literally saved that could be used, ie v-1.0 or something at least test this?)
+(and have a system in palce?)
+stop being a degenerate and we can actually ship a platform sooner 
+
+gitlet fondu connection? 
+
+(fondu in tpmos is probably vesgital
+
+
+
+
+3. image editor (to horizontal flip, it means were in a good place with arch)
+
+4. tree view of fs. linux doesnt have this (mac/win does; i miss it )
+(dir list .+x has it but its a bit cluttered and not 'actionable')
+(just do it in a "desk-pal" window)

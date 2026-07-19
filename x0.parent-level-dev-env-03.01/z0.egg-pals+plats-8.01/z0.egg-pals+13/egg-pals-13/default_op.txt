@@ -1,0 +1,8 @@
+# Custom Operations for egg-pals's prisc+x program
+# Format: name type handler {description}
+
+out void builtin_out {print register to stdout}
+halt void builtin_halt {stop execution}
+menu_input void ops/+x/menu_input.+x {apply a keycode to menu nav/selection}
+compose_menu void ops/+x/compose_menu.+x {render the current menu screen into current_frame.txt}
+tick_pets void ops/+x/tick_pets.+x {advance every pet's metabolism one epoch}

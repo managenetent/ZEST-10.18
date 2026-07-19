@@ -1,0 +1,74 @@
+# mutaclsym interact-turn dispatch - CHTPM-MODULE VARIANT, SYNCHRONOUS
+# (pal-standards.txt sec. 0). ONE-SHOT: no loop, no sleep - this whole
+# program runs exactly once per invocation and exits naturally when pc
+# reaches the end (prisc+x.c's own `while (pc < inst_count)`, no halt
+# needed). Real chtpm/fuzz-op's own architecture invokes an op
+# synchronously per keypress (fork/exec/waitpid, done before the next
+# render) - this file is that same shape, running as real PAL bytecode
+# instead of hand-written C (this family's own, and ONLY, intentional
+# deviation from classic chtpm - see sec. 0).
+#
+# Invoked TWO different ways, by design:
+#   1. Once, automatically, via <module>${module_path}</module> at
+#      layout-parse time (chtpm_parser_pal.c's own launch_module(),
+#      unchanged) - x1=0, interact_relay.txt is empty at this point, so
+#      read_history finds nothing (x2==0) and no_key is taken: this
+#      pass ONLY populates the initial view.txt/current_frame.txt
+#      before any key is ever pressed.
+#   2. Once per relayed key, via chtpm_parser_pal's own NEW
+#      run_module_synchronous() (process_key()'s own INTERACT branch) -
+#      which writes the key to interact_relay.txt THEN fork/exec/waits
+#      for this exact program, blocking until it exits. x2 reads that
+#      key, dispatches the real action, and this run's own
+#      compose_frame call is what chtpm sees once run_module_synchronous()
+#      returns and its own render fires - no separate poll cycle, no
+#      lag, since dispatch and render are now the same synchronous
+#      sequence real chtpm always used.
+#
+# WHY interact_relay.txt, NOT history.txt LIKE fuzz-op's <interact> TAG:
+# real TPMOS's own raw keyboard capture (pieces/system/input_dispatcher/
+# plugins/keyboard_input.c) writes ONLY to pieces/keyboard/history.txt -
+# chtpm_parser.c is the SOLE writer of whatever file a project's own
+# <interact src="..."> names (fuzz-op uses history.txt safely for
+# exactly this reason: nothing else ever writes there). This family's
+# shared-ops/keyboard_input.c is NOT single-purpose the same way - it
+# ALSO writes every raw keystroke directly and unconditionally to
+# pieces/apps/player_app/history.txt (append_key(), for the sake of
+# projects whose own regular non-chtpm "run" mode still reads that file
+# via prisc+x's read_history op). interact_relay.txt is never touched
+# by keyboard_input.c - only chtpm_parser_pal's own
+# run_module_synchronous() writes to it, restoring the single-writer
+# guarantee fuzz-op gets for free from real TPMOS's own narrower
+# raw-capture design.
+#
+# chtpm_parser_pal's own menu nav (arrows/digits/Enter before "Control
+# Hero" is engaged, and ESC to return to it afterward) is unaffected by
+# any of the above either way - it's driven entirely by chtpm_parser_pal
+# reading pieces/keyboard/history.txt directly inside its own process_key(),
+# never by this file's own read_history line.
+#
+# No 'q'-halts-the-module quit path (real main_loop.pal's own
+# `beq x2, x9, quit`) - and none is needed anymore either way: this
+# program already exits naturally after one pass, whether or not the
+# key it read was 'q'. Quitting the WHOLE session is chtpm's own job
+# (top-level 'q', or system/keyboard_input's own unconditional
+# exit-on-'q'), not this program's.
+#
+# compose_rgb_frame: does nothing and returns immediately in chtpm mode
+# (render_mode==0 - chtpm_rgb_render.c's own text rasterization of
+# current_frame.txt is the whole picture) or writes a separate
+# map-sized 3D overlay file (render_mode==1) that chtpm_rgb_render.c
+# composites in - never touches rgb_frame.raw directly either way, so
+# it cannot conflict with that daemon's own output.
+li x1, 0
+
+read_history pieces/apps/player_app/interact_relay.txt x2, x1
+beq x2, x0, no_key
+move_player x2
+choice x2
+end_turn
+tick_monsters
+no_key:
+compose_frame
+compose_rgb_frame
+hit_frame

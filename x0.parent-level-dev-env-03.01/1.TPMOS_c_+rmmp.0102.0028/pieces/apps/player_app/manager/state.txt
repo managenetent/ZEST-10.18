@@ -1,0 +1,5 @@
+project_id=fuzz-op
+active_target_id=xlector
+last_key=RIGHT
+current_z=0
+current_map=map_01_z0.txt

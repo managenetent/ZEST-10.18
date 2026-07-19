@@ -1,0 +1,137 @@
+INVESTIGATION: OVERZEALOUS CHTPM PATTERN APPLICATION
+=====================================================
+Date: 2026-07-18
+Issue: egg-pals and wsr-pal have broken "chtpm" modes due to copy-paste from
+       mutaclsym's architecture without proper adaptation for non-map projects.
+
+ROOT CAUSE
+==========
+An earlier AI refactor copied mutaclsym's chtpm_parser_pal pattern (with its
+map-interaction relay system) into egg-pals and wsr-pal, even though:
+- egg-pals: "This project has no map/movement concept" (button.sh line 111)
+- wsr-pal:  "wsr-pal has no map/movement concept" (button.sh line 49)
+
+The pattern that was copied treats interact_relay.txt as a critical file for
+passing user input through a map-aware layer. Non-map projects don't need this.
+
+EVIDENCE
+========
+
+1. WSR-PAL CHTPM CASE (button.sh lines 39-113)
+   Creates UNNECESSARILY:
+     : > pieces/apps/player_app/interact_relay.txt (line 56)
+     : > pieces/keyboard/history.txt               (line 57)
+     : > pieces/display/pending_command.txt        (line 58)
+
+   Why wrong:
+   - wsr-pal's main_loop_chtpm.pal doesn't need map-interaction relay
+   - wsr uses digit-menu keys, not arrow movement
+   - wsr_menu_input.c doesn't have map-layer architecture
+   - keyboard_input writes to history.txt, not interact_relay.txt
+
+   Result: Keyboard input chain is broken because:
+   - keyboard_input writes to: pieces/apps/player_app/history.txt
+   - main_loop_chtpm.pal expects: pieces/apps/player_app/interact_relay.txt
+   - interact_relay.txt never gets populated → no keyboard response
+
+2. EGG-PALS CHTPM CASE (button.sh lines 100-153)
+   Creates IDENTICALLY WRONG:
+     : > pieces/apps/player_app/interact_relay.txt (line 117)
+     : > pieces/keyboard/history.txt               (line 118)
+     : > pieces/display/pending_command.txt        (line 119)
+
+   Same problem: Comment explicitly says "This project has no map/movement
+   concept" (line 111) but then creates the same map-interaction files.
+
+3. MUTACLSYM (CORRECT REFERENCE)
+   - HAS real map/movement concept
+   - main_loop_chtpm.pal READS from interact_relay.txt (different from main_loop.pal)
+   - prisc+x process needs the relay for layer separation
+   - This is THE ONLY project where interact_relay.txt is correct
+
+4. WHAT WAS WORKING: "RUN" FLAG (PRE-CHTPM REFACTOR)
+   Both wsr-pal and egg-pals's "run" cases work correctly:
+
+   WSR-PAL "RUN" (lines 19-38):
+     Creates: quit_flag.txt, history.txt only
+     Launches: renderer + prisc+x pal/main_loop.pal + keyboard_input
+     NO chtpm_parser_pal, NO interact_relay.txt, NO extra files
+     ✓ WORKS: Keyboard input passes through correctly
+
+   EGG-PALS "RUN" (lines 75-99):
+     Creates: quit_flag.txt, history.txt only
+     Launches: renderer + prisc+x pal/main_loop.pal + keyboard_input
+     NO chtpm_parser_pal, NO interact_relay.txt, NO extra files
+     ✓ WORKS: Keyboard input passes through correctly
+
+ARCHITECTURAL DIFFERENCE
+========================
+
+MUTACLSYM (map-based):
+  keyboard_input → history.txt
+  prisc+x pal/main_loop_chtpm.pal → reads from interact_relay.txt (separate relay)
+  Reason: Map layer needs abstraction from raw input for movement dispatch
+
+WSR-PAL (menu-based, no maps):
+  keyboard_input → history.txt
+  prisc+x pal/main_loop_chtpm.pal → should read from history.txt DIRECTLY
+  No relay needed: Menu input is simple digit dispatch, not layer-abstracted
+
+EGG-PALS (menu-based, no maps):
+  keyboard_input → history.txt
+  prisc+x pal/main_loop_chtpm.pal → should read from history.txt DIRECTLY
+  No relay needed: Pet menu input is digit dispatch, not layer-abstracted
+
+SOLUTION
+========
+
+Option A: Make wsr-pal and egg-pals "chtpm" work correctly (RECOMMENDED)
+----------
+Keep the chtpm_parser_pal architecture but remove the overzealous files:
+
+WSR-PAL button.sh chtpm case (lines 39-113):
+REMOVE these lines:
+  Line 56: : > pieces/apps/player_app/interact_relay.txt
+  Line 57: : > pieces/keyboard/history.txt
+  Line 58: : > pieces/display/pending_command.txt
+
+Keep: history.txt initialization (in the run case already does it, but chtpm needs it too)
+  Should have: : > pieces/apps/player_app/history.txt
+
+Reasoning:
+  - main_loop_chtpm.pal should read from pieces/apps/player_app/history.txt (same as run)
+  - No map interaction means no relay needed
+  - No pending_command.txt needed (that's for map commands)
+  - No separate keyboard/history.txt (wsr has no per-entity histories)
+
+Same fix for EGG-PALS button.sh chtpm case (lines 100-153).
+
+Option B: Revert "chtpm" to "run" behavior (ALTERNATIVE)
+----------
+If chtpm_parser_pal + main_loop_chtpm.pal don't work without maps, just have
+chtpm do exactly what run does:
+  - Use main_loop.pal (not main_loop_chtpm.pal)
+  - No chtpm_parser_pal
+  - Same 3-process model as "run"
+
+This is safer but loses the chtpm menu interface improvements.
+
+RECOMMENDATION FOR MUTACLSYM
+============================
+Mutaclsym's refactor (consolidating "r" to use chtpm behavior) was CORRECT
+because mutaclsym:
+  ✓ Has real maps
+  ✓ Needs interact_relay.txt for layer abstraction
+  ✓ main_loop_chtpm.pal properly handles both map and menu
+  ✓ Problem was real: unresponsive ASCII in old "run" mode
+  ✓ Solution: Make chtpm the default "r" behavior
+
+But this pattern should NOT have been blindly copied to non-map projects.
+
+NEXT STEPS
+==========
+1. Fix WSR-PAL: Remove interact_relay.txt, keyboard/history.txt, pending_command.txt
+2. Fix EGG-PALS: Remove the same three unnecessary files
+3. Test both projects' "chtpm" mode with keyboard input
+4. Verify "run" mode still works (should be unaffected)
+5. Document in each project's button.sh why non-map projects don't need interact relay

@@ -1,0 +1,13 @@
+project_id=fuzz-op
+active_target_id=xlector
+camera_mode=4
+pet_01_pos_x=9
+pet_01_pos_y=1
+pet_01_active=
+zombie_01_pos_x=12
+zombie_01_pos_y=2
+zombie_01_active=
+selector_pos_x=12
+selector_pos_y=1
+status_text=Pet(9,1) | Zom(12,2) | Sel(12,1)
+current_z=0

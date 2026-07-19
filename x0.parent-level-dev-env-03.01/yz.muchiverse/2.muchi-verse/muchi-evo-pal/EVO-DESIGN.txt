@@ -1,0 +1,400 @@
+EVO-DESIGN — muchi-evo-pal, Tier 1 of MUCHICIVO_BIBLE.txt
+E.V.O.: Search for Eden (SNES) + SimEarth (SNES), as two nested scales
+of ONE system, not two competing designs
+================================================================================
+Status: PLANNING DOCUMENT, first real content in this directory
+(confirmed empty before this session). Sibling design doc to
+`../MUCHICIVO_BIBLE.txt` (Tier 1 there is this file's whole scope) and
+`../COMPOSABLE-MATERIALS-ARCHITECTURE.md` (this file's mechanics are
+built entirely FROM that document's composable chain, not a new data
+model). **Governed by `../GAME-AI-SPEED-DOCTRINE.txt` (hard rule,
+written after this file's llm tier was first built) - `decision_mode=3`
+(llm) is NOT the default in-game mechanism, it's reserved for training/
+rare moments; `weighted`/real `rl` are the actual local, instant, always-
+on tiers. Read that doctrine before touching this chassis further.**
+
+Direct answer to "should E.V.O. and SimEarth be done separately or
+together": TOGETHER, as two different GRANULARITY SCALES of the same
+system, per `COMPOSABLE-MATERIALS-ARCHITECTURE.md`'s own λ/granularity
+axis - not two games glued side by side. SimEarth has no single
+creature to pivot into civilization (correctly identified as the
+reason it can't stand alone for this purpose); E.V.O. has no planetary/
+ecosystem context for why a creature's environment changes across eras.
+Each is the missing piece of the other, at a different zoom level.
+
+**STATUS UPDATE (2026-07-16): §7 step 1's vertical slice is BUILT and
+LIVE-VERIFIED** - real code, not just this design doc. `creature_01`
+(one FSM piece, `projects/muchi-evo-pal/pieces/creature_01/`) runs a
+genuine `.pal`-scripted FSM (`pal/main_loop.pal`, `beq`-dispatched on
+`current_state`, per §5's "FSM in PAL, not raw ops" requirement) through
+idle -> deciding -> eating (accumulating EP) -> evolving (spending 3 EP
+for a body part) -> idle. All four `decision_mode` tiers are wired in
+`ops/bot_choose.c`; `decision_mode=3` (llm) is genuinely live, not
+stubbed - it calls the LAN Mac's `gemma3:270m` (freshly pulled via SSH
+this session specifically for this purpose, ~935ms round trip, far
+faster than the 8B groq-tool-use model) via `connect_op.+x`/
+`json_parser.+x`, using a small forced-choice persona
+(`pieces/registry/personas/decide_eat_or_evolve.txt`). Verified with
+both `decision_mode=0` (preset) and `=3` (llm) - both produced identical
+correct behavior (eat x3 until ep=3, then evolve), the llm tier via 4
+real live model calls, not canned. `weighted`/`rl` tiers (`decision_
+mode=1/2`) are honestly stubbed to the same preset logic for now - see
+`fsm/states.txt` and §7's build order for what's next. One real bug
+found and fixed during this build, worth remembering for future pieces
+in this project: `prisc+x`'s `read_state` builtin opcode resolves piece
+paths as `<root>/projects/<proj_id>/pieces/<piece_id>/state.txt` (a
+flat fallback) or `<root>/projects/<proj_id>/pieces/world_*/map_*/
+<piece_id>/state.txt` (if that layout exists) - NOT muchi-pal-chat's
+own `pieces/world_01/session_01/...` shape, which that project only
+gets away with because it never actually calls the `read_state`
+built-in (it hand-rolls its own C-side state reads instead). Any new
+piece in muchi-evo-pal must live under `projects/muchi-evo-pal/pieces/
+<piece_id>/` for the PAL script's own `read_state` calls to work.
+
+================================================================================
+0. WHAT GROUNDS THIS
+================================================================================
+- **E.V.O.: Search for Eden** (Enix, SNES, 1992) - real, well-known
+  mechanics, described here at the level of general public knowledge
+  (specific numeric costs/stage names not claimed with false
+  precision): player controls one creature lineage, beginning as a
+  simple aquatic organism. Eating other creatures/organic matter earns
+  Evolution Points (EP). EP are spent (via a guiding "Gaia" entity)
+  on new body parts - fins, jaws, legs, wings, shells, horns, etc. -
+  each with real stat effects (attack/defense/speed/etc.) and usually a
+  visible body change. Certain parts gate access to new areas/eras
+  (e.g., legs needed to leave water for land). Progresses across
+  geological eras toward increasingly complex forms, ending near
+  human/proto-sapient form. A rival, competing creature lineage evolves
+  in parallel and recurs as an antagonist across eras.
+- **SimEarth** (Maxis, SNES port 1993) - real, well-known mechanics:
+  a god-game/planetary simulation - player manages global systems
+  (atmosphere composition, temperature, tectonics/continents, ocean
+  coverage) across geological time, with life evolving through
+  simplified ages (single-celled life, plants, invertebrates,
+  vertebrates, up through an Age of Man and beyond). Multiple species
+  exist simultaneously with tracked population/biomass, competing for
+  niches, subject to player-triggered or emergent events
+  (terraforming, disasters, extinctions) and feedback-loop dynamics
+  (a simplified Gaia-hypothesis model).
+- `wrai-dust-fable` §2/§14 - Dustopia's own "size=time" scaling and
+  "fractal zoom applies to AI compute, not just pixels" framing -
+  directly what makes "two games at two scales" a coherent single
+  system rather than a hack.
+- `COMPOSABLE-MATERIALS-ARCHITECTURE.md` §2's composable data shape
+  (`granularity`/`lambda`/`bond_profile`/`composed_of`/`decision_mode`)
+  - reused wholesale below, not redesigned. §3's worked example already
+  names atom->molecule->cell->organism->structure->environment; this
+  document proposes ONE addition to that chain (§2 below).
+- `piececraft-wraith`'s proven key-`8` 2D-top-down/3D-perspective
+  toggle (`GRAND-ARCHITECTURE.md` §0) - the real, working precedent for
+  "one scene descriptor, switchable zoom/view," reused here as the
+  mechanism for switching between the planetary and creature views
+  (§4 below).
+- `wsr-pal`'s real `presets/schedule.txt` interval-scheduler
+  (`wsr-pal/dox/00-overview.md`, read directly this session) - reused
+  here for geological-era/climate ticking (§2 below).
+- `MUCHICIVO_BIBLE.txt` §2/§3 - the Tier1->Tier2 graduation condition
+  (`decision_mode` crossing `rl`->`llm`) and the 4-tier chassis - this
+  document is where that definition gets a concrete, playable moment
+  (§6 below).
+
+================================================================================
+1. THE SYNTHESIS: TWO NESTED SCALES, ONE SYSTEM
+================================================================================
+```
+ZOOMED OUT (SimEarth-flavored)          ZOOMED IN (E.V.O.-flavored)
+"ecosystem/planet" tier                  "organism/lineage" tier
+  - global climate/terrain/era state       - one creature lineage's body,
+  - population/biomass per species           built as a composable chain
+    (aggregate, not per-individual)         - EP economy, body-part
+  - mostly PRESET/deterministic               acquisition (craft.c reuse)
+    simulation (like Dustopia's own          - decision_mode lives HERE,
+    bond-table chemistry - see §5)             not at the planetary layer
+  - sets the CONSTRAINTS/OPPORTUNITIES     - responds to what the
+    the creature layer plays within           planetary layer currently
+    (is there land yet? what's the            allows/rewards
+    climate, what niches are open)
+```
+Neither layer is optional or secondary - SimEarth's layer is WHY the
+world changes under the player's feet across eras (the actual reason
+"Cambrian ocean" becomes "prehistoric land" becomes whatever's next);
+E.V.O.'s layer is WHERE the player (and rival lineages) actually play
+and make choices. This is not a compromise between two designs, it's
+recognizing they were always answering different questions.
+
+================================================================================
+2. THE ECOSYSTEM/PLANETARY LAYER (SimEarth-flavored)
+================================================================================
+**New granularity tier, added to `COMPOSABLE-MATERIALS-ARCHITECTURE.md`
+§2's chain, motivated directly by needing somewhere to put SimEarth's
+mechanics**: `granularity=ecosystem`, sitting between `organism` and
+`structure` in that document's existing ladder. An ecosystem composable
+aggregates:
+  - `composed_of=<species_lineage_id>:<population_count>, ...` - reuses
+    the SAME `composed_of` mechanism yet again (now: crafting recipes,
+    tech trees per `MUCHICIVO_BIBLE.txt` §4, AND ecosystem population -
+    three applications of one mechanism, a real running theme worth
+    naming explicitly across all three documents).
+  - `bond_profile`-driven climate/terrain state - Dustopia's 0/1/Z/3
+    table applied to atmosphere/temperature/terrain composables (per
+    `COMPOSABLE-MATERIALS-ARCHITECTURE.md` §3's own robot/environment
+    tier note that the SAME schema covers non-organic material,
+    generalized here to planetary systems).
+  - `growth_limit`/`shrink_limit` (§13.2/§13.3-derived, per
+    `COMPOSABLE-MATERIALS-ARCHITECTURE.md` §5) - population caps, an
+    extinction condition (population hitting `shrink_limit=0`), and
+    resource caps that ARE SimEarth's own carrying-capacity mechanic,
+    already available from an existing field, not new to invent.
+
+**Ticking mechanism**: `wsr-pal`'s real `presets/schedule.txt` concept
+(interval -> command dispatch, `wsr-pal/dox/00-overview.md`), reused
+directly - `1_era` (or a finer real-time interval mapped to in-game
+eras) triggers a climate/population-update op, exactly matching that
+project's own already-real "genuinely reusable piece of infrastructure"
+finding.
+
+**CORRECTED (2026-07-16, direct user correction to this document's own
+first draft):** the first version of this section claimed FSM/RL
+should "essentially never" apply at this layer - that was wrong, and
+contradicts `wrai-dust-fable` §2 Pillar 3's own literal framing, not
+just this document's later §5. Dustopia's "Fuzz Pets" are explicitly
+NOT inert points - "particles aren't dead points, they're small
+resonant 'creatures' sliding along a continuous spectrum" - meaning an
+ATOM-granularity composable is, per Dustopia's own design, already a
+pet/entity-shaped thing, not architecturally barred from carrying a
+`decision_mode` field. The correct statement is: `decision_mode`
+applies at EVERY granularity tier down to atoms/gravity/weather, per
+§0's Dustopia citations - defaulting to `preset` at this layer for cost
+reasons (`wrai-dust-fable` §14's "most agents, most of the time, should
+run at the cheapest tier" - a planet's weather being cheap BY DEFAULT
+is still the right call), but never architecturally forbidden from
+escalating (a rare, narratively-important storm system, or an
+individual "fuzz pet" atom involved in something unusual, could
+legitimately run `weighted`/`rl` at this tier too). See §5 for the
+corrected, fractal statement of this across the whole document.
+
+================================================================================
+3. THE CREATURE/LINEAGE LAYER (E.V.O.-flavored)
+================================================================================
+A creature is an `organism`-granularity composable
+(`COMPOSABLE-MATERIALS-ARCHITECTURE.md` §2, unmodified), whose
+`composed_of` list is literally its body parts: `composed_of=
+fin:1,jaw:1` etc. **Acquiring a new body part is `craft.c`'s existing
+consume/produce recipe mechanism, reused yet again**: EP is the
+consumed resource (matching a `recipes.txt` row's `req1:qty1` shape,
+just with an abstract "EP" resource instead of a physical material),
+the new body part is the produced result. Zero new crafting engine to
+write - this is the fourth cited reuse of that one mechanism across
+this whole document family (crafting itself, tech trees, ecosystem
+population, now creature evolution).
+
+  - **EP economy**: earned by an `eat` op (already real and working in
+    mutaclsym as `eat.c`, per its own architecture doc - reusable
+    directly, not reinvented) against other organism/plant composables
+    in the same ecosystem.
+  - **Era gates**: certain body parts are marked as prerequisites for
+    certain `ecosystem`-tier states (e.g. a `legs` part required before
+    the creature can act within a `terrain=land` ecosystem composable)
+    - this is where §2's planetary layer and this layer actually touch:
+    the ecosystem's current state gates which body-part compositions
+    are even useful/accessible, exactly mirroring E.V.O.'s own real
+    design (no reason to have legs before there's land to use them on).
+  - **Rival lineage**: a second organism-composable lineage, AI-
+    controlled, running the SAME body-evolution loop - the natural,
+    concrete first `decision_mode=weighted`/`rl` candidate in this
+    whole tier (per §5).
+
+================================================================================
+4. HOW THE TWO LAYERS INTERACT - THE ZOOM CAMERA
+================================================================================
+One scene, camera-driven, not two separate screens with a loading
+transition - directly reusing piececraft-wraith's OWN proven key-`8`
+2D/3D toggle mechanism (`GRAND-ARCHITECTURE.md` §0): "zoomed out" shows
+the ecosystem/planetary composable's aggregate state (population
+graphs, climate, terrain map - the SimEarth view); "zoomed in" focuses
+one lineage's organism composable and switches to the E.V.O.-style
+body-editing/eating gameplay. This is not a new rendering mechanism to
+design - it's the SAME shared presenter (`wraith_rgb_daemon.c`-style,
+per `GRAND-ARCHITECTURE.md` §0's resolution) reading a different scene
+descriptor depending on current zoom level, exactly the "one shared
+daemon, every project gets a mirror for free" pattern already
+established.
+
+================================================================================
+5. WHERE FSM/RL DROPS IN, SPECIFICALLY (direct answer, corrected
+   2026-07-16 - the chassis is FRACTAL, not creature-only)
+================================================================================
+**Corrected statement, replacing this section's first draft**: `decision_
+mode` is not exclusive to the creature/lineage layer - it applies at
+EVERY granularity tier in `COMPOSABLE-MATERIALS-ARCHITECTURE.md`'s
+chain, atoms and weather/gravity included, per `wrai-dust-fable` §2
+Pillar 3's own "Fuzz Pets... small resonant creatures" framing (§2
+above has the corrected citation). What actually varies by tier is the
+DEFAULT, not the AVAILABILITY:
+  - Atom/weather/gravity tier: `preset` by overwhelming default (cheap,
+    matches §14's "most agents, most of the time, cheapest tier"
+    framing) - but a specific storm system, a specific unusual particle
+    interaction, or any other narratively-significant moment at this
+    scale CAN legitimately run `weighted`/`rl` without breaking any
+    architectural rule. Nothing stops it; it's just rarely worth the
+    cost, exactly the same "fractal zoom" logic Dustopia already
+    applies to rendering detail.
+  - Ecosystem tier (§2): same story - population/climate dynamics
+    default `preset`, but a specific crisis event (a mass extinction
+    trigger, a first-contact-between-species event) is a legitimate
+    `weighted`/`rl`/even `llm` moment.
+  - Organism/creature tier (§3): the tier where escalation happens
+    MOST OFTEN and most meaningfully for this game's actual player-
+    facing loop (per §6's graduation moment), simply because that's
+    where the interesting, high-stakes, individual decisions
+    concentrate - not because other tiers are forbidden from having
+    them.
+This reframing matters for one concrete reason: it means the SAME
+mechanism (one `decision_mode` field, one chassis) governs literally
+everything in this game, at every scale, with no special-cased
+exception anywhere - which is a stronger, more honest version of
+`wrai-dust-fable` §12's own "one FSM chassis, four ways to choose"
+claim than treating any tier as permanently exempt would have been.
+
+Within the creature layer specifically, `MUCHICIVO_BIBLE.txt` §12's
+chassis applies as a progression across ONE lineage's own eras, not a
+fixed assignment (this part of the original design was correct, kept
+as-is):
+  - Early/simple creatures (single-celled, simple aquatic forms):
+    `preset` - a handful of hardcoded eat/flee/reproduce behaviors,
+    matching E.V.O.'s own earliest, simplest stages.
+  - Mid-complexity creatures: `weighted` - eat/flee/mate weights tuned
+    by what's actually worked (§12 Tier 2's own "nudge the weight up"
+    mechanism), giving the rival lineage a genuinely responsive, non-
+    scripted-feeling opponent without any model calls.
+  - Complex creatures approaching the top of the era ladder: `rl` -
+    full learned policy from the free `(state,action,outcome)` logging
+    every FSM tick already produces.
+  - **The graduation moment**: the FIRST creature in a lineage to need
+    `decision_mode=llm` (genuine judgment/novelty, not just tuned
+    instinct - the point where "what should I evolve into next" stops
+    being answerable by a fixed weight table) IS, by
+    `MUCHICIVO_BIBLE.txt` §2's own definition, the exact moment that
+    lineage graduates to Tier 2 (civilization). This document makes
+    that definition concrete and playable: it's the same moment E.V.O.
+    itself ends (reaching near-human form) - the two framings (a
+    decision_mode field crossing a threshold, and "the creature became
+    human") are now literally describing the same in-game event, not
+    two different milestones to reconcile.
+
+================================================================================
+6. THE GRADUATION MOMENT, PLAYED OUT
+================================================================================
+Concretely, what a player experiences: a lineage's creature accumulates
+body parts and EP across eras (§3), climbing `decision_mode` tiers as
+its behavior gets more sophisticated (§5), while the ecosystem/
+planetary layer (§2) keeps changing the terrain/climate/available
+niches underneath it. At some point - not a fixed turn count, an
+emergent outcome of how well that lineage has actually done - the
+lineage's own complexity crosses into needing `llm`-tier judgment.
+That's the handoff into `muchi-civ-pal` (Tier 2): the graduated
+lineage's population becomes the starting civilization, its accumulated
+body-part composable chain becomes flavor/trait data for that
+civilization's starting units (a species that evolved wings might start
+Tier 2 with an aerial-scout unit type, for instance - not designed
+further here, named as the natural place civ's own starting-conditions
+design should look).
+
+================================================================================
+7. BUILD ORDER
+================================================================================
+  1. ONE ecosystem composable + ONE organism composable, `composed_of`
+     wired via `craft.c`'s existing mechanism (per §3) - prove the
+     "eat -> EP -> new body part" loop end to end before anything else,
+     matching every other doc in this family's "vertical slice first"
+     discipline.
+  2. Add ONE era gate (e.g. a `legs` part unlocking a `terrain=land`
+     ecosystem state) - prove the two-layer interaction (§4) actually
+     works, not just that each layer works alone.
+  3. `decision_mode=preset` on ONE rival-lineage creature - the
+     earliest, cheapest FSM tier, per §5's own ordering.
+  4. The zoom-camera toggle (§4), reusing piececraft-wraith's proven
+     mechanism - deliberately AFTER 1-3 work in whatever minimal view
+     exists first (don't build the camera before there's two real
+     layers worth toggling between).
+  5. `weighted`/`rl` tiers on the rival lineage, then (only once a
+     lineage has genuinely earned it via 1-4's loop actually running)
+     the first real `llm`-tier graduation test (§6) - the actual proof
+     this whole document's central idea works.
+
+================================================================================
+8. WHAT'S NOT SOLVED HERE
+================================================================================
+- Exact numeric EP costs/body-part stat tables - E.V.O.'s own real
+  balance isn't reverse-engineered here, left as tuning work.
+- SimEarth's fuller systems (atmosphere gas mix, plate tectonics in
+  detail) are named at the "climate/terrain state" level, not modeled
+  in the same depth the original game does - a real, honest scope
+  reduction, not claimed otherwise.
+- How MANY rival lineages should exist simultaneously, and how
+  ecosystem-tier population caps (§2) interact with multiple
+  player-adjacent lineages competing for the same niches - real design
+  work, not scoped here.
+- The exact `muchi-civ-pal` starting-conditions handoff (§6's last
+  paragraph) - named as a seam, not designed; that's civ's own
+  upcoming deep-dive's job, per `../ORCHESTRATION-TODO.txt`.
+
+================================================================================
+HUMAN-CONTROLLABLE VS. AUTOMATED - REPORT (2026-07-16)
+================================================================================
+Direct answer to "run it, see how it's going, human-controllable vs
+automated." Before this pass, the game was 100% automated with NO
+human-control path at all - `button.sh` only had `tick` (auto-runs 12
+FSM ticks in one batch) and `reset`. Added a real 5th `decision_mode`
+(4 = human) plus the plumbing a human-driven tick loop actually needs,
+then ran all three reachable modes back to back for a genuine
+comparison, not a hypothetical one.
+
+**What had to be built for "human-controllable" to mean anything real**:
+`main_loop.pal`'s 12-tick batch runs to completion inside one `prisc+x`
+process with no pause point - a human can't interrupt it mid-run. Added
+`pal/single_tick.pal` (same FSM dispatch, exactly ONE tick, then halt)
+plus two new `button.sh` actions: `step` (run one tick) and `choose
+eat|evolve` (queue a decision). `ops/bot_choose.c` gained a `decision_
+mode=4` branch that does NOT auto-resolve - if no decision is queued,
+it leaves the FSM parked in "deciding" and returns without acting,
+confirmed by direct test (`button.sh step` with nothing queued printed
+"[human] waiting for input" and left `current_state=1` unchanged,
+across a real second invocation, not simulated).
+
+**Automated tiers (preset, decision_mode=0 / llm, decision_mode=3)**:
+one `./button.sh tick` command runs the full eat-eat-eat-evolve arc
+(12 internal ticks) unattended. LLM tier timed at ~1.9s wall-clock for
+the whole run (3 real live calls to gemma3:270m on the LAN Mac mixed in
+among the trivial state-transition ticks) - fast enough that "automated
+via LLM" doesn't feel meaningfully slower than pure preset for this
+tiny model/tiny decision. Both automated tiers produced IDENTICAL
+correct behavior (eat until ep=3, then evolve, gain "fin").
+
+**Human tier (decision_mode=4)**: the same eat-eat-eat-evolve arc took
+9 separate manual shell invocations (step/choose/step/step/step/choose/
+step/step/step) instead of one `tick` command - genuinely slower to
+drive, as expected, and genuinely requires a person paying attention
+at each "deciding" state, not a rubber-stamp. **One real guardrail
+caught during testing, not designed in advance and then verified - it
+was actually exercised**: queued "evolve" while `ep=1` (below the
+3-EP requirement); `bot_choose.c`'s own logic (`evolve = (decision ==
+"evolve") && ep >= 3`) silently downgraded it to "eat" instead of
+letting the human break the rule or crashing - the human tier is
+constrained by the same rules the automated tiers are, not a bypass.
+
+**Honest overall assessment**: the automated tiers (preset/llm) are
+currently far more "playable" in the sense of actually producing a
+complete creature life-cycle with one command; the human tier is real
+and correctly wired but is closer to a debug/step-through harness right
+now than a game a person would enjoy driving - each `step`+`choose`
+pair is a raw shell command, not a UI. This is expected and appropriate
+for THIS vertical slice (§7's own build order deliberately deferred the
+interactive keyboard/renderer loop) - the human tier's value right now
+is proving decision_mode=4's plumbing is correct and enforces the same
+rules as the automated tiers, not delivering a polished play experience
+yet. A real playable human mode needs the keyboard_input/renderer loop
+`button.sh`'s own header comment already named as deferred future work
+- `step`+`choose` are the correct underlying primitives for that UI to
+eventually call, not a dead end to redo.

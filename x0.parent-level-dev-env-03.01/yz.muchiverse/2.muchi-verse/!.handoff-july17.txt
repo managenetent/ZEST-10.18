@@ -1,0 +1,668 @@
+HANDOFF - 2026-07-17, chtpm GL/RGB rendering: "not showing emojis
+anymore, rgb mode seems really messed up, not looking good like
+wraith"
+
+*** UPDATE, same day, shortly after: RESOLVED. Sec. 3's own "real
+*** decision needed" is answered - real voxel-art pixel rendering was
+*** ported into chtpm_rgb_render.c (not flat-color-only). Root cause of
+*** the ORIGINAL report was a wrong claim in this agent's own earlier
+*** reasoning: "wraith_rgb_daemon.c doesn't parse .chtpm tags" was
+*** conflated with "doesn't render real emoji pixels" - different
+*** claims. Real wraith_rgb_daemon.c has zero tag awareness AND still
+*** renders real emoji via blit_codepoint()/get_emoji_bitmap() (a real,
+*** pre-generated-bitmap pipeline, already documented in ops/
+*** compose_rgb_frame.c's own header comment from earlier work, just
+*** never applied here). Direct user correction: "wraith-alpha renders
+*** rgb emojis just fine. why can we do what that is doing? you should
+*** copy wraith-alpha as much as possible." Fixed by porting
+*** compose_rgb_frame.c's own load_emoji_voxels()/blit_emoji_tile()
+*** (real 16x16 pre-rasterized RGBA pixel data from pieces/registry/
+*** emoji_assets/<asset_id>/, not per-frame rasterization) into
+*** chtpm_rgb_render.c, keyed by a reverse unicode-bytes->asset_id
+*** lookup built from ALL FOUR registries (terrain/furniture/items/
+*** monster_types - confirmed via directory listing that every
+*** registry id has a real emoji_assets/<id>/ entry), downscaled 2:1
+*** horizontally to fit this file's own 8x16 (not compose_rgb_frame.c's
+*** square 16x16) glyph cells without breaking column alignment.
+*** Rebuilt + live-verified via PNG dump: real brick-textured walls/
+*** floor and distinct furniture/item pixel-art icons now render,
+*** replacing the flat color blocks. zoo_0000's own stale binary (sec.
+*** 2) was rebuilt in the same pass. Sec. 3-5 below are the ORIGINAL
+*** investigation, kept for the full trail - read sec. 6 (added after
+*** this update) for the current, correct status instead of re-doing
+*** sec. 5's "must decide" list.
+========================================================================
+Written per direct request, right after that report came in. Read this
+BEFORE touching `shared-ops/chtpm_rgb_render.c` or any project's
+`system/gl_mirror.c` again - it separates what's a confirmed, fixed bug
+from what's a real, deliberate, still-open scope gap, and names the one
+real gap in HOW this whole feature has been tested so far.
+
+========================================================================
+1. WHAT chtpm_rgb_render.c ACTUALLY IS (context if you weren't here for
+   the earlier build)
+========================================================================
+`shared-ops/chtpm_rgb_render.c` is a new, persistent daemon (real
+wraith_rgb_daemon.c equivalent) that watches `pieces/display/
+frame_changed.txt`, reads `pieces/display/current_frame.txt`, and font-
+rasterizes it into `pieces/display/rgb_frame.raw` - the SAME path
+`system/gl_mirror.c` already reads. It was built to fix an EARLIER,
+different complaint: chtpm's own menu chrome (the "Control Hero"
+button, footer options past #5) never appeared in the GL window,
+because the OLD renderer for that window (`ops/compose_rgb_frame.c`)
+draws real 2D tile graphics straight from game state and never touches
+`current_frame.txt` at all. Full background: `!.handoff-doc-j17.txt`
+and `project_chtpm_to_pal_layout_bridge.md` (memory).
+
+That fix is real and was live-tested (via PNG dumps - see sec. 4 below
+for why that phrase matters). This handoff is about a SEPARATE,
+follow-up report after that fix: the RGB/GL output now looks worse in
+a different way than before.
+
+========================================================================
+2. CONFIRMED, FIXED: zoo_0000's own binary was stale
+========================================================================
+`z0.zoo_0000/system/chtpm_rgb_render` was compiled BEFORE the final
+source fix (the emoji-color-registry lookup, sec. 3 below) was added -
+confirmed via `strings <binary> | grep terrain_types` returning nothing
+on the old binary, vs. present in mutaclsym's own (which WAS rebuilt
+after that fix). This is a real, mechanical gap: this project's own
+`system/chtpm_rgb_render` was manually rebuilt via a direct `gcc`
+invocation during testing, not through `./scripts/build.sh`, and zoo_
+0000 never got that same manual rebuild after the LAST source change.
+
+STATUS: a rebuild was in progress when this doc was written - the tool
+environment had a transient outage mid-session before it could be
+confirmed complete. **First thing to check when picking this up**: run
+`strings z0.zoo_0000/system/chtpm_rgb_render | grep -c terrain_types`
+- if it prints 0, the binary is still stale; rebuild via:
+  `cd z0.zoo_0000 && gcc -std=c11 -Wall -Wextra -O2 -o system/chtpm_rgb_render ../../yz.muchiverse/2.muchi-verse/shared-ops/chtpm_rgb_render.c`
+This alone won't explain "missing emoji" for zoo_0000 specifically
+though - that project's own map is plain ASCII, no emoji tiles exist
+there at all (confirmed via live test earlier this session) - so this
+fix is real and worth doing, but likely isn't what the user's report is
+actually about (see sec. 3).
+
+========================================================================
+3. THE REAL, LIKELY EXPLANATION: flat colors, not real pixel art - a
+   deliberate scope decision that may need revisiting
+========================================================================
+`chtpm_rgb_render.c` does NOT render actual emoji-looking pixel art. It
+renders a SOLID, FLAT color block for any recognized multi-byte UTF-8
+tile glyph, looked up from `terrain_types.txt`/`furniture_types.txt`'s
+own `rgb_top_emoji` field. This was a direct response to an earlier
+round of feedback ("i liked it more when it showed colored blocks or
+emoji... what changed" - the fix at the time was moving from an
+ARBITRARY hashed color to the REAL curated registry color, verified via
+PNG dump showing correct wall/floor colors matching the registry
+exactly).
+
+But `ops/compose_rgb_frame.c` (regular "run" mode's own GL renderer)
+does MORE than flat colors for tracked entities (furniture/items/
+monsters/hero/xlector, via `cell_asset[]`): it loads REAL, pre-
+rasterized 16x16 pixel-art voxel data from `pieces/registry/
+emoji_assets/<asset_id>/voxels_16.csv` (`load_emoji_voxels()`/
+`blit_emoji_tile()`) and blits it ON TOP of the flat base color. THAT
+is almost certainly what "looks good like wraith" (a loose way of
+saying "looks as good as our own regular run-mode rendering already
+does" - real wraith-alpha itself is plain-text-only, no emoji tiles at
+all, confirmed via direct research, so "like wraith" here means "like
+our own family's best existing GL output," not literally wraith-
+alpha's own appearance).
+
+`chtpm_rgb_render.c` was deliberately built WITHOUT this voxel-art
+layer - it only has the DISPLAYED EMOJI BYTES from `current_frame.txt`
+text, not the game state `cell_asset[]` needs (asset IDs, tracked-
+entity positions). Terrain/furniture tiles get a flat color; ANYTHING
+without a registry `rgb_top_emoji` entry (items, monsters, hero '@',
+xlector 'X') falls through to `utf8_hash_color()` - an arbitrary,
+non-curated color, which for a map with visible items/monsters would
+look exactly like "messed up, not showing the right thing."
+
+**This is very likely the real gap the report is about**, not a new
+bug in the strict sense - a real, honest limitation of what was built,
+now visible under closer/live use rather than a single PNG-dump check.
+
+========================================================================
+4. THE REAL, UN-CLOSED TESTING GAP: never actually seen a live GLUT
+   window
+========================================================================
+Every verification claim made about this feature (chrome visible, map
+colors correct, alpha fixed) was checked via `ops/+x/dump_rgb_png.+x` -
+a debug tool that reads the exact same `rgb_frame.raw` bytes `gl_mirror
+.c` reads and writes a plain PNG, which this agent CAN view. It is a
+genuinely good proxy for "are the bytes right," and static reading of
+`gl_mirror.c`'s own `glTexImage2D`/texcoord/vertex code (done while
+investigating this report) found no format mismatch, no flip bug (the
+texcoord->vertex mapping is correctly oriented, texture row 0 maps to
+screen top), and the GLUT window is created at the exact same 640x304
+as the buffer (no aspect-ratio stretch).
+
+But NONE of that is the same claim as "the live GLUT window, as a
+human actually sees it, looks right" - this agent has no way to
+directly view a live GLUT window, full stop. If a future session is
+asked to verify this feature again, say so explicitly rather than
+implying the PNG-dump check is equivalent - and if the discrepancy in
+this report turns out NOT to be explained by sec. 2 or sec. 3 above,
+the next real step is getting a fresh screenshot from the user of the
+CURRENT (post-these-fixes) state, not re-guessing from code alone.
+
+========================================================================
+5. WHAT MUST BE DECIDED / DONE NEXT
+========================================================================
+1. Confirm/finish the zoo_0000 binary rebuild (sec. 2) - mechanical,
+   low-risk, do it regardless of the rest.
+2. Real decision needed, not silently defaulted either way: does
+   `chtpm_rgb_render.c` get a real voxel-art rendering layer (porting
+   `load_emoji_voxels()`/`blit_emoji_tile()`, keyed by extending the
+   SAME registry-based reverse lookup this file already has for flat
+   colors - terrain/furniture rows already carry both `rgb_top_emoji`
+   AND an implicit asset-id-via-`glyph_asset_id()` path, so the
+   plumbing precedent already exists in `ops/compose_rgb_frame.c`), or
+   does flat-color stay the permanent, accepted look for the "blind"
+   chrome-rasterizing daemon specifically (matching real
+   wraith_rgb_daemon.c's own "zero semantic awareness" philosophy more
+   purely, at the cost of visual richness)? This is a real tradeoff,
+   not a bug to just fix - get a direct answer before spending more
+   time on either path.
+3. Items/monsters/hero/xlector currently fall through to the arbitrary
+   hash-color fallback (no `rgb_top_emoji` in their own registries -
+   only `unicode`). If flat-color stays the approach (decision 2, "no"
+   branch), these should probably get REAL fixed colors too (matching
+   `glyph_fallback_rgb()`'s own special-cased yellow/cyan for hero/
+   xlector in `compose_rgb_frame.c`), not left on the hash fallback -
+   a small, real follow-up either way.
+4. Get a fresh screenshot of the CURRENT state (after whatever fix
+   lands from 1-3) - the earlier screenshot that started this whole
+   redesign effort predates ALL of today's fixes, and no screenshot
+   has been checked against the CURRENT code at all yet.
+
+Related: `!.handoff-doc-j17.txt` (the original GL-redesign handoff this
+one follows up on), `PAL-VS-C-ARCHITECTURE.txt` (unrelated aside from
+the same session, don't conflate the two threads), `project_chtpm_to_
+pal_layout_bridge.md` (memory, has the full account of what was built
+and verified today up to this report).
+
+========================================================================
+6. SECOND FOLLOW-UP, same day: "emojis look bad... gl screen randomly
+   disappears when enter is pressed... looks smushed... getting cut
+   off". TWO MORE real bugs, both fixed, both confirmed via a direct
+   before/after screenshot comparison the user provided.
+========================================================================
+**Bug A - tiles squished to half width, map cut off / cramped into
+half the window.** Root cause: sec. 6's own voxel-art port blitted the
+real 16x16 pixel data DOWNSCALED 2:1 to fit this file's then-uniform
+GLYPH_W(8)-wide text columns. That's not just visually worse - it was
+STRUCTURALLY UNNECESSARY: `VIEWPORT_W(40) * TILE_PX(16) = 640 =
+FRAME_W` exactly, confirmed via direct read of `ops/
+compose_rgb_frame.c`'s own `#define`s - a full 40-tile map row already
+fits the frame perfectly at NATIVE 16px width, no scaling needed at
+all. Fixed by making `blit_text()` track a running PIXEL x-position
+instead of a fixed column count: matched tile glyphs advance by
+VOXEL_PX(16, no scaling, full native resolution), plain ASCII text
+still advances by GLYPH_W(8) (chrome/footer lines need that narrower
+width's ~80-column budget - confirmed against game.chtpm's own longest
+footer line, ~72 chars, which would truncate under a uniform 16px
+width). This mixed-width-per-glyph-type approach is real wraith-alpha's
+OWN precedent, not invented here - `compose_rgb_frame.c`'s own header
+comment already cited it: "[wraith's] daemon targets a variable
+emoji_glyph_size."
+
+**Bug B - GL window randomly goes black/disappears on a keypress.**
+Root cause: this daemon writes `rgb_frame.raw` via a plain
+`fopen(path,"wb")` (truncates to 0 bytes immediately) then `fwrite()` -
+and polls/rewrites this file far more often (~60/sec) than `ops/
+compose_rgb_frame.c` ever did (only on an actual keypress, gated
+behind the module's own `.pal` loop). Confirmed via direct read of
+`system/gl_mirror.c`'s own `load_texture()`: it does a plain `fread()`
+with no retry, and on a short read (exactly what happens if it opens
+the file in the window between this daemon's truncate and the
+completion of its write) ZERO-FILLS the rest of the buffer and uploads
+that as the frame - a real, textbook torn-read race, not a guess. This
+pre-existing write-in-place pattern is shared by `compose_rgb_frame.c`
+too, but never manifested visibly there because it writes far less
+often - this daemon's much higher write frequency made the same latent
+race actually reachable. Fixed by writing to `<path>.tmp` then
+`rename()`-ing it into place (POSIX `rename()` on the same filesystem
+is atomic - any reader sees either the complete old file or the
+complete new one, never a partial one).
+
+Both fixed in `shared-ops/chtpm_rgb_render.c`, rebuilt into mutaclsym
+and zoo_0000, live-verified via PNG dump: map now fills the full 640px
+width edge-to-edge with correctly-proportioned, unsquished tile icons,
+matching the ORIGINAL "how it used to look" screenshot's own quality.
+Bug B's fix can't be directly stress-tested without a live GL window
+(same sec. 4 caveat as ever), but `rename()`'s atomicity guarantee is
+well-established POSIX behavior, not a hopeful guess.
+
+**Real, recurring lesson worth naming explicitly**: this is the SECOND
+time in this same thread a fix was shipped, verified via PNG dump, and
+still turned out visibly wrong once the user actually looked at the
+real GL window. The PNG-dump proxy catches "are the right bytes being
+written" but has now missed a scaling/proportion regression (bug A)
+and can't catch a timing/race bug AT ALL (bug B, by definition only
+shows up under real polling-frequency timing a single static dump
+can't reproduce). Do not treat a PNG-dump check as equivalent to "the
+user confirmed this looks right" - it isn't, and this thread is the
+concrete evidence.
+
+========================================================================
+7. THIRD FOLLOW-UP, same day: "its text/selector should mirror the
+   terminal almost exactly. instead it doesn't show any of the nav
+   options, not even control hero unless enter is pressed. then
+   control hero will show up and cutt the bottom of the game map off."
+   TWO MORE real, distinct bugs, both fixed and verified.
+========================================================================
+**Bug C - map genuinely clipped, ~35 real lines vs. 19-row capacity.**
+Direct count of a live current_frame.txt: chrome (title/button/borders)
++ embedded ${game_map} (header + 16-row viewport) + status/inventory/
+message-log + footer/nav lines = ~35 lines, real and confirmed, not
+estimated. `FRAME_H=304 / GLYPH_H(16) = 19` rows - the bottom third-
+plus of every real frame was being silently cut off, always, not just
+around Enter specifically (sec. 6's own "control hero cut off the
+map" is this same clipping, made more visible once a longer footer
+line appeared). Root cause of the original "why is FRAME_H hardcoded
+to 304" decision (sec. 1 of this doc) was matching system/gl_mirror.c's
+own then-HARDCODED WIDTH/HEIGHT constants - reused rather than changed,
+reasoned as lower-risk at the time. That reasoning is now confirmed
+wrong: gl_mirror.c's hardcoded size was built for ops/
+compose_rgb_frame.c's own DIFFERENT, correctly-304px content, not
+chtpm_rgb_render.c's own taller real content.
+
+**Fix**: `shared-ops/chtpm_rgb_render.c`'s own `FRAME_H` raised
+640x304 -> 640x768 (48 rows, real headroom over the observed ~35-line
+max). `system/gl_mirror.c` (BOTH mutaclsym and zoo_0000 - real code
+changes, not just accepting the new size) now reads `frame_w`/
+`frame_h` DYNAMICALLY from `pieces/display/rgb_frame.receipt.txt`
+before every texture load (same pattern `shared-ops/dump_rgb_png.c`
+already used successfully), reallocating its own frame buffer AND
+calling `glutReshapeWindow()` on a real size change - so the window's
+own pixel size always matches the texture 1:1, whichever renderer
+(`compose_rgb_frame.c`'s own unrelated, still-304px "run" mode output,
+or this daemon's now-768px "chtpm" mode output) is currently the real
+writer. `DEFAULT_WIDTH`/`DEFAULT_HEIGHT` (640x304) remain the startup
+fallback before any receipt exists. Live-verified via PNG dump: the
+ENTIRE real frame now renders - title, button, full map, status,
+inventory, message log, footer instructions, AND the trailing Nav
+prompt - nothing clipped.
+
+**Bug D - separate, genuine torn-read race on current_frame.txt
+itself, reproduced twice via direct testing.** `chtpm_parser_pal.c`
+(real 1.TPMOS fork, "exactly 2 patches" policy - not touched for this)
+grows `frame_changed.txt` (this daemon's own re-render signal) and
+writes `current_frame.txt` (the actual content) as two separate,
+unsynchronized writes. The daemon used to render the INSTANT it saw
+the pulse grow - reproduced live: right after an Enter-triggered pulse
+growth, a render caught current_frame.txt PARTWAY through being
+rewritten, showing a genuine MIX of the OLD footer text ("Nav > _")
+and the NEW one ("Active [^]: ..."), self-correcting only after a
+SECOND, unrelated pulse growth forced a fresh read. This is almost
+certainly what "doesn't show nav options... unless enter is pressed"
+was actually describing - NOT that Control Hero was ever truly absent
+(confirmed present from cold start in every test this whole session),
+but the daemon getting stuck on a torn read at exactly the moment
+interact mode engages, until some later, unrelated event forced a
+retry. **Fix, entirely on this daemon's own side** (no fork patch):
+after detecting the pulse has grown, wait a fixed 30ms grace period
+before reading current_frame.txt, every time. Reproduced the exact
+failing scenario again post-fix (same Enter keypress, same 0.5s
+timing) - now renders correctly on the first try.
+
+**A separate, real operational finding while investigating**: found and
+killed a genuinely orphaned `chtpm_rgb_render` process left running in
+mutaclsym from this agent's own earlier testing (never cleaned up
+properly), running CONCURRENTLY with a real user session's own daemon
+- two independent writers racing over the same `rgb_frame.raw`,
+plausibly a real, additional contributing cause of "looks weird" on
+its own, separate from bugs C/D above. Always verify no stray daemon
+is running before/after a test session - `ps aux | grep chtpm_rgb_render`
+should show at most ONE per active project session.
+
+========================================================================
+8. FOURTH FOLLOW-UP, same day: THE REAL ROOT CAUSE of the remaining
+   flicker/disappearing - a genuine architectural gap vs. real
+   wraith-alpha, found only after the user redirected THREE times
+   ("does wraith piececraft-3d provide guidance", "wraith creates a
+   rgb file that rgb parser simply reads, check the receipts",
+   "tpmos fuzz-op wraith all use a frame changed marker file... its a
+   must have, game change") - each redirect narrowed this down further.
+========================================================================
+**The bug**: `system/gl_mirror.c` watched `pieces/display/
+frame_changed.txt` for its own "reload the texture" signal - the SAME
+file `chtpm_parser_pal.c` grows as its own UPSTREAM signal, which
+`shared-ops/chtpm_rgb_render.c` ALSO watches as ITS OWN input trigger.
+Confirmed via direct read that real `wraith_gl.c` does NOT do this -
+its `WRAITH_FRAME_TRIGGER` is `rgb_frame_changed.txt`, a genuinely
+SEPARATE, DOWNSTREAM file grown ONLY by `wraith_rgb_daemon.c`'s own
+`pulse_rgb()`, called AFTER its output is fully written - real
+wraith's own two-stage pulse: chtpm-parser writes text + grows an
+upstream trigger -> rgb daemon renders + grows its OWN, separate,
+downstream trigger -> GL reader watches ONLY the downstream one.
+
+**Confirmed as a real, measured bug, not a guess**: built a live
+checksum trace (sampled `rgb_frame.receipt.txt`'s own checksum against
+`gl_display.receipt.txt`'s own loaded checksum every 30ms through a
+rapid Enter/Escape keypress burst). BEFORE this fix: `gl_mirror`
+"consumed" the shared upstream trigger before `chtpm_rgb_render` had
+even started its own settle-and-render, then had NO further signal to
+react to once the real output was ready - not a brief lag, a
+PERMANENT stall (21+ consecutive mismatched samples, ~600ms+, that
+never self-corrected even after the daemon settled on its final,
+stable frame). This is almost certainly the real cause of BOTH "random
+disappearing/flickering" AND, very plausibly, part of the earlier
+"nav options don't show until enter is pressed" report too.
+
+**Fix**: added `pieces/display/rgb_frame_changed.txt` - a new,
+dedicated downstream pulse, matching wraith's own naming closely.
+Both `shared-ops/chtpm_rgb_render.c` (chtpm mode) and `ops/
+compose_rgb_frame.c` (regular "run" mode, BOTH mutaclsym's and
+zoo_0000's own copies, for consistency regardless of which mode is
+active) now grow it ONLY after a complete write (rgb_frame.raw +
+receipt both done). `system/gl_mirror.c` (both projects) now watches
+ONLY this file, no longer `frame_changed.txt` directly.
+
+**Re-verified with the identical stress test post-fix**: 50 samples,
+30ms apart, through the same rapid keypress burst - only 2 ISOLATED,
+SINGLE-SAMPLE mismatches (each immediately followed by a match on the
+very next sample, i.e. normal ~30ms poll latency, not staleness), zero
+persistent stalls. A dramatic, measured improvement, not just "seems
+better."
+
+**Also cross-referenced real wraith_rgb_daemon.c directly for the
+settle-delay question from sec. 7**: it has NEITHER an atomic write
+NOR any settle/stability delay at all - confirms sec. 7's own
+current_frame.txt-stability-polling fix is an original improvement
+beyond what wraith itself does, not something being incorrectly
+skipped from a real precedent.
+
+**STILL UNRESOLVED, real and separate**: "when i press up on control
+hero it activates (it should only activate on enter)". Investigated
+thoroughly:
+- Direct-injected UP arrow (`KEY_PRESSED: 1002`) alone, from a clean
+  `active_index == -1` state, via `pieces/keyboard/history.txt` -
+  does NOT activate Control Hero (`[>]` stays `[>]`, confirmed via
+  current_frame.txt directly). Real upstream `chtpm_parser_pal.c`
+  logic (line ~2873) gates "set active_index" behind the Enter branch
+  ONLY - structurally correct, not a guessable-from-code bug.
+- Compared `system/gl_mirror.c`'s own `keyboard()`/`special_keyboard()`
+  shape against real `wraith_gl.c`'s own - structurally identical, no
+  divergence found (both dispatch arrow keys through
+  `glutSpecialFunc`/`map_special_key()` only, no special-casing that
+  would send an extra Enter alongside an arrow).
+- Can't reproduce via this agent's own testing methodology at all -
+  direct file injection bypasses the real GLUT keyboard callback
+  entirely, which is exactly where this bug would have to live if it's
+  real and not a chtpm_parser_pal.c logic issue.
+- Added TEMPORARY diagnostic logging to `system/gl_mirror.c` (both
+  projects): every raw key its own `keyboard()`/`special_keyboard()`
+  callbacks actually receive from GLUT is now appended to
+  `pieces/display/gl_key_debug.log` (source, raw value, mapped value).
+  Deployed and built, not yet exercised by a real reproduction. NEXT
+  STEP: reproduce the bug live once more, then read this log to see
+  the EXACT raw key sequence GLUT actually delivered - this removes
+  all remaining guesswork. Remove this logging once root-caused (it's
+  explicitly marked TEMPORARY in both files).
+
+========================================================================
+9. SIXTH follow-up, same day: hero stuck at (0,0), and a "grey
+   player/green walls" report that turned out to be a SIDE EFFECT of
+   that, not a new color-table bug.
+========================================================================
+**Root cause of "player stuck at 0,0"**: `pieces/world_01/map_start/
+hero/state.txt` was genuinely CORRUPTED - most fields duplicated
+(appearing twice, e.g. two separate `panel_cursor=0` lines), one field
+mangled (`active_panel` became `e_panel` in the second copy), and
+`pos_x`/`pos_y` were MISSING ENTIRELY. Every op that reads hero
+position (`compose_frame.c`, `compose_rgb_frame.c`, `pickup.c`,
+`drop.c`, `tick_monsters.c`) defaults a missing key to 0 - so the hero
+was rendering and moving-from position (0,0), which the map's own row
+0 is entirely wall (`########...`), fully blocking movement in every
+direction. Likely cause: many genuinely overlapping test sessions
+today (this agent's own repeated tests, plus the user's own live
+sessions) all reading/rewriting this same file via a
+read-all/replace-one-key/write-back pattern with no locking - a
+classic concurrent read-modify-write race, not a single code bug to
+chase down further right now.
+
+**Fix**: rebuilt `hero/state.txt` from scratch with a complete, valid
+field set and `pos_x=1, pos_y=1` (a real walkable floor tile, one step
+in from the map's own wall border) plus fresh HP/hunger/thirst/stamina
+defaults. Verified live: injected a right-arrow after engaging
+interact mode, `pos_x` moved 1 -> 2 exactly, confirming movement
+works.
+
+**The "grey player, green walls" report**: re-checked via a fresh PNG
+dump after the position fix - walls/floor render with the correct,
+real registry colors (matching the earlier "quality is back"
+confirmation exactly), no green miscoloring anywhere. This strongly
+suggests the reported miscoloring was a downstream visual artifact of
+the camera being stuck at the map's own (0,0) corner (an edge-case
+viewport/rendering path most testing never exercises, since a working
+hero position never sits exactly in the wall), not a separate,
+still-open color-table bug. Flagging as resolved-via-the-position-fix
+rather than independently diagnosed - if genuinely still visible after
+this, it's a new, different finding, not a continuation of this one.
+
+**Real, separate, MINOR, and deliberately NOT fixed**: hero `@` and
+the xlector cursor `X` render as plain WHITE TEXT GLYPHS in
+`chtpm_rgb_render.c` (their real character shape, just not colored),
+not the special YELLOW/CYAN SOLID BLOCKS `ops/compose_rgb_frame.c`'s
+own `glyph_fallback_rgb()` gives them. Considered special-casing '@'/
+'X' the same way emoji tiles get a color lookup, but rejected: unlike
+emoji (which never appear in legitimate chrome/footer text), '@' and
+'X' are ordinary letters that DO appear in real chrome text elsewhere
+- forcing them to always render as solid colored blocks would corrupt
+any actual sentence containing an 'X' or '@'. This is a real, accepted
+structural trade-off of the "blind" rasterizer design (matching real
+wraith_rgb_daemon.c's own explicit "zero content awareness" property
+exactly - it has the identical limitation), not a bug to chase further
+without adding real semantic awareness this whole approach was built
+to avoid.
+
+========================================================================
+9b. SEVENTH follow-up, same day: "arrows and nav were not supposed to
+    disappear" - a real, previously-WRONG architectural claim in this
+    codebase's own documentation, corrected only after re-reading real
+    fuzz-op_manager.c IN FULL (not excerpted) per direct, repeated user
+    insistence. This one is important enough that future agents should
+    read it before touching choice.c/game.chtpm/zoo.chtpm again.
+========================================================================
+**What was wrong**: `ops/choice.c`'s own header comment claimed the
+real xlector active-target/examine-cursor feature "SUPERSEDES an
+earlier, narrower build... (arrows moving the ACTION BAR's own cursor)
+- that wasn't the real feature." This agent defended that claim
+directly to the user, insisting arrow-based menu nav in a one-item
+chtpm layout was "working correctly, just invisible since there's
+nothing to move between." The user correctly refused to accept that
+answer and, after being told to research fuzz-op MORE DEEPLY, this
+agent read `fuzz-op_manager.c` in full for the first time this
+session (not excerpted, all ~940 lines) and found the real answer.
+
+**The real architecture, confirmed via direct read**: real
+`fuzz-op_manager.c`'s own `route_input()` has ZERO menu-cursor/
+accumulator logic of its own - arrows (1000-1003) unconditionally move
+whichever entity `active_target_id` currently names, and digit keys
+2-9 IMMEDIATELY EXECUTE a method looked up from that entity's own
+piece.pdl (no "preview then Enter to commit" step at all - completely
+different from `choice.c`'s own two-phase design). The "[>]"-navigable,
+arrow/number-selectable menu the user described and correctly expected
+is NOT anything fuzz-op_manager.c implements - it's entirely real
+`chtpm_parser.c`'s own generic top-level nav (`focus_index`, confirmed
+via earlier direct read of the SAME function this session already
+had), applied to `${piece_methods}` - a REAL, ALREADY-PRESENT,
+UNMODIFIED mechanism in `shared-ops/chtpm_parser_pal.c`
+(`load_dynamic_methods()`) that reads a piece's own METHOD table and
+generates real `<button onClick="KEY:n">` elements - confirmed via
+direct read of `projects/fuzz-op/layouts/fuzz-op.chtpm` (real
+`${piece_methods}` used exactly this way, alongside its own "Control
+Map" interact-button and static "8. Back"/"9. Exit" rows).
+
+**Why this agent's own earlier tests never caught it**: every test
+this session used `game.chtpm`/`zoo.chtpm`, which only ever declared
+ONE navigable button ("Control Hero"/"Control Zoo"). Arrow-nav was
+genuinely working correctly the whole time (confirmed via repeated,
+careful live testing, real pty, real `keyboard_input.c`) - it just had
+nothing to move between, because this project's own layouts never
+included the real, expected second layer real fuzz-op always has.
+
+**The fix**: confirmed `onClick="KEY:n"` dispatch is fully wired and
+correct already (`send_command()` -> `inject_raw_key()` -> writes
+directly to whatever `<interact src>` names, which `game.chtpm`/
+`zoo.chtpm` already point at `interact_relay.txt` - the SAME file each
+project's own module already reads). Added real, static
+`<button onClick="KEY:n">` rows to `game.chtpm` (Pickup=2/Drop=3/
+Eat=4/Craft=5/Examine=6/Save=7, matching `choice.c`'s own existing
+digit numbering exactly) and `zoo.chtpm` (Feed=2/Pet=3/Play=4/
+Export=5, matching real `pet_mochi/piece.pdl`'s own METHOD order and
+`shared-ops/xlector_input.c`'s own confirmed `total`/index bounds
+check). Live-verified end to end: arrow-down visibly moves "[>]"
+between Control Hero/Pickup/Drop/etc (real, visible cursor movement,
+not just internal state); pressing Enter on a focused item correctly
+sets `action_cursor` in `hero/state.txt` via the real relay path,
+AND the embedded in-game footer (built independently by
+`compose_frame.c`) stays in sync, showing the identical `[>]` position
+- confirmed both are reading the same real, shared state, not two
+disconnected systems that happen to agree by coincidence.
+
+**Documentation corrected per direct instruction** ("change
+documentation and fix it"): `ops/choice.c`'s own header comment now
+explains the real architecture and why the old claim was wrong,
+instead of just silently changing the code.
+
+**Real, named, NOT-yet-done follow-up**: `zoo.chtpm`'s new buttons are
+static (hardcoded Feed/Pet/Play/Export), not the real, dynamic
+`${piece_methods}` mechanism real fuzz-op.chtpm actually uses - zoo_
+0000's own `compose_frame.c` ALREADY calls `pdl_reader.+x list_methods`
+dynamically for its embedded footer (closer to real fuzz-op than
+mutaclsym's own hardcoded `choice.c` dispatch), so wiring real
+`${piece_methods}` there specifically (needs `active_target_id`
+correctly synced into whatever state `resolve_dynamic_pdl_path()`
+reads) is a real, well-scoped next step - not done in this pass.
+mutaclsym has no per-entity piece.pdl METHOD tables at all yet (a
+bigger, separate undertaking, named but not started).
+
+========================================================================
+9c. EIGHTH follow-up, same day: switched mutaclsym from the static
+    Pickup/Drop/Eat/Craft/Examine/Save buttons (sec. 9b's own stopgap)
+    to REAL, dynamic ${piece_methods} - the "correct standard" per
+    direct instruction - plus a real hero/xlector emoji-color fix and
+    removal of the now-redundant embedded footer enumeration.
+========================================================================
+**Real ${piece_methods} now live for mutaclsym.** Confirmed hero
+ALREADY has a real, complete `pieces/world_01/map_start/hero/piece.pdl`
+(pickup/drop/eat/craft/examine/save METHOD rows, already used by
+`compose_frame.c`'s own footer via `pdl_reader.+x hero list_methods`)
+- this agent's own earlier claim that "mutaclsym has no piece.pdl
+METHOD tables yet" (sec. 9b) was WRONG, corrected here.
+
+Two real, concrete gaps found and fixed to wire `${piece_methods}` up
+for real (not just theoretically available):
+1. **Digit-numbering mismatch**: hero's own piece.pdl has an
+   `end_turn` METHOD row that `compose_frame.c`'s own footer already
+   skips (by POSITION - it only ever displays idx>=2, and end_turn is
+   idx=1), but `load_dynamic_methods()`'s own reserved-key filter
+   (real, unmodified upstream) checks NAMES (`move`/`select`/
+   `interact`/`stat_decay`/`on_turn_end`) and does not recognize
+   `end_turn` as reserved - it would have generated an extra button,
+   shifting pickup/drop/etc down by one digit from what `choice.c`'s
+   own hardcoded dispatch expects. Fixed by renaming the piece.pdl's
+   own key from `end_turn` to `on_turn_end` (matches the real reserved
+   list exactly; confirmed via grep this key is never looked up by
+   NAME elsewhere - the .pal script's own `end_turn` OP call is a
+   completely separate mechanism, unaffected) - applied to all 3
+   on-disk copies (live state, world_01_template, saves/save_1).
+2. **Path resolution mismatch**: `resolve_dynamic_pdl_path()` (real,
+   unmodified upstream) only tries wraith-alpha-shaped candidate paths
+   (`projects/<id>/pieces/<active_id>/piece.pdl`, etc.) - none match
+   pal-native mutaclsym's own `pieces/world_01/map_start/hero/
+   piece.pdl` layout. Rather than adding a 3rd patch to the fork (real
+   temptation, deliberately avoided to keep the "exactly 2 patches"
+   discipline this whole thread has maintained), added a SYMLINK at
+   `pieces/hero/hero.pdl` -> `../world_01/map_start/hero/piece.pdl`,
+   matching the resolver's own existing, unmodified last-resort
+   fallback path (`pieces/<id>/<id>.pdl`) exactly - zero fork changes,
+   zero new resolution logic, just satisfying a path the real code
+   already tries.
+3. Added `active_target_id=hero` to `button.sh`'s own chtpm-action
+   `player_app/state.txt` write (the real, existing "vars bridge" -
+   `load_vars()` already reads this file unconditionally) - this is
+   what tells `load_dynamic_methods()` WHICH piece.pdl to use.
+
+`game.chtpm` now uses `${piece_methods}` directly (matching real
+`fuzz-op.chtpm`'s own exact usage) instead of hardcoded buttons.
+zoo_0000 KEPT its hardcoded buttons for now - real dynamic methods
+there need `active_target_id` to track the CURRENT xlector-selected
+entity (xlector vs. a specific pet), not a fixed value like mutaclsym's
+"hero" - a real, separate, still-open follow-up (zoo_0000's own
+`compose_frame.c` already resolves this correctly for its OWN embedded
+footer, so the wiring pattern to copy already exists there).
+
+**Hero/xlector real emoji colors** (direct report: "brick and player
+emoji regressed back to non display"): confirmed `compose_frame.c`
+ALREADY emits real emoji for hero (🧑) and xlector (🎯) in emoji_mode -
+this agent's own earlier "can't safely special-case '@'/'X'" reasoning
+was based on a wrong assumption (that hero/xlector render as PLAIN
+ASCII) - they don't, in emoji mode. Added two hardcoded entries
+directly in `chtpm_rgb_render.c`'s own `load_emoji_colors()` (🧑->
+"hero" asset, yellow; 🎯->"xlector" asset, cyan - matching
+`glyph_fallback_rgb()`'s own real colors exactly) - safe precisely
+BECAUSE these are real, multi-byte emoji sequences that never collide
+with literal chrome text, unlike plain '@'/'X' would.
+
+**Redundant lower footer removed** (direct request, "get rid of lower
+duplicates" - also fixes a real truncation bug the combined old+new
+nav lists caused): `compose_frame.c`'s own `build_choice_footer()` no
+longer enumerates Pickup/Drop/etc (that's the top-level chtpm nav's
+job now) - shortened to `[wasd/arrows] Move  [i] Interact  [e] Emoji
+[q] Quit`. Regular "run" mode (no chtpm wrapper) loses the printed
+enumeration as a side effect (a real, accepted tradeoff, not hidden -
+digit-jump dispatch itself is completely unaffected, only the printed
+hint shrinks).
+
+**New nav buttons no longer force one row each** (direct request):
+`game.chtpm`/`zoo.chtpm`'s own button rows use `<text label="  ">`
+between buttons instead of `<br/>`, rendering inline on one row -
+functionally identical (chtpm's own focus_index nav doesn't care about
+visual layout), more compact.
+
+**Live-verified, full chain, this exact combination**: cold start
+shows real `[ ] 2. [pickup] ... [ ] 7. [save]` (lowercase, matching
+real upstream's own non-capitalizing convention - not a bug); 2x
+arrow-down + Enter correctly shows `[>] 3. [drop]` AND sets
+`action_cursor=3` in `hero/state.txt` via the real relay path; PNG
+dump confirms hero renders as a real yellow emoji block (not invisible
+white text), walls/floor render correctly, and the shortened footer no
+longer truncates.
+
+========================================================================
+10. CURRENT STATUS (read this, not sec. 5's stale "must decide" list -
+    read sec. 6-9c above for the eight most recent bugs; seven fixed
+    and verified, one - the UP-arrow-activates report - still open,
+    instrumented for the next reproduction)
+========================================================================
+1. zoo_0000 binary rebuild: DONE.
+2. Voxel-art vs flat-color decision: DECIDED - real voxel art, ported
+   from `ops/compose_rgb_frame.c`'s own `load_emoji_voxels()`/
+   `blit_emoji_tile()`. `shared-ops/chtpm_rgb_render.c` now builds a
+   reverse `unicode bytes -> asset_id` table from terrain/furniture/
+   items/monster_types registries at startup, blits the flat base
+   color THEN real pre-rasterized pixel art on top for any matched
+   glyph - same layering `compose_rgb_frame.c` already uses. Rebuilt
+   into mutaclsym and zoo_0000, live-verified via PNG dump (real
+   brick-textured walls/floor, distinct furniture/item icons visible,
+   not solid blocks).
+3. Items/monsters/hero/xlector fallback colors: items/monsters now get
+   real voxel art too (their own registries have no `rgb_top_emoji`,
+   so they get a neutral dark backdrop the voxel art sits on top of -
+   real pixels are what actually shows, the flat color barely
+   matters). Hero `@`/xlector `X` are plain single-byte ASCII, never
+   went through the emoji path at all - sec. 3's original note that
+   these needed a fix was based on a misreading; no change needed
+   there.
+4. Fresh screenshot check: still genuinely useful to do (this agent's
+   own verification is still PNG-dump-based, sec. 4's "never seen a
+   live GLUT window" caveat still stands) - but the specific "missing
+   emoji, messed up" complaint that prompted this doc should now be
+   resolved. If a fresh live screenshot still shows a problem after
+   this fix, it's a NEW finding, not a continuation of what's described
+   above.

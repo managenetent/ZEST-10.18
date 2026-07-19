@@ -1,0 +1,61 @@
+# muchi-evo-pal main loop - a real PAL-scripted FSM, per direct
+# instruction: "code our evo game using pal running fsm instead of raw
+# ops." The FSM dispatch (which state means which op gets called) lives
+# HERE, in beq-based branching over creature_01's own current_state
+# field - not hardcoded as C if/else chains the way mutaclsym's
+# tick_monsters.c currently is (that hardcoded shape is explicitly what
+# mutaclsym's own architecture doc names as the pending FSM-upgrade
+# candidate - this file is that upgrade, applied fresh to a new
+# creature instead of retrofitted onto an old one).
+#
+# This is the FIRST vertical slice per EVO-DESIGN.txt §7 build order:
+# ONE hardcoded creature (creature_01), ticked a fixed N times, no
+# interactive keyboard/renderer loop yet (see button.sh's own header
+# comment for what's deliberately deferred). Per mutaclsym's own
+# described design ("main_loop.pal's turn loop dispatches each active
+# NPC piece's own FSM script"), the next real step once this slice is
+# proven is moving this inline dispatch into creature_01's own
+# events/on_tick.pal (already present, currently just documentation)
+# and having main_loop.pal discover+dispatch to MULTIPLE creature
+# pieces dynamically - not done here on purpose, one tiny loop first.
+#
+# State codes (see pieces/world_01/creature_01/fsm/states.txt):
+#   current_state: 0=idle 1=deciding 2=eating 3=evolving
+li x1, 0
+li x9, 12
+li x3, 0
+li x4, 1
+li x5, 2
+li x6, 3
+
+loop:
+beq x1, x9, done
+read_state creature_01 current_state x2
+beq x2, x3, do_idle
+beq x2, x4, do_deciding
+beq x2, x5, do_eating
+beq x2, x6, do_evolving
+j next_tick
+
+do_idle:
+bot_tick_idle creature_01
+j next_tick
+
+do_deciding:
+bot_choose creature_01
+j next_tick
+
+do_eating:
+bot_eat creature_01
+j next_tick
+
+do_evolving:
+bot_evolve creature_01
+j next_tick
+
+next_tick:
+addi x1, x1, 1
+j loop
+
+done:
+halt

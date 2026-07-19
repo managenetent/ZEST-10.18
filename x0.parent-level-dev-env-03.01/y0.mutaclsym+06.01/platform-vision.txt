@@ -1,0 +1,205 @@
+PLATFORM VISION - a macro orchestrator over mutaclsym/egg-pals/future
+games, and cross-game item/pet portability + trading
+========================================================================
+
+Status: VISION / NOT DESIGNED IN DETAIL, NOT IMPLEMENTED. Written
+2026-07-15 at the user's explicit request, purely so the idea is
+captured for whoever (human or agent) picks it up next - "should at
+least be in our docs for now." Nothing in this file has been built.
+Read nav-refactor-2.txt first if you haven't - it covers the numbered-
+choice/accumulator UI system this document assumes exists and reuses.
+
+
+0. THE CORE IDEA, IN THE USER'S OWN WORDS
+------------------------------------------------------------------------
+
+"id like to run an optional macro orchestrator, that will read from
+locations.txt file and load in option to load mutaclysm, egg-pals, or
+anything else on the list at that time (kind of creating the illusion
+and potential to have a platform instead of separate apps, in a way
+similar to tpmos but maybe more flexible."
+
+Then, forward-looking beyond the orchestrator itself: "later we will be
+able to import pets / items in and out of mutaclysm and back and forth
+between other games and will also make an 'auction/trading' platform
+where this can be facilitated between players. (or just an interface
+for moving items/pets from inventory of one game to the other."
+
+Two distinct pieces, deliberately staged:
+  1. An orchestrator/launcher (near-term, small, mechanical).
+  2. Cross-game item/pet portability + a trading platform (far-term,
+     genuinely hard - a shared data format across games with very
+     different item/pet models, plus a whole second application for
+     the trading/auction side).
+
+
+1. THE ORCHESTRATOR
+------------------------------------------------------------------------
+
+Purpose: a single entry point that lists every "game" currently
+available on this machine (mutaclsym, egg-pals, anything added later)
+and launches whichever one the player picks - the illusion of one
+platform with multiple titles, rather than a pile of unrelated
+`./button.sh run` invocations the player has to remember. Directly
+inspired by 1.TPMOS's own top-level structure (many `projects/`, one
+place to launch from) but explicitly "maybe more flexible" per the
+user - 1.TPMOS's own launcher is bespoke per-project menu code
+(`projects/playrm/loader/loader_module.c` et al., researched in this
+session's earlier work on the numbered-choice system); this can likely
+be much simpler since its ONLY job is discover + launch, not host each
+game's own runtime.
+
+**`locations.txt` format** (not finalized, but should match this
+codebase family's existing pipe-delimited registry convention -
+`items.txt`, `recipes.txt`, `monster_types.txt` all use it already):
+
+    # id|display_name|project_root|launch_cmd
+    mutaclsym|Mutaclsym (CDDA clone)|mutaclsym|./button.sh run
+    egg-pals|Egg-Pals (pet collection)|egg-pals/z0.egg-pals+11=MAC+WIN/egg-pals|./button.sh run
+
+  Paths relative to wherever the orchestrator itself lives (this
+  top-level directory, alongside nav-refactor-2.txt and this file) -
+  each game's own `PRISC_PROJECT_ROOT` resolution already works via an
+  env var, so the orchestrator just needs to `cd` into project_root and
+  exec launch_cmd with that env var set, same as `button.sh run` itself
+  already does internally.
+
+**Should the orchestrator be a "real" app (its own pal script + numbered
+choice dispatcher, reusing the exact machinery built in
+nav-refactor-2.txt) or a plain shell script?** Leaning shell script,
+tentatively - the orchestrator's whole job is "read locations.txt,
+print a numbered list, read one line of input, exec the chosen
+launch_cmd, then GET OUT OF THE WAY" (it doesn't need to stay running
+alongside the launched game, doesn't need a persistent frame/state, and
+launching a full prisc+x VM + renderer + keyboard_input trio just to
+show a picker list is a lot of machinery for a one-shot menu). A ~40
+line POSIX shell script (`orchestrator.sh`?) that `cat`s locations.txt,
+numbers each line, reads a digit + Enter from the terminal directly,
+and `exec`s the chosen game's launch_cmd covers the whole "near-term"
+scope with minimal new surface area. NOT decided for certain - if the
+orchestrator ever needs to do more than list+launch (show
+last-played timestamps, show a shared player profile across games,
+live status of what's currently running), the pal+VM approach starts
+looking more justified and this decision should be revisited then, not
+preemptively built now.
+
+**Process model, per direct user instruction - important, don't
+second-guess this:** launch via `exec`, not a plain subprocess call
+that keeps the orchestrator alive underneath. Shell `exec cmd` (or C
+`execve()`/`execvp()` after an initial `fork()` if the orchestrator
+isn't itself a shell script) REPLACES the current process image
+entirely rather than spawning a child and waiting on it - the launched
+game inherits the exact same stdin/stdout/stderr/controlling-tty the
+orchestrator had, becomes THE process running in that terminal, and
+the orchestrator's own process ceases to exist at that point. User's
+own framing: "pass the shell thru as if it didn't even exist." No IPC
+needed between orchestrator and launched game for this hand-off
+specifically - there's no second process left alive to talk to once
+`exec` happens, that's the whole point (this is different from the
+earlier open "does the orchestrator return to the picker after the
+game quits" question above - THAT would require NOT using bare exec,
+i.e. a real `fork()`+`waitpid()` so the parent survives to show the
+picker again once the child exits; whichever way that design question
+lands, get the exec-vs-fork+wait choice right for the answer, don't
+default to fork+wait out of habit if "one-shot handoff, orchestrator
+gone" turns out to be what's wanted).
+
+**What does "load" mean exactly?** Does the orchestrator wait for the
+launched game to exit and then return to the picker (a real "platform"
+feel - pick another game after quitting the first), or does it launch
+and fully hand off (one-shot, closer to a plain launcher)? The
+"platform" framing in the user's own words leans toward "return to the
+picker after quit" - matches how a real console dashboard behaves. Not
+decided.
+
+
+2. CROSS-GAME ITEM/PET PORTABILITY
+------------------------------------------------------------------------
+
+Far harder than the orchestrator, and explicitly the "later" half of
+the ask. Two games with very different piece models:
+
+  - mutaclsym items: `item_id|name|category|glyph|weight|power` from a
+    flat registry, instances are `pieces/world_01/<map>/.../state.txt`
+    with `item_id`/`pos_x`/`pos_y` (or just `item_id` while carried) -
+    see nav-refactor-2.txt and mutaclsym/dox/01-cdda-architecture.md
+    Phase 2/5 for the full russian-doll-directory item model.
+  - egg-pals pets: a whole creature with species, level, HP/MP,
+    hunger/energy, skills, card_status, position/facing - a MUCH
+    richer piece than a mutaclsym item, closer to mutaclsym's own
+    monster/hero pieces than to a mutaclsym item.
+
+A mutaclsym item and an egg-pals pet are not the same *kind* of thing,
+so "import/export" can't just be "move the directory between projects"
+the way pickup.c/drop.c already move a piece between a map and an
+inventory WITHIN one project (real, working, physical `rename()` - see
+nav-refactor-2.txt's item-model writeup). Cross-game portability likely
+needs an intermediate, neutral **trade envelope** format both games'
+own import/export ops translate to/from - something like:
+
+    # trade_envelope.txt (a single portable piece, proposed shape - NOT
+    # decided, purely illustrative of the kind of thing needed)
+    origin_game|mutaclsym
+    kind|item                    # or "pet"
+    payload_id|pointy_stick      # origin game's own id, for round-tripping
+    display_name|Pointy Stick
+    display_glyph|/
+    # kind-specific fields below, origin game decides what's meaningful
+    # to a DIFFERENT game vs. what's untranslatable and gets dropped
+    weight|300
+    power|4
+
+Concretely this means: each game gains an `export` op (piece -> trade
+envelope file in some shared exchange directory) and an `import` op
+(trade envelope -> a new native piece, translated as best-effort into
+that game's own schema - an mutaclsym item imported into egg-pals might
+become... what, exactly? A cosmetic accessory? A pet toy? This is a
+real design question, not just plumbing, and shouldn't be answered
+here speculatively). egg-pals already has a real, working precedent for
+half of this: `export_card.c`/`destroy_card.c` (pet -> PNG card image,
+one-directional, cosmetic/collectible, not a re-importable format) -
+worth reading before designing the bidirectional version.
+
+**Explicitly not decided**: the trade envelope's exact fields, where
+the exchange directory lives (per-user? global? does it need the same
+"physically move a directory" philosophy pickup/drop already use, i.e.
+is exporting literally `rename()`-ing a piece out into a shared
+`exchange/` tree and importing is `rename()`-ing it into the target
+game's own tree?), what happens to untranslatable fields, whether
+import is automatic or requires player confirmation, and whether
+there's any validation/anti-duplication (does exporting DELETE the
+origin piece, the same way pickup/drop are zero-sum moves, or does it
+COPY, risking item duplication across games?). Zero-sum (move, not
+copy) is almost certainly right, matching every other piece-transfer
+operation already built in both games, but say so explicitly in
+whatever document eventually designs this for real.
+
+
+3. AUCTION/TRADING PLATFORM
+------------------------------------------------------------------------
+
+The user's own fallback framing: "or just an interface for moving
+items/pets from inventory of one game to the other" - i.e. even without
+a full auction/trading economy, a bare bidirectional import/export
+interface between two players' (or one player's own two games') piece
+trees would already deliver most of the value here. The full
+auction/trading platform (multiple players, listings, bids, currency)
+is a THIRD application in this ecosystem, discoverable through the same
+orchestrator/`locations.txt` mechanism once it exists, and depends
+entirely on the trade envelope format from §2 being solid first. Not
+designed at all beyond this paragraph - explicitly the furthest-out
+piece of this vision, flagged so it's not forgotten, not because it's
+next.
+
+
+4. WHY THIS IS WRITTEN DOWN NOW RATHER THAN BUILT
+------------------------------------------------------------------------
+
+Per direct instruction: capture the vision, don't build it yet. The
+orchestrator (§1) is small enough that it could reasonably be picked up
+soon without much more design work; §2 and §3 need real design passes
+of their own before implementation starts, not just an inferred shape
+from this document. Whoever picks this up: re-read the two live
+games' current item/pet schemas fresh (they will have moved on from
+whatever's described here) before designing the trade envelope for
+real.
