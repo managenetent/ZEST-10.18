@@ -1,0 +1,250 @@
+HANDOFF TASK - egg-pals-13 <-> zoo_0000 cross-window drag-and-drop -
+written 2026-07-18, for a SEPARATE agent working in parallel with
+another agent on wsr-pal/mutaclsym/editor work (see that other agent's
+own yz.muchiverse/2.muchi-verse/HANDOFF-TODO-2026-07-18.txt if you want
+family-wide context, but it is NOT required reading for this specific
+task - this file is self-contained).
+
+========================================================================
+0. THE TASK, IN THE USER'S OWN WORDS
+========================================================================
+"when eggpals exist as a x11 window on desktop, user should be able to
+drag and drop them onto the open 'zoo' window (and drag them from
+window to the desktop; wraith should have some guidance on best
+practices for this; they will also be able to be networked pets in the
+caged dragged out or in, get it?). there should be some shared data
+that lets them communicate together, similar to the way the p2p-net
+project does communication (it doesn't need to be networked, but in
+the future it will be so it should be local and network compatible
+from the start."
+
+Concretely, two capabilities:
+1. Drag a pet's own free-floating desktop window (egg-pals-13's own
+   per-pet X11 window) ONTO the open zoo_0000 window - the pet should
+   move INTO the zoo (caged/contained), its desktop window should stop
+   existing as an independent floating window.
+2. Drag a pet back OUT of the zoo window onto the bare desktop - it
+   becomes a free-floating egg-pals-13 desktop window again.
+Both directions need a real, live communication channel between the
+TWO SEPARATE RUNNING PROCESSES (egg-pals-13's own per-pet window
+process(es) and zoo_0000's own window process) - not just a one-time
+file move, since the drag interaction itself (is the cursor currently
+hovering over the zoo window while dragging a pet?) needs to be known
+in real time by BOTH sides while the drag is happening, not just
+resolved after the fact on drop.
+
+FUTURE CONTEXT (do not build this now, but design the comms layer so it
+doesn't have to be thrown away later): the user's own longer-term plan
+is a "pal-forum" project - a Twitter/X-style app (typing + image
+sharing, personal pages, global posts, DMs) that will ALSO run over
+"the same p2p network" as whatever gets built here. pal-forum does not
+exist yet (checked - no directory anywhere in the tree named pal-forum
+or similar). This means: don't hardcode anything pet-specific into the
+lowest transport layer if it's easy to avoid - a thin, generic
+message-passing layer with pet-drag-and-drop as its first real
+consumer is preferable to a narrowly pet-shaped one, but DON'T
+over-engineer for pal-forum's own specific needs (images, DMs, personal
+pages) either - that's explicitly a separate, later project. Get the
+drag-and-drop feature genuinely working first.
+
+========================================================================
+1. WHAT ALREADY EXISTS - READ THE REAL SOURCE, DON'T ASSUME
+========================================================================
+
+1a. egg-pals-13's own per-pet desktop window:
+    z0.egg-pals+plats-8.01/z0.egg-pals+13/egg-pals-13/system/egg_window.c
+    - Real X11/GLX (Xlib), `XCreateWindow` with `override_redirect=True`
+      (borderless, floats free on the desktop), `XShapeCombineMask` for
+      per-pixel pet-shaped window clipping (not a rectangle - the
+      window's own visible silhouette matches the pet's sprite).
+    - Event mask: ButtonPressMask|ButtonReleaseMask|ButtonMotionMask|
+      KeyPressMask. Manual select()-timeout poll loop (NOT a blocking
+      XNextEvent loop) - keep this in mind if you add new socket/file
+      polling, it needs to fit into the SAME select() loop, not a
+      separate thread, to stay consistent with this file's own
+      concurrency model.
+    - CURRENT drag behavior (confirmed by direct read): ButtonPress
+      starts dragging=1 + records the offset; MotionNotify moves the
+      window freely via XMoveWindow; ButtonRelease SNAPS to the nearest
+      80px grid cell and writes grid_x/grid_y back into
+      pieces/world_01/map_lobby/<pet_id>/state.txt via its own
+      write_pet_position(). This is SAME-WINDOW-ONLY movement - there
+      is NO cross-window or cross-process concept in this file at all
+      today. You are adding that.
+    - Right-click opens a small override_redirect "Close" popup
+      (XGrabPointer) - a real, working precedent for a SECOND
+      override_redirect window spawned by THIS SAME process, if you
+      need a similar transient UI element (e.g. a "drop here" highlight
+      on the zoo window while dragging).
+    - Per-pet state file: pieces/world_01/map_lobby/<pet_id>/state.txt
+      - only grid_x/grid_y are ever written by egg_window.c itself;
+      hunger/energy/poop_count/asleep/tick_seq/facing are owned by
+      ops/tick_pets.c (read-only from egg_window.c's own perspective).
+
+1b. zoo_0000's own window:
+    z0.egg-pals+plats-8.01/z0.zoo_0000/system/zoo_window.c
+    - A DELIBERATE PORT of egg_window.c (confirmed via its own header
+      comment) - same override_redirect/XShapeCombineMask/hand-rolled-
+      drag technique, so the two files are already structurally close,
+      a real advantage for this task (you're not bridging two
+      unrelated codebases).
+    - Uses pos_x/pos_y (not grid_x/grid_y - a real naming difference,
+      don't assume they're interchangeable), clamps drop bounds to the
+      zoo's own ASCII map size (read from
+      pieces/world_01/map_zoo/state.txt, default 20x12) instead of the
+      whole screen.
+    - IS wired into button.sh (`./button.sh window <piece_id>`, alias
+      `win`) but is explicitly NOT launched by `./button.sh run`
+      anymore - see dox/pet-import-export-standard.md sec. 3, a
+      DELIBERATE decision (the user redirected per-pet desktop-window
+      work to happen in egg-pals-13 instead, zoo_window.c is kept only
+      as a manual-testing reference). You will likely need to change
+      this - a working drag-INTO-zoo feature needs the zoo window
+      actually running during normal play, not just manually invoked.
+      Confirm with the user before flipping this back on by default if
+      you're unsure - it was an explicit prior decision, not an
+      oversight.
+    - Takes a SINGLE piece_id as its own CLI arg and only knows about
+      THAT one pet - it does not currently enumerate "all pets
+      currently in the zoo" itself. You likely need either (a) one
+      zoo_window.c process per caged pet (matching egg_window.c's own
+      one-process-per-pet model), or (b) a real redesign so one zoo
+      window process can show/manage multiple pets at once - THIS IS A
+      REAL DESIGN DECISION, not something to guess silently; if
+      unclear, ask the user which shape they want before building
+      either one.
+
+1c. The CLOSEST existing building block - one-shot pet transfer:
+    z0.zoo_0000/ops/pet_export.c + ops/pet_import.c (shared ops) +
+    z0.zoo_0000/dox/pet-import-export-standard.md.
+    - Mechanism: a pet's WHOLE directory gets rename()'d into a sibling
+      exchange/ directory (one level above any single game's own root;
+      override via PRISC_EXCHANGE_ROOT env var), with a neutral,
+      pipe-delimited trade_envelope.txt (origin_game|kind|payload_id|
+      display_name|...) written into it FIRST, so the importing game
+      doesn't need to know the exporting game's own internal schema.
+      pet_import.c always writes a FRESH native state.txt/piece.pdl on
+      import (never trusts the origin's own field names/shape
+      directly).
+    - pet-import-export-standard.md's OWN sec. 3 already names this
+      exact gap, verbatim: the two projects "will eventually talk to
+      each other 'thru a shared data file'... not decided/designed
+      yet, but the existing exchange/ directory and trade_envelope.txt
+      format... are the most likely real building blocks" - and
+      explicitly flags that this is a ONE-SHOT MOVE mechanism, NOT a
+      live per-frame position-sync channel the way a real-time drag
+      needs. THIS TASK IS THAT NAMED GAP. Read that doc's sec. 3 in
+      full before designing anything - don't re-derive what it already
+      says.
+
+1d. p2p-net's own real communication mechanism (the explicit model to
+    take architectural inspiration from, NOT copy verbatim - p2p-net is
+    a ring-topology chat/presence network, this task is a 2-node
+    drag-and-drop signal, genuinely simpler):
+    1.TPMOS_c_+rmmp.0102.0028/projects/p2p-net/manager/p2p_manager.c
+    - HYBRID model: real TCP sockets for live communication
+      (socket()/connect()/bind()/listen()/accept()/send()/recv()),
+      but discovery/config/GUI-visible-state are all FILE-BASED,
+      matching this whole family's own file convention:
+        node_config.txt        - this node's own name/port
+        known_hosts.pdl         - pipe-delimited IP_LIST rows
+                                  (same .pdl KVP shape used everywhere
+                                  else in this family)
+        ring_users.txt          - peer table snapshot
+        chat_ledger.txt         - append-only message log
+        gui_state.txt           - key=value blob the renderer polls
+    - Wire format: plain newline-terminated pipe-delimited text, e.g.
+      `HELLO|ip|port|name|ts\n`, `PING|...`/`PONG|...`,
+      `RINGMSG|msg_id|origin|hops_left|text\n`.
+    - Topology: a RING (forward to the next known-online node in
+      sorted ip:port order), not broadcast - almost certainly more
+      structure than this task needs (you have exactly 2 endpoints:
+      one egg-pals-13 pet window process and one zoo_0000 window
+      process, not an open set of peers), but the FILE-BASED-CONFIG-
+      PLUS-SOCKET-FOR-LIVE-DATA split is the real, reusable pattern:
+      match that shape, not the ring-forwarding logic.
+
+1e. wraith-alpha has NO cross-window/cross-process drag-and-drop
+    precedent - checked directly (ops/wraith_gl.c,
+    ops/wraith_parser_alpha.c, the paired wraith-alpha_manager.c's own
+    handle_mouse()/g_window_drag_active). Its own "drag" is dragging a
+    UI PANEL WITHIN one single GL window/texture (and even that has a
+    known, documented mouse-offset calibration bug - wraith_gl.c lines
+    ~224-235 - worth reading as a "here's a subtle bug class to avoid"
+    example, not as positive DnD precedent). Do not go looking for
+    wraith-alpha cross-window guidance that doesn't exist - the user
+    asked for "some guidance," and the honest, confirmed answer is
+    that wraith-alpha's own precedent is same-window-only and doesn't
+    directly transfer; egg_window.c/zoo_window.c's own ALREADY-SHARED
+    drag-to-grid-snap technique (1b above) is the more relevant
+    existing precedent for this specific family.
+
+========================================================================
+2. RECOMMENDED SHAPE (a starting proposal, not a mandate - confirm
+   any real architectural fork with the user before committing to it)
+========================================================================
+1. A small, local, file-based "presence/signal" channel FIRST (matching
+   this family's own "file today, real transport when actually needed"
+   doctrine, and directly matching the user's own "doesn't need to be
+   networked [yet]... should be local and network compatible from the
+   start" instruction) - e.g. each running window process (egg-pals
+   pet windows, zoo window) writes its own live X11 geometry (screen
+   position + size) to a small, well-known file on every MotionNotify,
+   at a throttled rate (match this session's own render-throttling
+   lesson from the OTHER agent's handoff doc - don't write on every
+   single X11 motion event unconditionally, throttle to only-on-real-
+   change or a small time interval). Each side polls the OTHER side's
+   geometry file to determine hit-testing (is the dragged pet's cursor
+   position currently over the zoo window's own rectangle?).
+2. On drop-while-over-target: the DRAGGING side (whichever process
+   detects the drop) performs the actual transfer using pet_export.c/
+   pet_import.c's own EXISTING exchange/ + trade_envelope.txt
+   mechanism (1c above) - don't reinvent the actual data-move step,
+   only the live position-awareness needed to decide WHEN a drop
+   counts as "onto the zoo."
+3. Design the geometry/presence file's own format generically enough
+   that "which process, what kind of window, current rect" could later
+   describe something other than a pet window (in case pal-forum ever
+   needs a similar live-presence file) - but do not add fields or
+   generality pal-forum doesn't need yet just because it's imaginable.
+4. Real per-project process discovery (how does a zoo_window.c process
+   know WHICH egg-pals-13 pet-window processes currently exist, and
+   vice versa) still needs a decision - a simple well-known directory
+   of small per-process files (one file per live window process, PID
+   in the filename, cleaned up on exit) is the most consistent with
+   this family's own existing conventions (matches pieces/display/
+   marker-file patterns already used throughout mutaclsym/wsr-pal).
+
+========================================================================
+3. STANDARDS AND PITFALLS FROM THIS SAME FAMILY, WORTH KNOWING BEFORE
+   YOU START (full detail in yz.muchiverse/2.muchi-verse/pal-standards.
+   txt and that same directory's HANDOFF-TODO-2026-07-18.txt, but the
+   ones most relevant to THIS specific task are pulled out here)
+========================================================================
+- Check for a REAL, existing, native mechanism before building a new
+  custom one (this whole family's own biggest recurring lesson this
+  session) - section 1 above IS that check, already done for you; if
+  you find yourself about to invent something and haven't first
+  checked whether egg_window.c/zoo_window.c/pet_export.c/p2p_manager.c
+  already do something close, stop and check.
+- Never hardcode a menu/UI list that should be data-driven - not
+  directly applicable to X11 drag-and-drop itself, but if this work
+  touches ANY chtpm layout/piece.pdl (e.g. a status display showing
+  which pets are currently caged), keep it ${piece_methods}-driven, not
+  a hand-authored list.
+- When adding a new poll/check to any persistent loop, gate any
+  VISIBLE side effect (a window repaint, a file write) on "did
+  something actually change," not "did the tick happen" - an
+  unconditional per-tick write/repaint reads as flicker or wasted CPU,
+  confirmed as a real bug this session in a different project's own
+  persistent loop.
+- Test claims empirically before asserting them, and don't
+  overgeneralize a single test into "completely broken" or "fully
+  working" - characterize the actual failure/success shape first.
+- Kill test processes via each project's own `button.sh kill` action,
+  never a hand-rolled `pkill` pattern - egg-pals-13/zoo_0000 processes
+  are launched with relative paths even though their own cwd is
+  absolute, and a pattern shaped like an absolute path silently matches
+  nothing, leaving stale processes running for the rest of a session
+  (confirmed, cost real time in the other agent's own work this
+  session).
