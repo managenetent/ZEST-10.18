@@ -1,0 +1,156 @@
+PAL-NET STANDARD - shared local presence/discovery + live socket
+convention for cross-window/cross-process pal-family communication.
+Written 2026-07-19 for the egg-pals-13 <-> zoo_0000 cross-window
+drag-and-drop feature, designed to also serve as the SAME network for
+a later "pal-forum" project (a Twitter/X-style local-first app, per
+direct user instruction) - not building pal-forum now, just not closing
+the door on it.
+
+========================================================================
+0. WHY THIS SHAPE (grounded, not invented from scratch)
+========================================================================
+Modeled on projects/p2p-net's own real, proven architecture
+(1.TPMOS_c_+rmmp.0102.0028/projects/p2p-net/manager/p2p_manager.c,
+read in full before implementing against this doc) - a HYBRID: files
+for discovery/bootstrap/presence, real TCP sockets for live data. This
+is deliberately NOT p2p-net's own full ring topology (leader election,
+message forwarding, open peer set) - this task has a small, known
+number of local nodes, so discovery is a flat directory scan, not a
+ring. Direct user decision: build the real networked shape now (host:
+port, real sockets) even though every node currently resolves to
+127.0.0.1 - going cross-machine later should mean changing an IP, not
+a redesign. Presence-directory location mirrors shared-ops/
+pet_export.c's own resolve_exchange_root() convention exactly (one
+level above a project's own root, override-able via an env var) -
+same reasoning: a shared location siblings can all find without
+either project needing to know the other's own internal layout.
+
+========================================================================
+1. PRESENCE DIRECTORY - WHERE, WHAT, WHO WRITES IT
+========================================================================
+Location (mirrors resolve_exchange_root() exactly):
+  default: <one level above this project's own root>/net/presence/
+  override: PRISC_NET_ROOT env var (same override precedent as
+  PRISC_EXCHANGE_ROOT - a project that isn't a sibling under the same
+  parent folder sets this instead).
+  For egg-pals-13 + zoo_0000 specifically (both siblings under
+  z0.egg-pals+plats-8.01/), this resolves to
+  z0.egg-pals+plats-8.01/net/presence/ - a SHARED location neither
+  project's own pieces/ tree owns, matching exchange/'s own placement
+  exactly (they're expected to become literal sibling directories:
+  z0.egg-pals+plats-8.01/{exchange,net}/).
+
+One file per LIVE process, filename = node_id (see sec. 2), format
+(plain key=value lines, matching every other state file in this
+family):
+    kind=zoo|pet
+    project_id=<zoo_0000|egg-pals-13>
+    piece_id=<the pet's own piece_id, empty/omitted for kind=zoo>
+    host=127.0.0.1
+    port=<this process's own listen port>
+    pid=<this process's own OS pid, for stale-entry cleanup>
+    last_seen=<unix epoch, refreshed on a heartbeat - see sec. 4>
+
+Written ONCE at process startup (after successfully binding its own
+listen socket - see sec. 3), refreshed periodically (heartbeat),
+and REMOVED on clean exit (SIGINT/SIGTERM handler, matching
+gl_mirror.c's own existing handle_signal() pattern - extend it, don't
+duplicate a second signal handler).
+
+Discovery = scan this directory for files matching a wanted `kind`
+(e.g. egg_window.c wants kind=zoo) and read each match's own host/port
+- exactly p2p-net's own known_hosts.pdl role, just one file per node
+instead of one aggregate file, since processes come and go far more
+often here than p2p-net's own longer-lived peers.
+
+========================================================================
+2. NODE ID + PORT ALLOCATION
+========================================================================
+node_id: `<project_id>-<piece_id_or_"zoo">-<pid>` (e.g.
+"egg-pals-13-pet_rex-48213", "zoo_0000-zoo-48901") - always unique
+(pid), always human-readable in a directory listing (unlike a bare
+UUID), matching this family's own preference for inspectable state
+over opaque identifiers.
+
+Port allocation - REAL, dynamic, incrementing, exactly as discussed.
+CORRECTION (checked directly, don't assume): p2p-net's own
+bind_server_socket() does NOT scan/retry at all - it binds ONCE to a
+single fixed port pre-configured in node_config.txt and simply fails
+if that exact port is taken, because p2p-net expects a human to
+configure each node's own port ahead of time. This task has no such
+luxury (pet processes launch/exit unpredictably, there's no
+opportunity to hand-assign a unique port to each one ahead of time),
+so the retry-scan loop below is a genuinely NEW small piece, not a
+port of an existing function - written here explicitly so it isn't
+mistaken for one later.
+Each kind gets its own BASE port to start scanning from, so a zoo and
+a pet never collide on their own first-choice port:
+    zoo:  base 9900
+    pet:  base 9901
+Algorithm (every node, whichever kind): try bind(base); on EADDRINUSE,
+try base+1, base+2, ... up to a capped attempt count (e.g. 200) before
+giving up and logging an error. The FIRST successfully bound port is
+what gets written into this node's own presence file - callers never
+guess a port, they always read it from the presence file.
+
+========================================================================
+3. WIRE PROTOCOL - PIPE-DELIMITED TEXT LINES, MATCHING p2p-net EXACTLY
+========================================================================
+Same shape as p2p-net's own real wire format (HELLO|ip|port|name|ts,
+PING|.../PONG|...) - newline-terminated, pipe-delimited, human-
+readable/greppable over the wire (matches this family's own "if it's
+not in a file, it's a lie" mantra extended to sockets: a real person
+should be able to `nc localhost 9900` and read what's happening).
+
+Messages needed for THIS task (extend later for pal-forum's own needs,
+don't design those fields in now):
+    HELLO|<node_id>|<kind>\n
+      - sent by a connecting client immediately after connect(), so
+        the server side can log/attribute the connection. No reply
+        expected.
+    GEOM|<x>|<y>|<w>|<h>\n
+      - sent by a kind=zoo node to every connected client: its own
+        current absolute screen position + size (the values
+        gl_mirror.c already computes via glutGet(GLUT_WINDOW_X/Y/
+        WIDTH/HEIGHT)). Sent once immediately on a new connection, and
+        again every time the value actually changes (same "only on
+        real change" throttle as every other polling loop in this
+        family - never send unconditionally on a fixed timer).
+
+Connection lifecycle: a pet window (egg_window.c/zoo_window.c) that
+wants to know a zoo's live geometry connects ONCE per drag gesture
+(on ButtonPress), stays connected for the duration of that drag
+(non-blocking, folded into the SAME select() fd_set already polling
+the X11 connection - do not spawn a thread), and disconnects when the
+drag ends (ButtonRelease) either way. Do not hold a permanent
+connection open outside an active drag - matches this family's own
+"don't do unconditional per-tick work" lesson (a persistent connection
+open at all times has no real payoff here and is one more thing that
+can go stale).
+
+========================================================================
+4. HEARTBEAT + STALE-ENTRY CLEANUP
+========================================================================
+Refresh this node's own presence file's last_seen field every ~5
+real seconds (a real value, not a guess - matches p2p-net's own
+PING/PONG cadence order of magnitude; tune down only if this proves
+too slow in live testing, don't tune up preemptively). A reader that
+finds a presence file whose last_seen is more than ~15 seconds stale
+should treat that node as dead and ignore it - do NOT delete another
+process's own presence file from a reader (only the OWNING process
+ever deletes its own file, on clean exit) - a reader silently
+skipping a stale entry is enough, avoids any cross-process file-
+deletion race.
+
+========================================================================
+5. WHAT THIS DOC DELIBERATELY DOES NOT COVER YET
+========================================================================
+- Real cross-machine addressing (host is always 127.0.0.1 for now -
+  the FIELD exists so this doesn't need to change later, but nothing
+  in this task actually dials a remote host yet).
+- pal-forum's own message types (posts/DMs/images) - HELLO/GEOM only,
+  extend the wire protocol later with new message types as pal-forum
+  actually needs them, don't pre-design fields for a project that
+  doesn't exist yet.
+- Encryption/auth of any kind - purely local-machine, same trust
+  model as every other file in this family already assumes.
