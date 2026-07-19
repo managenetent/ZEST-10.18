@@ -1,0 +1,158 @@
+PAL-FORUM STANDARD - architecture for a local-first, Twitter/X-style
+social app (typing + image sharing, personal pages, global posts,
+DMs, follows/likes/retweets, a real feed algorithm) living in
+yz.muchiverse/2.muchi-verse/pal-forum/ (an existing, empty placeholder
+directory - confirmed before writing this doc, not assumed), running
+over the same PAL-NET p2p network (shared-ops/palnet_peer.c, reused
+unmodified - see PAL-CHAIN-STANDARD.txt sec. 0 for why palnet_peer's
+own seek logic already forms a full mesh with zero code changes
+needed). Written 2026-07-19 per direct user instruction: "start
+documenting stds/arch and setting the code foundations for pal-forum
+(twitter like forum... using pal-forum dir and the same p2p... typing
+and image sharing, personal pages, global posts, and dms... follow,
+like, retweet, and post to their wall... based on a real social
+algorithm, try 2 use as much pal and ops... according 2 vision)." This
+doc is architecture + a v1 scope, not a finished implementation - see
+sec. 6 for what's deliberately not built yet.
+
+========================================================================
+0. WHY THIS SHAPE
+========================================================================
+Every record type below (post, follow, like, retweet, DM) is its own
+small, append-only, pipe-delimited file - matching this family's own
+"if it's not in a file, it's a lie" mantra and PAL-NET-STANDARD.txt's
+own already-proven wire convention, NOT a database. Propagation reuses
+shared-ops/palnet_peer.c exactly as pal-chain does (own_kind=
+forum_node, seek_kind=forum_node - full mesh). A pal-forum node's own
+outbox.txt carries whatever this user just did (a new post, a new
+follow, a like) as one DATA line; every connected peer's own inbox
+gets it and a (not yet built, see sec. 5) watcher op applies it to
+that peer's own local copy of the relevant record files - exactly the
+same shape PAL-CHAIN-STANDARD.txt sec. 4 already established, reused
+here rather than invented twice.
+
+========================================================================
+1. PERSONAL PAGES
+========================================================================
+Location: pal-forum/users/<user_id>/
+  profile.txt (key=value, matching every other state file):
+    user_id=<chosen handle>
+    display_name=<free text>
+    created_at=<unix epoch>
+    bio=<free text, single line - see sec. 6 for multi-line gap>
+  wall.txt - append-only, this user's OWN posts only, newest last
+    (matches frame_history.txt's own append-only convention):
+    POST|<post_id>|<user_id>|<timestamp>|<text>|<image_id_or_->
+  following.txt - append-only list of user_ids this user follows:
+    FOLLOW|<user_id>|<followed_user_id>|<timestamp>
+    (an UNFOLLOW is a new line, not a rewrite - see sec. 3's own
+    "derive current state by replay" rule, same shape as pal-chain's
+    own balance derivation).
+  likes.txt / retweets.txt - same append-only shape, one line per
+    like/retweet this user has made:
+    LIKE|<user_id>|<post_id>|<timestamp>
+    RETWEET|<user_id>|<post_id>|<timestamp>
+
+Op: ops/forum_create_user.c - `forum_create_user.+x <user_id>
+<display_name>` - refuses if the user_id directory already exists
+(same collision rule as pal-chain's own wallet creation), otherwise
+creates the directory + empty wall.txt/following.txt/likes.txt/
+retweets.txt + initial profile.txt.
+
+========================================================================
+2. GLOBAL FEED vs PERSONAL WALL
+========================================================================
+A user's own wall.txt (sec. 1) is authoritative for THEIR OWN posts.
+The GLOBAL feed a user sees is derived, not stored as its own separate
+copy of every post in existence (would duplicate data and drift) -
+see sec. 3 for how it's computed. Every post gets a globally-unique
+post_id (`<author_user_id>-<timestamp>-<rand>`, matching pal-chain's
+own tx_id shape) so a repost/retweet/like can reference it
+unambiguously regardless of which peer originally authored it.
+
+Op: ops/forum_post.c - `forum_post.+x <user_id> "<text>" [image_id]` -
+appends a POST line to <user_id>/wall.txt AND writes the same line to
+this node's own palnet_peer outbox.txt so it propagates to the mesh.
+
+========================================================================
+3. THE FEED ALGORITHM - v1 SCOPE, NAMED EXPLICITLY (a real algorithm,
+   not a stub, but not a full ML ranking system on day one either)
+========================================================================
+A user's own feed = every POST from every user_id in their own
+following.txt (derived by replaying following.txt's own FOLLOW/
+UNFOLLOW lines to get the CURRENT follow set, same "replay the append-
+only log" pattern as pal-chain's balance derivation - never a mutable
+"who I follow" field that could drift out of sync with the real
+history), merged from however many local wall.txt copies this node
+has received via the mesh, sorted by:
+  1. Recency (newer first) - the actual v1 ranking signal.
+  2. A same-timestamp tiebreak: like_count (sec. 1's own likes.txt,
+     counted per post_id across every peer's own copy this node has
+     seen) as a secondary sort key - a real, if simple, "some posts
+     surface above pure chronological order" signal, matching the
+     user's own "real social algorithm" instruction without
+     overclaiming a v1 that doesn't exist yet as something fancier.
+Op: ops/forum_compute_feed.c - `forum_compute_feed.+x <user_id>` -
+reads <user_id>/following.txt, scans every OTHER user_id directory
+this node currently has a local copy of, collects+sorts their own
+POST lines per the above, writes the result to
+pal-forum/users/<user_id>/feed_cache.txt (a derived, regenerable
+file - never the authoritative record of anything, matching pal-
+chain's own cached_balance precedent).
+
+========================================================================
+4. DMs
+========================================================================
+Location: pal-forum/users/<user_id>/dms/<other_user_id>.txt - one
+file per conversation (both sides keep their OWN local copy, matching
+egg-pals-13's own per-pet-directory precedent of "each side owns its
+own copy of shared context"), append-only:
+    DM|<from_user_id>|<to_user_id>|<timestamp>|<text>
+Propagated the SAME way as a POST (this node's own outbox.txt, per
+sec. 0) - v1 has NO real privacy/encryption (sec. 6) - any peer on the
+mesh could technically observe a DM line in transit, matching PAL-
+NET's own already-stated "purely local, same trust model as every
+other file" precedent. Do not describe pal-forum's own DMs as private
+until this gap is actually closed.
+
+========================================================================
+5. WHICH PIECES SHOULD BE REAL PAL SCRIPTS - PER DIRECT USER
+   INSTRUCTION, using PAL-VS-C-ARCHITECTURE.txt's own criteria
+========================================================================
+GOOD PAL candidates: a "did I already like this post_id" check
+(SYS_GET_KV_INT-shaped lookup) before forum_like.c's own C-level file
+append; reading/displaying a single profile.txt field.
+BAD candidates, stay C: forum_post.c/forum_compute_feed.c (real multi-
+field line construction/parsing, and forum_compute_feed.c specifically
+scans/sorts an unbounded number of other users' own files - exactly
+PAL-VS-C-ARCHITECTURE.txt sec. 4's own named bad-candidate shape,
+matching zoo_0000's own tick_pets.c/compose_frame.c precedent for "why
+a directory-scanning op stays C"). The inbox-watcher op that actually
+applies received POST/FOLLOW/LIKE/DM lines to local files (sec. 0) -
+real parsing of an unknown line shape, stays C.
+
+========================================================================
+6. WHAT THIS DOC DELIBERATELY DOES NOT COVER YET
+========================================================================
+- REAL image byte transfer. palnet_peer's own wire protocol (PAL-NET-
+  STANDARD.txt sec. 3) is single-line, text-only DATA lines - fine for
+  a POST's own image_id reference (a filename/hash string), NOT fine
+  for embedding actual image bytes (base64 of even a small image would
+  usually exceed palnet_peer's own 4096-byte MAX_LINE). v1 scope,
+  named explicitly: an image_id can propagate over the mesh right now;
+  the actual image FILE requires a separate, not-yet-designed file-
+  transfer extension to palnet_peer (or a distinct mechanism entirely)
+  before a peer who didn't author a post can actually SEE its image -
+  don't claim image sharing "works" over the network until this is
+  real, even though local (same-machine) image display already works
+  trivially (the file's just already there).
+- DM privacy/encryption (sec. 4).
+- Multi-line bio/post text (sec. 1's own "single line" note) - a real
+  gap if a post/bio ever needs real paragraphs; today's format can't
+  represent an embedded newline without breaking the pipe-delimited
+  line convention.
+- Any ranking signal beyond recency + like-count (sec. 3) - a real,
+  named v1 boundary, not the final "social algorithm."
+- Un-retweet / un-like (append-only logs currently have no way to
+  represent "I take that back" - would need an explicit UNLIKE/
+  UNRETWEET line type, same shape as FOLLOW/UNFOLLOW already has).

@@ -1,0 +1,198 @@
+PAL-CHAIN STANDARD - architecture for a real, local-first ledger +
+currency ("cones") + mining, running over the same PAL-NET p2p network
+(shared-ops/palnet_peer.c). Written 2026-07-19, per direct user
+instruction: "start documenting stds/arch and setting the code
+foundations for pal-chain (allow wallet creation, mining, and sending/
+recieving cones on the pal-net p2p)... try 2 use as much pal and ops
+(and even ops written in pal) so we can reuse this stuff the way we
+desire." This doc is architecture + a v1 scope, not a finished
+implementation - see sec. 6 for what's deliberately not built yet.
+
+========================================================================
+0. GROUNDING - WHAT ALREADY EXISTS, SO THIS ISN'T REINVENTING BADLY
+========================================================================
+Checked directly before designing anything: every existing "currency"
+in this family (egg-pals-13's own ops/claim_tokens.c "tokens" field,
+wsr-pal's own corp/player "cash" fields across ops/player_trade.c,
+ops/corp_ipo.c, etc.) is a single MUTABLE INTEGER, read-modify-written
+directly, no transaction history, no verification, no network
+consensus at all. pal-chain is a genuine, deliberate step up from that
+pattern (a real transaction ledger + mining + P2P propagation) - it is
+NOT a refactor of the existing balance fields, and none of those
+existing ops are touched by this doc.
+
+Reuses shared-ops/palnet_peer.c AS-IS, unmodified - a pal-chain node is
+just another palnet_peer instance (own_kind=chain_node), and (already
+confirmed by direct code read, not assumed) palnet_peer's own seek
+logic naturally forms a FULL MESH, not a single connection: its main
+loop re-runs find_seek_candidate() every tick, which explicitly skips
+peers it's already connected to, so a node with seek_kind=chain_node
+will discover and connect to EVERY other chain_node peer it finds
+over time, not just one. This is exactly what a small P2P chain
+network needs for broadcast propagation - no changes to palnet_peer.c
+needed for this project at all.
+
+========================================================================
+1. WALLET
+========================================================================
+Location: pal-chain/wallets/<wallet_id>/wallet.txt
+wallet_id: a human-readable local identifier chosen at creation
+  (matches this family's own "inspectable state over opaque
+  identifiers" preference, e.g. "jbro" not a 64-char hex string) -
+  uniqueness enforced at creation time (refuse if the directory
+  already exists, matching zoo_0000's own startup_new_corp()-style
+  "keep incrementing/refuse on collision" precedent).
+wallet.txt format (plain key=value, matching every other state file):
+    wallet_id=<chosen name>
+    created_at=<unix epoch>
+    cached_balance=<int - see sec. 3 "why cache it" note>
+    last_processed_block=<int index into the local chain file this
+      wallet's own balance was last derived through>
+
+No real public/private keypair or transaction signing in v1 - see
+sec. 6. This is a genuine, named simplification (matches PAL-NET-
+STANDARD.txt's own precedent of a local-trust-only model), not an
+oversight.
+
+Op: ops/chain_create_wallet.c - `chain_create_wallet.+x <wallet_id>`.
+Refuses if the wallet already exists; otherwise creates the directory
+and initial wallet.txt (cached_balance=0, last_processed_block=0).
+
+========================================================================
+2. TRANSACTIONS + BLOCKS
+========================================================================
+A transaction (pipe-delimited, matching PAL-NET's own wire convention
+and this family's own .pdl-shaped precedent):
+    TX|<from_wallet_id>|<to_wallet_id>|<amount>|<timestamp>|<tx_id>
+tx_id: a locally-generated unique string (e.g. "<from_wallet_id>-
+<timestamp>-<rand>") - enough to de-duplicate a transaction seen twice
+over the mesh (sec. 4's own dedup rule), not a cryptographic id.
+
+A block (append-only, matching this family's own "if it's not in a
+file, it's a lie" mantra):
+    BLOCK|<block_index>|<prev_block_hash>|<nonce>|<block_hash>|<timestamp>|<tx1>;<tx2>;...
+prev_block_hash/block_hash: a plain FNV-1a 64-bit hash (the SAME
+algorithm shared-ops/dump_rgb_png.c's own checksum_buffer()-shaped
+helpers already use elsewhere in this family, e.g. gl_mirror.c's own
+checksum_buffer() before this doc's own edits removed it - reuse that
+exact function, don't invent a new hash) over
+"<block_index>|<prev_block_hash>|<nonce>|<serialized transactions>" -
+NOT a cryptographic-strength hash (FNV-1a is fast and simple, matching
+this family's own "keep it simple" ethos), acceptable for a small,
+trusted local network; see sec. 6 for the real-world-hardening gap
+this leaves.
+
+The chain itself: pal-chain/data/blockchain.txt, one BLOCK line
+appended per mined block, NEVER rewritten in place (append-only,
+matching frame_history.txt's own append-only convention already used
+elsewhere in this family) - the canonical, shared ledger every node's
+own local copy should eventually agree on (sec. 4).
+
+========================================================================
+3. MINING
+========================================================================
+Real (if toy-scale) proof-of-work, not a simulated reward - matches
+the user's own explicit word "mining", not just "rewards". Difficulty:
+find a nonce such that block_hash's own FNV-1a value, interpreted as
+an unsigned 64-bit int, is less than a difficulty threshold (fewer
+leading-zero-BITS than a real cryptocurrency, calibrated so a single
+CPU core mines a block in roughly 1-5 real seconds on ordinary
+hardware for a LOCAL/toy network - tune this constant empirically once
+a real miner op exists, don't guess a final value now).
+
+Op: ops/chain_miner.c - a PERSISTENT process (matches gl_mirror.c/
+chtpm_rgb_render.c's own category, not a one-shot op): watches
+pal-chain/data/pending_tx.txt (a pal-chain node's own local mempool -
+transactions received via palnet_peer's own inbox_file, or submitted
+locally, not yet in a mined block), and when non-empty, repeatedly
+tries nonces until block_hash meets the difficulty threshold, then
+appends the new block to its own local blockchain.txt AND writes it to
+its own outbox_file (so the connected chain_node mesh - sec. 0 - relays
+it to every peer). A successfully mined block also credits a
+configurable "miner_wallet_id" a fixed block reward (matches real
+blockchain convention, amount TBD - name a real constant once this is
+actually built, don't guess one into this doc).
+
+Balance derivation (why cached_balance exists, sec. 1): a wallet's
+REAL balance is the sum of every TX where it's the receiver minus
+every TX where it's the sender, across every block up to
+last_processed_block - replaying the WHOLE chain on every balance
+check would get slow as blockchain.txt grows, so cached_balance +
+last_processed_block is a real, standard optimization (recompute only
+the NEW blocks since last check), not a shortcut that skips real
+verification - the cache is always re-derivable from the full chain
+from block 0 if it's ever suspected of drifting.
+
+Op: ops/chain_send.c - `chain_send.+x <from_wallet_id> <to_wallet_id>
+<amount>` - checks the sender's own current derived balance covers
+the amount (refuses otherwise), appends a new TX line to
+pal-chain/data/pending_tx.txt (the LOCAL mempool - not yet a block),
+and writes the same TX line to this node's own palnet_peer outbox_file
+so it propagates to the mesh for other nodes' own miners to include.
+
+========================================================================
+4. NETWORK PROPAGATION + CONSENSUS (v1 SCOPE - see sec. 6 for the real
+   gaps this leaves)
+========================================================================
+Every pal-chain node runs ONE palnet_peer.+x instance:
+    palnet_peer.+x chain_node pal-chain - pal-chain/net/outbox.txt pal-chain/net/inbox.txt chain_node
+(seek_kind=chain_node - full mesh, sec. 0). A SEPARATE small watcher
+op (not yet named/built - see sec. 6) tails inbox.txt and, for each
+new line, either:
+  - a TX line not already in pending_tx.txt (dedup by tx_id) -> append
+    to pending_tx.txt (so THIS node's own miner can include it too);
+  - a BLOCK line whose block_index is exactly this node's own next
+    expected index and whose prev_block_hash matches this node's own
+    latest block_hash -> accept it, append to this node's own
+    blockchain.txt, remove any of its own transactions from
+    pending_tx.txt (already mined by someone else, don't double-spend
+    into a future block).
+v1 has NO fork-resolution/longest-chain-wins logic (sec. 6) - a small,
+trusted local mesh with infrequent simultaneous mining is assumed to
+make this rare enough to defer, not a claim that it can't happen.
+
+========================================================================
+5. WHICH PIECES SHOULD BE REAL PAL SCRIPTS, NOT C - PER DIRECT USER
+   INSTRUCTION ("try 2 use as much pal and ops... even ops written in
+   pal"), using PAL-VS-C-ARCHITECTURE.txt's own established criteria
+========================================================================
+GOOD PAL candidates (read an int/string, simple arithmetic, write a
+result - matches ecall's own SYS_GET_KV_INT/SYS_SET_KV_INT/
+SYS_WRITE_LINE table):
+  - Balance display (read cached_balance, SYS_WRITE_LINE it) - trivial.
+  - The "does sender have enough balance" check inside chain_send - a
+    single SYS_GET_KV_INT + comparison, before falling through to the
+    C op for the actual multi-field TX line construction.
+BAD candidates, stay C (real string parsing/building with dynamic
+content, matching PAL-VS-C-ARCHITECTURE.txt sec. 4's own bad-candidate
+rule):
+  - chain_miner.c's own hash-searching loop (needs a real hash
+    function prisc+x's own ecall table has no primitive for - could be
+    added later as a new syscall if mining performance ever matters
+    enough to move off C, not needed for v1).
+  - Any op that serializes/parses a multi-field TX or BLOCK line.
+Concrete next step, once real ops exist: re-run the SAME survey
+PAL-CONVERSION-CANDIDATES.txt already did for the pet-sim family
+against pal-chain's own real ops, don't guess candidates before the
+ops exist to actually read.
+
+========================================================================
+6. WHAT THIS DOC DELIBERATELY DOES NOT COVER YET (named gaps, not
+   silent omissions)
+========================================================================
+- Real cryptographic wallet keys / transaction signatures - v1 trusts
+  whatever wallet_id a TX claims as its own sender, matching PAL-NET's
+  own "purely local, same trust model as every other file" precedent.
+  A malicious local process could forge a TX today - fine for a
+  single-user/trusted-LAN toy network, a real gap before this is ever
+  exposed beyond that.
+- Fork resolution / longest-chain-wins (sec. 4).
+- FNV-1a is not cryptographically secure - fine for a toy network,
+  name this explicitly before ever describing pal-chain as "secure."
+- The inbox-watcher op that actually applies sec. 4's own rules is
+  named but not yet built - this doc is architecture, not the full v1
+  implementation (matches this session's own PAL-NET-STANDARD.txt
+  precedent, written and reviewed before its own reference
+  implementation existed).
+- Real mining-difficulty tuning (sec. 3's own "TBD, calibrate
+  empirically" note).
