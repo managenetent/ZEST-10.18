@@ -45,13 +45,6 @@
 #include <sys/stat.h>
 #include <time.h>
 #include <unistd.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netinet/tcp.h>
-#include <arpa/inet.h>
-#include <fcntl.h>
-#include <errno.h>
-#include <dirent.h>
 
 #define MAX_PATH 4096
 #define PATH_BUF (MAX_PATH + 256)
@@ -102,25 +95,16 @@ static unsigned long long g_loaded_frame_checksum = 0;
 static size_t g_loaded_frame_bytes = 0;
 static int g_loaded_frame_partial = 0;
 
-/* PAL-NET (see yz.muchiverse/2.muchi-verse/PAL-NET-STANDARD.txt - read
- * that doc before touching any of this) - gl_mirror IS the real "zoo
- * window" a player drags a pet onto, so it's the presence/geometry
- * SERVER side: binds a listen socket, tells any connected client
- * (an egg-pals-13/zoo_0000 pet window mid-drag) this window's own
- * live screen rect via GEOM lines. */
-#define PALNET_ZOO_BASE_PORT 9900
-#define PALNET_BIND_ATTEMPTS 200
-#define PALNET_MAX_CLIENTS 16
-#define PALNET_HEARTBEAT_SEC 5
-
-static char g_presence_path[PATH_BUF] = "";
-static char g_node_id[128] = "";
-static int g_listen_fd = -1;
-static int g_bound_port = 0;
-static int g_client_fds[PALNET_MAX_CLIENTS];
+/* PAL-NET-STANDARD.txt sec. 0 (see yz.muchiverse/2.muchi-verse/
+ * PAL-NET-STANDARD.txt - read that doc before touching any of this):
+ * gl_mirror stays a dumb renderer - it only writes its OWN live screen
+ * geometry to a plain local file when it changes. It never touches a
+ * socket itself; a separate, reusable shared-ops/palnet_peer.c
+ * companion process (launched by button.sh, not by this file) watches
+ * this exact file and does all the actual peer-to-peer networking. */
+static char g_geometry_path[PATH_BUF] = "";
 static int g_last_geom_x = 0, g_last_geom_y = 0, g_last_geom_w = 0, g_last_geom_h = 0;
 static int g_have_geom = 0;
-static time_t g_last_heartbeat = 0;
 
 static int read_kv_int(const char *path, const char *key, int def) {
     FILE *f = fopen(path, "r");
@@ -157,184 +141,23 @@ static void resolve_root(void) {
     snprintf(keyboard_history, sizeof(keyboard_history), "%s/pieces/apps/player_app/history.txt", project_root);
     snprintf(chtpm_keyboard_history, sizeof(chtpm_keyboard_history), "%s/pieces/keyboard/history.txt", project_root);
     snprintf(key_debug_log, sizeof(key_debug_log), "%s/pieces/display/gl_key_debug.log", project_root);
+    snprintf(g_geometry_path, sizeof(g_geometry_path), "%s/pieces/display/gl_window_geometry.txt", project_root);
 }
 
-/* PAL-NET-STANDARD.txt sec. 1 - mirrors shared-ops/pet_export.c's own
- * resolve_exchange_root() exactly (same reasoning: a shared location
- * siblings can all find without either project needing to know the
- * other's own internal layout) - default is one level above this
- * project's own root, PRISC_NET_ROOT overrides it. */
-static void resolve_presence_root(char *out, size_t out_sz) {
-    const char *env = getenv("PRISC_NET_ROOT");
-    if (env && env[0]) { snprintf(out, out_sz, "%s", env); return; }
-    char parent[MAX_PATH];
-    snprintf(parent, sizeof(parent), "%s", project_root);
-    char *slash = strrchr(parent, '/');
-    if (slash) *slash = '\0';
-    snprintf(out, out_sz, "%s/net/presence", parent);
-}
-
-/* mkdir -p, one level at a time - this family's own convention
- * elsewhere is a plain mkdir() call assuming the parent already
- * exists, but net/presence/ is a genuinely NEW shared directory
- * nothing else creates first. */
-static void mkdir_p(const char *path) {
-    char tmp[PATH_BUF];
-    snprintf(tmp, sizeof(tmp), "%s", path);
-    for (char *p = tmp + 1; *p; p++) {
-        if (*p == '/') {
-            *p = '\0';
-            mkdir(tmp, 0755);
-            *p = '/';
-        }
-    }
-    mkdir(tmp, 0755);
-}
-
-/* PAL-NET-STANDARD.txt sec. 2 - REAL, NEW retry-scan logic, NOT a port
- * of p2p-net's own bind_server_socket() (that function binds once to a
- * single fixed, human-pre-configured port and just fails otherwise -
- * checked directly, see this project's own PAL-NET-STANDARD.txt sec. 2
- * for why that doesn't fit this task). Returns the bound, listening fd
- * on success (and writes the actual bound port into *out_port), or -1
- * if no port in the whole scan range was free. */
-static int bind_with_retry(int base_port, int *out_port) {
-    for (int attempt = 0; attempt < PALNET_BIND_ATTEMPTS; attempt++) {
-        int fd = socket(AF_INET, SOCK_STREAM, 0);
-        if (fd < 0) return -1;
-        int opt = 1;
-        setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
-
-        struct sockaddr_in addr;
-        memset(&addr, 0, sizeof(addr));
-        addr.sin_family = AF_INET;
-        addr.sin_addr.s_addr = inet_addr("127.0.0.1");
-        addr.sin_port = htons((uint16_t)(base_port + attempt));
-
-        if (bind(fd, (struct sockaddr *)&addr, sizeof(addr)) == 0) {
-            if (listen(fd, 8) == 0) {
-                int flags = fcntl(fd, F_GETFL, 0);
-                fcntl(fd, F_SETFL, flags | O_NONBLOCK);
-                *out_port = base_port + attempt;
-                return fd;
-            }
-        }
-        close(fd);
-    }
-    return -1;
-}
-
-/* PAL-NET-STANDARD.txt sec. 1 - written once at startup after a
- * successful bind, refreshed on a heartbeat (see maybe_heartbeat()),
- * removed on clean exit (see palnet_shutdown()). */
-static void write_presence_file(void) {
-    if (!g_presence_path[0]) return;
-    FILE *f = fopen(g_presence_path, "w");
-    if (!f) return;
-    fprintf(f, "kind=zoo\n");
-    fprintf(f, "project_id=zoo_0000\n");
-    fprintf(f, "host=127.0.0.1\n");
-    fprintf(f, "port=%d\n", g_bound_port);
-    fprintf(f, "pid=%d\n", (int)getpid());
-    fprintf(f, "last_seen=%ld\n", (long)time(NULL));
-    fclose(f);
-}
-
-static void palnet_init(void) {
-    char presence_dir[PATH_BUF];
-    resolve_presence_root(presence_dir, sizeof(presence_dir));
-    mkdir_p(presence_dir);
-
-    for (int i = 0; i < PALNET_MAX_CLIENTS; i++) g_client_fds[i] = -1;
-
-    g_listen_fd = bind_with_retry(PALNET_ZOO_BASE_PORT, &g_bound_port);
-    if (g_listen_fd < 0) {
-        fprintf(stderr, "gl_mirror: PAL-NET bind failed after %d attempts - drag-and-drop discovery disabled this run\n", PALNET_BIND_ATTEMPTS);
-        return;
-    }
-
-    snprintf(g_node_id, sizeof(g_node_id), "zoo_0000-zoo-%d", (int)getpid());
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wformat-truncation"
-    snprintf(g_presence_path, sizeof(g_presence_path), "%s/%s.txt", presence_dir, g_node_id);
-#pragma GCC diagnostic pop
-    write_presence_file();
-    g_last_heartbeat = time(NULL);
-}
-
-static void palnet_shutdown(void) {
-    for (int i = 0; i < PALNET_MAX_CLIENTS; i++) {
-        if (g_client_fds[i] >= 0) close(g_client_fds[i]);
-    }
-    if (g_listen_fd >= 0) close(g_listen_fd);
-    if (g_presence_path[0]) unlink(g_presence_path);
-}
-
-static void maybe_heartbeat(void) {
-    time_t now = time(NULL);
-    if (now - g_last_heartbeat >= PALNET_HEARTBEAT_SEC) {
-        g_last_heartbeat = now;
-        write_presence_file();
-    }
-}
-
-static void palnet_accept_clients(void) {
-    if (g_listen_fd < 0) return;
-    for (;;) {
-        int fd = accept(g_listen_fd, NULL, NULL);
-        if (fd < 0) return;
-        int flags = fcntl(fd, F_GETFL, 0);
-        fcntl(fd, F_SETFL, flags | O_NONBLOCK);
-        int slot = -1;
-        for (int i = 0; i < PALNET_MAX_CLIENTS; i++) {
-            if (g_client_fds[i] < 0) { slot = i; break; }
-        }
-        if (slot < 0) { close(fd); continue; }
-        g_client_fds[slot] = fd;
-        /* Immediately tell a newly-connected client the CURRENT
-         * geometry, if we already have one - it shouldn't have to wait
-         * for the next real change to learn where this window is. */
-        if (g_have_geom) {
-            char line[128];
-            int n = snprintf(line, sizeof(line), "GEOM|%d|%d|%d|%d\n", g_last_geom_x, g_last_geom_y, g_last_geom_w, g_last_geom_h);
-            ssize_t sent = send(fd, line, (size_t)n, MSG_NOSIGNAL);
-            (void)sent;
-        }
-    }
-}
-
-/* Detect a client that closed its own end (recv()==0) so its slot can
- * be freed - we never expect real data FROM a client in this task (see
- * PAL-NET-STANDARD.txt sec. 3, HELLO is client-to-server info-only,
- * not consulted here yet), just its own disconnect. */
-static void palnet_reap_clients(void) {
-    char buf[64];
-    for (int i = 0; i < PALNET_MAX_CLIENTS; i++) {
-        if (g_client_fds[i] < 0) continue;
-        ssize_t n = recv(g_client_fds[i], buf, sizeof(buf), MSG_DONTWAIT);
-        if (n == 0 || (n < 0 && errno != EAGAIN && errno != EWOULDBLOCK)) {
-            close(g_client_fds[i]);
-            g_client_fds[i] = -1;
-        }
-    }
-}
-
-/* Broadcasts a fresh GEOM line to every connected client ONLY when the
- * geometry actually changed since last call - PAL-NET-STANDARD.txt
- * sec. 3's own "never send unconditionally on a fixed timer" rule,
- * matching this same session's own render-throttling lesson. */
-static void palnet_maybe_broadcast_geom(int x, int y, int w, int h) {
+/* Writes this window's own live geometry as a plain "x,y,w,h" line -
+ * ONLY when it actually changed since the last write (PAL-NET-
+ * STANDARD.txt sec. 2/3's own "only react on real change" rule,
+ * matching every other file-watcher throttle already used in this
+ * family). This is the ENTIRE PAL-NET footprint inside gl_mirror.c -
+ * the companion shared-ops/palnet_peer.c process (launched separately
+ * by button.sh) is what actually watches this file and does the real
+ * peer-to-peer networking; this file never touches a socket. */
+static void maybe_write_geometry(int x, int y, int w, int h) {
     if (g_have_geom && x == g_last_geom_x && y == g_last_geom_y && w == g_last_geom_w && h == g_last_geom_h) return;
     g_have_geom = 1;
     g_last_geom_x = x; g_last_geom_y = y; g_last_geom_w = w; g_last_geom_h = h;
-
-    char line[128];
-    int n = snprintf(line, sizeof(line), "GEOM|%d|%d|%d|%d\n", x, y, w, h);
-    for (int i = 0; i < PALNET_MAX_CLIENTS; i++) {
-        if (g_client_fds[i] < 0) continue;
-        ssize_t sent = send(g_client_fds[i], line, (size_t)n, MSG_NOSIGNAL);
-        (void)sent;
-    }
+    FILE *f = fopen(g_geometry_path, "w");
+    if (f) { fprintf(f, "%d,%d,%d,%d\n", x, y, w, h); fclose(f); }
 }
 
 /* CHTPM-BRIDGE ADDITION (see chtpm-to-pal-layout-plan.txt and
@@ -511,10 +334,7 @@ static void timer(int value) {
     struct stat st;
     (void)value;
 
-    if (g_shutdown_requested) {
-        palnet_shutdown();
-        exit(0);
-    }
+    if (g_shutdown_requested) exit(0);
 
     if (stat(frame_pulse, &st) == 0) {
         if (st.st_size != last_pulse_size) {
@@ -524,19 +344,13 @@ static void timer(int value) {
         }
     }
 
-    /* PAL-NET-STANDARD.txt sec. 1/3/4 - all of this is non-blocking
-     * (bind_with_retry() already set O_NONBLOCK on the listen fd, and
-     * palnet_accept_clients()/palnet_reap_clients() only ever use
-     * accept()/recv() with MSG_DONTWAIT-equivalent semantics), so it's
-     * safe to run every 16ms tick alongside the existing pulse-file
-     * check without risking a freeze. glutGet() reads this window's
-     * OWN live absolute screen position/size - the same values a
-     * dragging pet window needs to know to hit-test against. */
-    palnet_accept_clients();
-    palnet_reap_clients();
-    palnet_maybe_broadcast_geom(glutGet(GLUT_WINDOW_X), glutGet(GLUT_WINDOW_Y),
-                                 glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
-    maybe_heartbeat();
+    /* PAL-NET-STANDARD.txt sec. 0 - just a plain file write, no
+     * sockets: glutGet() reads this window's own live absolute screen
+     * position/size, the same values a dragging pet window needs to
+     * hit-test against. The separate palnet_peer.c companion process
+     * (launched by button.sh) is what actually relays this to peers. */
+    maybe_write_geometry(glutGet(GLUT_WINDOW_X), glutGet(GLUT_WINDOW_Y),
+                          glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
 
     glutTimerFunc(16, timer, 0);
 }
@@ -574,7 +388,6 @@ int main(int argc, char **argv) {
     signal(SIGHUP, handle_signal);
 
     resolve_root();
-    palnet_init();
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);

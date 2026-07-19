@@ -1,4 +1,4 @@
-PAL-NET STANDARD - shared local presence/discovery + live socket
+PAL-NET STANDARD - shared local presence/discovery + real P2P socket
 convention for cross-window/cross-process pal-family communication.
 Written 2026-07-19 for the egg-pals-13 <-> zoo_0000 cross-window
 drag-and-drop feature, designed to also serve as the SAME network for
@@ -6,33 +6,58 @@ a later "pal-forum" project (a Twitter/X-style local-first app, per
 direct user instruction) - not building pal-forum now, just not closing
 the door on it.
 
+REVISED same day, before implementation got far: the first draft of
+this doc (and the gl_mirror.c code written against it) defaulted to a
+CLIENT/SERVER split (zoo = server, pet = client) without noticing that
+was NOT what it claimed to model. Direct user catch: "now wait. its
+not client server is it? since its p2p? did u see the way p2p-net does
+this?" Checked again - p2p-net's own real nodes are symmetric: EVERY
+node calls its own bind_server_socket() (listens) AND ALSO
+connect()s out to other nodes (send_to_next_online()/
+connect_with_timeout()) - there is no fixed "server" role anywhere in
+that file. This revision fixes that: ONE reusable, symmetric op
+(sec. 2) that every node - zoo or pet - runs identically, not a
+server/client pair. This is the version to implement against; ignore
+any earlier draft.
+
 ========================================================================
 0. WHY THIS SHAPE (grounded, not invented from scratch)
 ========================================================================
 Modeled on projects/p2p-net's own real, proven architecture
 (1.TPMOS_c_+rmmp.0102.0028/projects/p2p-net/manager/p2p_manager.c,
 read in full before implementing against this doc) - a HYBRID: files
-for discovery/bootstrap/presence, real TCP sockets for live data. This
-is deliberately NOT p2p-net's own full ring topology (leader election,
-message forwarding, open peer set) - this task has a small, known
-number of local nodes, so discovery is a flat directory scan, not a
-ring. Direct user decision: build the real networked shape now (host:
-port, real sockets) even though every node currently resolves to
-127.0.0.1 - going cross-machine later should mean changing an IP, not
-a redesign. Presence-directory location mirrors shared-ops/
-pet_export.c's own resolve_exchange_root() convention exactly (one
-level above a project's own root, override-able via an env var) -
-same reasoning: a shared location siblings can all find without
-either project needing to know the other's own internal layout.
+for discovery/bootstrap/presence, real TCP sockets for live data,
+EVERY node symmetric (not client/server). Deliberately NOT p2p-net's
+own full ring topology (leader election, message forwarding, open
+peer set) - this task has a small, known number of local nodes, so
+discovery is a flat directory scan, not a ring.
+
+ALSO deliberately NOT embedded directly into gl_mirror.c/egg_window.c/
+zoo_window.c. Direct user correction: "id definately rather u use ops
+and pals for this, since its very repeatable among other projects that
+should be online, like mutaclysm later etc." All of sec. 1/3/4 below
+lives in ONE standalone, reusable op (shared-ops/palnet_peer.c) that
+ANY project's own GUI process can launch as a companion, never socket
+code duplicated into every window file. This also matches
+egg_window.c's own existing, explicit "must stay a dumb renderer +
+input relay" rule - the GUI process should never need to know sockets
+exist at all, only plain local files (an outbox it writes, an inbox it
+reads), exactly like every other file-watching pattern already used
+throughout this family.
+
+Presence-directory location mirrors shared-ops/pet_export.c's own
+resolve_exchange_root() convention exactly (one level above a
+project's own root, override-able via an env var) - same reasoning: a
+shared location siblings can all find without either project needing
+to know the other's own internal layout.
 
 ========================================================================
 1. PRESENCE DIRECTORY - WHERE, WHAT, WHO WRITES IT
 ========================================================================
 Location (mirrors resolve_exchange_root() exactly):
-  default: <one level above this project's own root>/net/presence/
+  default: <one level above the launching project's own root>/net/presence/
   override: PRISC_NET_ROOT env var (same override precedent as
-  PRISC_EXCHANGE_ROOT - a project that isn't a sibling under the same
-  parent folder sets this instead).
+  PRISC_EXCHANGE_ROOT).
   For egg-pals-13 + zoo_0000 specifically (both siblings under
   z0.egg-pals+plats-8.01/), this resolves to
   z0.egg-pals+plats-8.01/net/presence/ - a SHARED location neither
@@ -40,107 +65,165 @@ Location (mirrors resolve_exchange_root() exactly):
   exactly (they're expected to become literal sibling directories:
   z0.egg-pals+plats-8.01/{exchange,net}/).
 
-One file per LIVE process, filename = node_id (see sec. 2), format
-(plain key=value lines, matching every other state file in this
+One file per LIVE palnet_peer process, filename = node_id (see sec. 2),
+format (plain key=value lines, matching every other state file in this
 family):
-    kind=zoo|pet
-    project_id=<zoo_0000|egg-pals-13>
+    kind=<zoo|pet|whatever a future consumer needs - not a closed enum>
+    project_id=<zoo_0000|egg-pals-13|...>
     piece_id=<the pet's own piece_id, empty/omitted for kind=zoo>
     host=127.0.0.1
     port=<this process's own listen port>
     pid=<this process's own OS pid, for stale-entry cleanup>
     last_seen=<unix epoch, refreshed on a heartbeat - see sec. 4>
 
-Written ONCE at process startup (after successfully binding its own
-listen socket - see sec. 3), refreshed periodically (heartbeat),
-and REMOVED on clean exit (SIGINT/SIGTERM handler, matching
-gl_mirror.c's own existing handle_signal() pattern - extend it, don't
-duplicate a second signal handler).
+Written ONCE at startup (after successfully binding its own listen
+socket), refreshed periodically (heartbeat), REMOVED on clean exit
+(SIGINT/SIGTERM handler).
 
-Discovery = scan this directory for files matching a wanted `kind`
-(e.g. egg_window.c wants kind=zoo) and read each match's own host/port
-- exactly p2p-net's own known_hosts.pdl role, just one file per node
-instead of one aggregate file, since processes come and go far more
-often here than p2p-net's own longer-lived peers.
+Discovery = scan this directory for files matching a wanted `kind` and
+read each match's own host/port - exactly p2p-net's own
+known_hosts.pdl role, just one file per node instead of one aggregate
+file (processes here come and go far more often than p2p-net's own
+longer-lived peers).
 
 ========================================================================
-2. NODE ID + PORT ALLOCATION
+2. THE OP: shared-ops/palnet_peer.c - ONE symmetric binary, every node
+   runs the SAME code, no client/server distinction
 ========================================================================
-node_id: `<project_id>-<piece_id_or_"zoo">-<pid>` (e.g.
-"egg-pals-13-pet_rex-48213", "zoo_0000-zoo-48901") - always unique
-(pid), always human-readable in a directory listing (unlike a bare
-UUID), matching this family's own preference for inspectable state
-over opaque identifiers.
+Usage:
+  palnet_peer.+x <own_kind> <project_id> <piece_id_or_-> <outbox_file> <inbox_file> [seek_kind]
 
-Port allocation - REAL, dynamic, incrementing, exactly as discussed.
-CORRECTION (checked directly, don't assume): p2p-net's own
-bind_server_socket() does NOT scan/retry at all - it binds ONCE to a
-single fixed port pre-configured in node_config.txt and simply fails
-if that exact port is taken, because p2p-net expects a human to
-configure each node's own port ahead of time. This task has no such
-luxury (pet processes launch/exit unpredictably, there's no
-opportunity to hand-assign a unique port to each one ahead of time),
-so the retry-scan loop below is a genuinely NEW small piece, not a
-port of an existing function - written here explicitly so it isn't
-mistaken for one later.
-Each kind gets its own BASE port to start scanning from, so a zoo and
-a pet never collide on their own first-choice port:
-    zoo:  base 9900
-    pet:  base 9901
-Algorithm (every node, whichever kind): try bind(base); on EADDRINUSE,
-try base+1, base+2, ... up to a capped attempt count (e.g. 200) before
-giving up and logging an error. The FIRST successfully bound port is
-what gets written into this node's own presence file - callers never
-guess a port, they always read it from the presence file.
+Arguments:
+  own_kind        - what this node calls itself (zoo, pet, ...)
+  project_id      - which project launched it (zoo_0000, egg-pals-13)
+  piece_id_or_-   - the pet's own piece_id, or literal "-" for a node
+                    with no piece_id (e.g. the zoo)
+  outbox_file     - a local file THIS node's own GUI process writes.
+                    palnet_peer watches it (same "only react on real
+                    change" pattern as every file-watcher in this
+                    family) and broadcasts its CURRENT content, tagged
+                    with this node's own node_id, to every connected
+                    peer whenever it changes - and immediately to any
+                    newly-connected peer, so a peer never has to wait
+                    for the next real change to learn what this node
+                    already knows.
+  inbox_file      - a local file palnet_peer writes. Whenever ANY
+                    connected peer sends data, the latest received line
+                    (tagged with the SENDING peer's own node_id) is
+                    written here. This node's own GUI process just
+                    polls this file like any other state file - it
+                    never touches a socket.
+  seek_kind       - OPTIONAL. If given, this node ALSO actively scans
+                    presence for a peer of that kind and connects OUT
+                    to it (in addition to accepting incoming
+                    connections from anyone) - this is what makes it
+                    genuinely peer-to-peer rather than one side only
+                    ever being dialed. Omit this argument for a node
+                    that only needs to answer, never ask (not the
+                    common case - even the zoo may want to seek peers
+                    later for pal-forum-style features, but for the
+                    drag-and-drop feature specifically the zoo can
+                    launch with no seek_kind).
+
+Every palnet_peer instance, regardless of kind:
+  1. Registers presence (sec. 1), binds its own listen socket (sec. 3
+     retry-scan - every node allocates its OWN port, there is no
+     fixed "the zoo's port" assumption baked in anywhere).
+  2. Accepts incoming connections from ANY peer, unconditionally.
+  3. If seek_kind is set: every heartbeat, rescans presence for a
+     not-yet-connected peer of that kind and connects out to it.
+  4. Watches outbox_file, broadcasts its content on change (and once,
+     immediately, to any newly-completed connection either direction).
+  5. Writes whatever it receives, from ANY connected peer, into
+     inbox_file.
+There is no special-cased "zoo" code path inside palnet_peer.c at all
+- "zoo" and "pet" are just string labels a GUI process happens to pass
+in; the binary treats every kind identically. This is what makes it
+"very repeatable among other projects... like mutaclysm later" (direct
+user instruction) - a totally different project adopts this by
+launching the SAME binary with different arguments, zero code changes.
+
+THIS TASK's concrete usage:
+  zoo_0000's own gl_mirror.c writes its OWN live geometry (a plain
+  local file, no sockets - see sec. 0) to, e.g.,
+  pieces/display/gl_window_geometry.txt. zoo_0000's button.sh launches
+  ONE persistent companion:
+    palnet_peer.+x zoo zoo_0000 - pieces/display/gl_window_geometry.txt pieces/net/zoo_inbox.txt
+  (no seek_kind - for this feature the zoo only needs to ANSWER, not
+  ask; nothing stops a later feature from giving it one).
+
+  A pet window (egg_window.c), ONLY for the duration of an active drag
+  (ButtonPress to ButtonRelease - see sec. 3's own connection-lifecycle
+  rule), launches a SHORT-LIVED companion:
+    palnet_peer.+x pet egg-pals-13 <piece_id> pieces/net/<piece_id>_outbox.txt pieces/net/<piece_id>_zoo_geom.txt zoo
+  (seek_kind=zoo - this instance actively finds and connects to
+  whatever zoo-kind peer currently exists) and polls
+  pieces/net/<piece_id>_zoo_geom.txt for the zoo's current GEOM line to
+  hit-test the drag against. Killed (SIGTERM) the instant the drag
+  ends, same as the file-based design's own original lifecycle rule -
+  a permanently-open connection outside an active drag has no payoff
+  here (sec. 3).
 
 ========================================================================
-3. WIRE PROTOCOL - PIPE-DELIMITED TEXT LINES, MATCHING p2p-net EXACTLY
+3. WIRE PROTOCOL + PORT ALLOCATION - PIPE-DELIMITED TEXT, EVERY NODE
+   SYMMETRIC
 ========================================================================
-Same shape as p2p-net's own real wire format (HELLO|ip|port|name|ts,
-PING|.../PONG|...) - newline-terminated, pipe-delimited, human-
-readable/greppable over the wire (matches this family's own "if it's
-not in a file, it's a lie" mantra extended to sockets: a real person
-should be able to `nc localhost 9900` and read what's happening).
+Port allocation - REAL, dynamic, incrementing. CORRECTION (checked
+directly, don't assume p2p-net does this): p2p-net's own
+bind_server_socket() does NOT scan/retry - it binds ONCE to a single
+fixed, human-pre-configured port and simply fails otherwise. This task
+has no such luxury (peer processes launch/exit unpredictably), so the
+retry-scan below is a genuinely NEW small piece, not a port of an
+existing function. Each `own_kind` gets its own BASE port to start
+scanning from so two different kinds never collide on their first
+choice (e.g. zoo: base 9900, pet: base 9901 - not a closed list,
+add a new base per new kind as needed). Algorithm: try bind(base); on
+EADDRINUSE, try base+1, base+2, ... up to a capped attempt count (e.g.
+200) before giving up. The first successfully bound port is what gets
+written into this node's own presence file - nothing ever guesses a
+port, always reads it from presence.
 
-Messages needed for THIS task (extend later for pal-forum's own needs,
-don't design those fields in now):
-    HELLO|<node_id>|<kind>\n
-      - sent by a connecting client immediately after connect(), so
-        the server side can log/attribute the connection. No reply
-        expected.
-    GEOM|<x>|<y>|<w>|<h>\n
-      - sent by a kind=zoo node to every connected client: its own
-        current absolute screen position + size (the values
-        gl_mirror.c already computes via glutGet(GLUT_WINDOW_X/Y/
-        WIDTH/HEIGHT)). Sent once immediately on a new connection, and
-        again every time the value actually changes (same "only on
-        real change" throttle as every other polling loop in this
-        family - never send unconditionally on a fixed timer).
+Wire format - newline-terminated, pipe-delimited, human-readable/
+greppable (matches this family's own "if it's not in a file, it's a
+lie" mantra extended to sockets - `nc localhost <port>` should show a
+real person what's happening):
+    HELLO|<node_id>|<own_kind>\n
+      - sent immediately after either side of a connection completes
+        (both the connector AND the accepter send this - symmetric),
+        so each side can attribute/log who it's talking to.
+    DATA|<node_id>|<outbox_content>\n
+      - sent by EITHER side whenever its own outbox_file changes (and
+        once, immediately, on a fresh connection, so a peer never
+        waits for the next real change to learn current state) -
+        <outbox_content> is whatever that node's own GUI process wrote
+        verbatim (e.g. gl_mirror's own geometry line "x,y,w,h" -
+        palnet_peer does not need to understand the payload's own
+        shape, just relay it faithfully both ways).
+      A receiving palnet_peer writes `<node_id>|<outbox_content>` to
+      its own inbox_file (whichever peer sent it last wins the file -
+      revisit if a consumer ever needs multiple simultaneous peers'
+      own data distinguished by node_id in one file at once).
 
-Connection lifecycle: a pet window (egg_window.c/zoo_window.c) that
-wants to know a zoo's live geometry connects ONCE per drag gesture
-(on ButtonPress), stays connected for the duration of that drag
-(non-blocking, folded into the SAME select() fd_set already polling
-the X11 connection - do not spawn a thread), and disconnects when the
-drag ends (ButtonRelease) either way. Do not hold a permanent
-connection open outside an active drag - matches this family's own
-"don't do unconditional per-tick work" lesson (a persistent connection
-open at all times has no real payoff here and is one more thing that
-can go stale).
+Connection lifecycle (sec. 2's own examples show the concrete case):
+a node with no seek_kind only ever accepts; a node with seek_kind
+proactively connects on top of also accepting. Do not hold a
+connection open outside genuine need (e.g. a pet's own instance exists
+only for an active drag's own duration) - matches this family's own
+"don't do unconditional per-tick work" lesson.
 
 ========================================================================
 4. HEARTBEAT + STALE-ENTRY CLEANUP
 ========================================================================
-Refresh this node's own presence file's last_seen field every ~5
-real seconds (a real value, not a guess - matches p2p-net's own
-PING/PONG cadence order of magnitude; tune down only if this proves
-too slow in live testing, don't tune up preemptively). A reader that
-finds a presence file whose last_seen is more than ~15 seconds stale
-should treat that node as dead and ignore it - do NOT delete another
-process's own presence file from a reader (only the OWNING process
-ever deletes its own file, on clean exit) - a reader silently
-skipping a stale entry is enough, avoids any cross-process file-
-deletion race.
+Refresh this node's own presence file's last_seen field every ~5 real
+seconds (matches p2p-net's own PING/PONG cadence order of magnitude).
+A reader that finds a presence file whose last_seen is more than ~15
+seconds stale should treat that node as dead and ignore it - never
+delete ANOTHER process's own presence file (only the owning process
+deletes its own, on clean exit) - a reader silently skipping a stale
+entry avoids any cross-process file-deletion race. Same rule applies
+to a seek_kind peer connection that goes stale/disconnects - drop it
+and keep rescanning presence on the next heartbeat, don't treat one
+dead peer as a fatal error.
 
 ========================================================================
 5. WHAT THIS DOC DELIBERATELY DOES NOT COVER YET
@@ -148,9 +231,12 @@ deletion race.
 - Real cross-machine addressing (host is always 127.0.0.1 for now -
   the FIELD exists so this doesn't need to change later, but nothing
   in this task actually dials a remote host yet).
-- pal-forum's own message types (posts/DMs/images) - HELLO/GEOM only,
-  extend the wire protocol later with new message types as pal-forum
-  actually needs them, don't pre-design fields for a project that
-  doesn't exist yet.
-- Encryption/auth of any kind - purely local-machine, same trust
-  model as every other file in this family already assumes.
+- pal-forum's own message types (posts/DMs/images) - HELLO/DATA only,
+  extend later as pal-forum actually needs it, don't pre-design fields
+  for a project that doesn't exist yet.
+- Multiple simultaneous peers of the SAME kind feeding one inbox_file
+  distinguishably (today: last sender wins) - fine for "exactly one
+  zoo" today, a real gap if a project ever needs to hear from several
+  same-kind peers at once.
+- Encryption/auth of any kind - purely local-machine, same trust model
+  as every other file in this family already assumes.
