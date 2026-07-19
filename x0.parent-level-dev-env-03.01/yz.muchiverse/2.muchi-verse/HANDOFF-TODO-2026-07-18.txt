@@ -1,0 +1,306 @@
+HANDOFF / TODO - written 2026-07-18, end of a long session covering
+mutaclsym, wsr-pal, zoo_0000, egg-pals-13, muchipal-editor-0.0, and the
+shared-ops/ family. Read this BEFORE touching any of these projects -
+it exists specifically so a new agent (or a future session) doesn't
+re-spend the hours this session spent re-discovering the same traps.
+
+Read pal-standards.txt (this same directory) for the full technical
+standards doc - this file is the shorter, action-oriented companion:
+what's actually done, what's left, how to approach what's left, and the
+SPECIFIC gotchas that cost real time this session. Where this file and
+pal-standards.txt overlap, pal-standards.txt is the more complete,
+authoritative version - this file just points at the right section.
+
+========================================================================
+0. READ THIS FIRST - THE SINGLE BIGGEST LESSON THIS SESSION
+========================================================================
+When a pal-native project has some custom mechanism that looks broken,
+CHECK WHETHER REAL CLASSIC CHTPM (pieces/chtpm/plugins/chtpm_parser.c,
+under 1.TPMOS_c_+rmmp.0102.0028/) OR REAL WRAITH-ALPHA
+(projects/wraith-alpha/) ALREADY SOLVES THE SAME PROBLEM NATIVELY,
+BEFORE writing new code to patch the custom version. Every real bug
+found and fixed this session traced back to a custom reinvention
+drifting out of sync with (or simply reimplementing worse than) a real,
+already-proven mechanism:
+  - wsr-pal's GOTO: string dispatch -> real chtpm's own href navigation
+  - the "one-shot vs persistent module" guard confusion -> real
+    classic chtpm_parser.c's own launch_module() (liveness-based,
+    always has been - never needed the distinction)
+  - the render-throttling gap -> real chtpm's own renderer_pulse.txt
+    marker-file pattern, already used elsewhere in this family
+This is now a saved feedback memory
+(feedback_check_native_chtpm_before_custom.md) - but the NEXT agent
+reading this file specifically should still internalize it before
+assuming any "weird" behavior needs a novel fix.
+
+========================================================================
+1. CURRENT STATE - WHAT'S ALREADY DONE (as of this session's end)
+========================================================================
+1a. Git: a SINGLE unified repo now covers the ENTIRE ZEST-10.18 tree
+    (not per-project). Pushed to https://github.com/managenetent/ZEST-10.18
+    (force-pushed over an old, narrower mutaclsym-only history - see
+    that repo's own commit log for the full session summary). If you
+    `git status` and see "not a git repo," check you're in ZEST-10.18
+    itself, not a subdirectory - previous per-project .git setups from
+    earlier in this session's history no longer exist anywhere.
+    A .gitignore now excludes compiled *.+x binaries and generated
+    runtime/session files (frame_history.txt, debug.txt, etc.) - if a
+    new binary name shows up as trackable garbage in `git status`, add
+    it to .gitignore rather than committing it.
+
+1b. Shared-ops model: REPLACED. No project's build.sh reaches outside
+    its own directory anymore. Canonical sources live in
+    yz.muchiverse/2.muchi-verse/shared-ops/; every consumer
+    (mutaclsym, zoo_0000, wsr-pal, muchipal-editor-0.0, egg-pals-13)
+    keeps its own real, local copy, synced via:
+        bash sync_shared_op.sh <op_name> <target_dir>
+    (run from yz.muchiverse/2.muchi-verse/ - see shared-ops-manifest.txt
+    in that same directory for the op_name list and each project's own
+    consumer list). This is a DELIBERATE, EXPLICIT step - never
+    automatic at build time. If you fix a bug in shared-ops/
+    chtpm_parser_pal.c or shared-ops/prisc+x.c, you MUST re-run
+    sync_shared_op.sh for every consumer listed in the manifest's own
+    CONSUMERS section, or the fix only exists in the canonical copy and
+    nothing else - this bit us hard mid-session (see sec. 3 below).
+
+1c. Real, confirmed bugs fixed this session (full detail in
+    pal-standards.txt sec. 18/19):
+    - chtpm_parser_pal.c's launch_module() guard was wrongly path-only
+      (an earlier same-session "fix" for mutaclsym's one-shot module
+      conversion) instead of the real, classic liveness check
+      (current_module_pid > 0) - this killed wsr-pal's genuinely
+      persistent module on every single href screen switch. FIXED,
+      synced to all 5 projects.
+    - prisc+x.c's read_pos op never actually implemented the
+      literal-path argument its own comment always promised (only
+      accepted the default hardcoded history.txt path). Completed,
+      synced to all 5 projects. This is what makes the "only render on
+      real change" throttling pattern below possible without spawning
+      a process every tick.
+    - wsr-pal's own render loop was unconditionally recomposing every
+      ~30ms regardless of whether anything changed (visible as
+      constant flicker) - fixed by gating compose_frame/hit_frame on
+      either a real relayed key OR a dedicated wsr_screen_changed.txt
+      marker growing (checked via the now-fixed read_pos literal-path
+      op) - see pal/main_loop_chtpm.pal's own header comment for the
+      exact mechanism, and wsr_menu_input.c's own header comment for
+      how the marker only grows on a GENUINE screen change (compares
+      the freshly-derived current screen against active_target_id,
+      cheap, no writes at all if unchanged).
+    - wsr-pal's whole "6 screens faked inside 1 file via a GOTO:
+      string mutating app state" architecture replaced with 6 REAL
+      separate .chtpm layout files using native href buttons - matches
+      real wraith-alpha's own tsots-online_main.chtpm precedent exactly
+      (confirmed by directly reading that file - hardcoded href AND
+      onClick="KEY:n" buttons side by side, no dynamic-table
+      indirection needed for navigation specifically).
+    - mutaclsym's choice.c was silently swallowing EVERY numbered
+      action-bar keypress (pickup/drop/toggle_emoji/etc, not just one)
+      whenever the craft or examine button merely had cursor FOCUS
+      (never even opened) - active_gui_index.txt alone can't
+      distinguish "focused" from "genuinely active," and choice.c only
+      ever read that one file. Fixed by also checking the ALREADY-
+      EXISTING companion signal chtpm_parser_pal.c's own
+      export_active_index() already writes for exactly this reason
+      (active_gui_is_typing.txt) - a real, existing signal that was
+      simply never read, not a new mechanism.
+
+1d. Testing standard: #.testing/_.0.aigent-testing-k3.txt (under
+    x0.moke-pet-project-04.04/.../!.gem-flashlite--yolo/#.testing/) is
+    the REAL, authoritative testing methodology doc - READ IT, don't
+    just remember its shape from a summary. Key points that cost time
+    this session when skipped:
+    - Key injection format is EXACT:
+      `[YYYY-MM-DD HH:MM:SS] KEY_PRESSED: <code>` appended to
+      pieces/keyboard/history.txt - multi-digit selections need ONE
+      LINE PER DIGIT KEYSTROKE (the ASCII code of each digit
+      character, e.g. '3'=51, '0'=48), never the resolved final number
+      as a single line - injecting "30" as one line sends a raw
+      integer keycode 30, NOT digit-3-then-digit-0.
+    - Pitfall #8, RACE CONDITION FALSE POSITIVES: allow 1-2 real
+      seconds before capturing evidence, and prefer reviewing the FULL
+      frame_history.txt log over a single `cat current_frame.txt`
+      snapshot - a bare snapshot can catch a mid-write, partially-
+      composed frame and look "broken" when the very next line in
+      frame_history.txt shows it was actually fine. This exact
+      confusion cost real time mid-session (see sec. 3).
+    - This family's own frame_history.txt lives at
+      pieces/display/frame_history.txt (renderer.c's own write, NOT
+      the k3 doc's own pieces/debug/frames/session_frame_history.txt
+      path - same concept, different path, adapted to this family's
+      existing renderer.c rather than the doc's own TPMOS-specific
+      convention).
+
+========================================================================
+2. TODO - PRIORITIZED, WITH HOW
+========================================================================
+
+2a. [HIGH] muchipal-editor-0.0 <-> real op-ed parity - NOT STARTED,
+    genuinely substantial, multi-session scope. Real op-ed
+    (1.TPMOS_c_+rmmp.0102.0028/projects/op-ed/, read its own README.md
+    first) is a "Sovereign RPG Editor": Save/Load via a Sovereign
+    Context (loading a game copies its whole directory into the
+    editor's own working area), a real event/script editor (even
+    op-ed's own upstream README calls this "in progress," moving from
+    raw PAL editing to a high-level "Block" builder), no-code trait
+    binding, a mirror-lab test-game convention, and a standalone
+    project exporter/bundler.
+    muchipal-editor-0.0 currently has ONLY: a real chtpm title screen,
+    project_browser.c (plain prisc+x/C project+piece list nav, NOT
+    chtpm-native yet - chtpm's own markup still has no repeat/loop
+    construct for a dynamic-length list, a real named gap, not an
+    oversight), map_edit_input.c (basic tile editing), and shared
+    pdl_reader.
+    RECOMMENDED APPROACH (not yet agreed with the user beyond "pick a
+    slice"): Save/Load (Sovereign Context) first - every other feature
+    (event editing, piece/trait creation) needs somewhere real to
+    persist to, so it's the natural dependency root. Concretely:
+      1. Read op-ed's own manager/op-ed_manager.c and
+         session/state.txt to understand its real Save/Load state
+         machine before designing muchipal-editor-0.0's own version -
+         don't invent a new shape, port the proven one (matches sec. 0
+         above).
+      2. Read op-ed's own layouts/file_browser.chtpm +
+         layouts/load_menu.chtpm + layouts/load_slot.chtpm as the real,
+         proven multi-screen precedent for a file browser UI - these
+         are ALSO real separate .chtpm files linked via href (same
+         pattern just proven out for wsr-pal this session), a second
+         confirmed real-world example of the same standard.
+      3. Do NOT start the event/script editor before Save/Load - it
+         has nothing to save/load into yet.
+
+2b. [MEDIUM] Apply the SAME "custom reinvention of a native mechanism"
+    audit already done for wsr-pal to egg-pals and zoo_0000 - the same
+    class of mistake (an earlier agent overzealously copying
+    mutaclsym's own map-specific interact/module pattern onto no-map
+    projects) was found and partially fixed for egg-pals/wsr-pal
+    earlier this session, but a full audit specifically for hand-rolled
+    navigation (a GOTO:-shaped command, a hardcoded screen-switch
+    dispatch) was only ever done for wsr-pal. zoo_0000 in particular
+    has never been checked for this specific pattern.
+
+2c. [MEDIUM] wsr-pal's own "New Game" METHOD row uses
+    START_WIZARD:new_game, but wsr_menu_input.c's dispatch only ever
+    special-cased START_WIZARD:new_corp explicitly (confirmed by
+    direct read - no generic "START_WIZARD:" prefix match exists). This
+    means pressing "New Game" almost certainly silently no-ops (falls
+    through to the generic shell-and-run fallback, which fails
+    quietly) rather than actually resetting the world. Found but NOT
+    fixed this session (discovered while auditing wsr_main_menu's own
+    piece.pdl for the href rewrite, out of scope at the time) - a real,
+    likely bug, not yet verified live via key injection.
+
+2d. [LOW] PAL-CONVERSION-CANDIDATES.txt (yz.muchiverse/2.muchi-verse/)
+    lists concrete, evidence-based candidates for the next real
+    C-to-PAL conversions (zoo_0000/ops/pet_pet.c, mutaclsym/ops/
+    examine.c, wsr-pal/ops/update_history_cursor.c as the strongest,
+    near-zero-friction cases). The named blocker (no way to pass a
+    caller-supplied value into a pal script's own registers at launch -
+    prisc+x's own main() only recognizes 4 fixed argv positions) needs
+    solving ONCE, generically, before converting any candidate from
+    "prototype" to "the real op actually wired in" - don't solve it
+    per-op.
+
+2e. [LOW, but do it before wsr-pal ships] wsr-pal's own kill/verify
+    action list (button.sh's own "check" case) should be re-audited
+    against the actual current op list - it was never updated as part
+    of this session's href rewrite and may reference stale binary
+    names.
+
+========================================================================
+3. PITFALLS THAT COST REAL TIME THIS SESSION - DON'T REPEAT THESE
+========================================================================
+
+3a. TWO DIFFERENT "pieces/" DIRECTORIES PER PROJECT, ONLY ONE IS REAL.
+    wsr-pal (and likely other projects in this family) has BOTH a
+    top-level <project>/pieces/ directory AND the REAL, actually-read
+    <project>/projects/<project-id>/pieces/ directory. The top-level
+    one can contain STALE, DECOY content that looks plausible (correct
+    piece.pdl structure, even matching filenames) but is never actually
+    read by anything - confirmed live this session: an entire "found a
+    real bug" investigation (a 4-field vs 3-field piece.pdl format
+    mismatch) was built entirely on the WRONG, unused directory, and
+    had to be discarded and redone once the mistake was caught. BEFORE
+    editing ANY piece.pdl or similar data file, grep the actual op code
+    (e.g. `grep "piece.pdl" ops/whatever_input.c`) to confirm which
+    literal path string it actually constructs and reads - never
+    assume a top-level pieces/ next to button.sh is the live one just
+    because it looks structurally right. (Layout .chtpm files ARE
+    correctly read from the top-level pieces/chtpm/layouts/ - it's
+    specifically piece.pdl/game-data files under a bare pieces/<id>/
+    that can be a stale duplicate, not layouts.)
+
+3b. A "STARTS FROM LAST SESSION" BUG CAN MEAN A pieces/display/*.txt
+    MARKER FILE, NOT JUST APP STATE. mutaclsym's own choice.c dispatch
+    was silently broken by a STALE pieces/display/active_gui_index.txt
+    left over from EARLIER navigation in a completely unrelated
+    testing pass, hours earlier in the same session - not app state at
+    all (hero/state.txt's own fields were all sane). When a keypress
+    that SHOULD do something silently does nothing, with no error and
+    no crash, check every marker/index file under pieces/display/ for a
+    stale value from an earlier test, not just the obvious state file.
+
+3c. A "REGRESSION" MAY JUST BE A RACE CONDITION IN YOUR OWN TEST, NOT
+    THE CODE. A single `cat current_frame.txt` immediately after
+    injecting a key caught a genuinely transient, mid-recompose partial
+    frame and looked like a real bug (missing title/button list) - the
+    VERY NEXT line in frame_history.txt, milliseconds later, showed the
+    fully correct frame. Always check frame_history.txt's own
+    surrounding lines (not just the single latest snapshot) before
+    concluding something is actually broken, matching testing-k3's own
+    Pitfall #8.
+
+3d. DON'T GENERALIZE "IT'S BROKEN" FROM ONE TEST. The user corrected a
+    premature "completely broken" claim about mutaclsym mid-session -
+    it was genuinely "iffy, some things work and some don't," which
+    turned out to have a real, narrow, findable cause (3b above) rather
+    than the sweeping architectural failure initially assumed. Test
+    enough to characterize the ACTUAL failure shape before describing
+    severity.
+
+3e. WRONG pkill PATTERNS SILENTLY LEAVE STALE PROCESSES RUNNING FOR THE
+    REST OF A SESSION. chtpm_parser_pal/keyboard_input are launched
+    with RELATIVE paths (./system/chtpm_parser_pal) even though the
+    process's cwd is an absolute path - `pkill -f "<project>/system"`
+    (an absolute-path-shaped pattern) will NOT match these, only a
+    module THEY THEMSELVES fork (which does get an absolute path
+    baked in) matches that pattern. Always use each project's own
+    `button.sh kill` action (or kill_all.sh directly) rather than a
+    hand-rolled pkill pattern - this exact mistake left stale
+    chtpm_parser_pal processes serving an already-deleted layout file
+    from memory for a large chunk of this session, producing deeply
+    confusing test results before being caught.
+
+3f. WHEN ADDING A NEW PER-TICK/PER-LOOP CHECK TO A PERSISTENT PAL
+    MODULE, THINK THROUGH THE IDLE CASE EXPLICITLY. Making a module
+    "self-correcting" on every loop iteration (re-deriving state fresh
+    each tick) is the right instinct for correctness, but if the
+    re-derivation ALSO unconditionally triggers a visible render
+    (compose_frame/hit_frame), idle time turns into constant flicker -
+    always gate the VISIBLE side effect on "did anything actually
+    change," never just "did the tick happen," even when the cheap
+    per-tick check itself is fine to run unconditionally.
+
+========================================================================
+4. WHERE THE REAL REFERENCE MATERIAL LIVES (read the source, not a
+   memory of it)
+========================================================================
+- Real classic chtpm parser: 1.TPMOS_c_+rmmp.0102.0028/pieces/chtpm/
+  plugins/chtpm_parser.c
+- Real wraith-alpha multi-screen href precedent: 1.TPMOS_c_+rmmp.
+  0102.0028/projects/tsots-online/layouts/*.chtpm (tsots-online_main.
+  chtpm especially - hardcoded href AND onClick="KEY:n" side by side)
+  and projects/wraith-alpha/wraith-projects/settings/layouts/
+  settings.chtpm (the original href precedent found this session)
+- Real op-ed (editor parity target): 1.TPMOS_c_+rmmp.0102.0028/
+  projects/op-ed/ - read README.md first, then manager/op-ed_manager.c
+  and the layouts/ directory
+- Real fuzz-op (synchronous per-keypress dispatch precedent):
+  1.TPMOS_c_+rmmp.0102.0028/projects/fuzz-op/
+- This family's own standards: yz.muchiverse/2.muchi-verse/
+  pal-standards.txt (the full technical doc), PAL-VS-C-ARCHITECTURE.txt
+  (PAL conversion criteria), PAL-CONVERSION-CANDIDATES.txt (concrete
+  candidates), shared-ops-manifest.txt + sync_shared_op.sh (the
+  local-copy sync model)
+- Real testing methodology: x0.moke-pet-project-04.04/x0.5-liz.fiter4-
+  mew-00.03/!.gem-flashlite--yolo/#.testing/_.0.aigent-testing-k3.txt
