@@ -82,6 +82,10 @@ echo "-- dump_rgb_png (local copy - DEBUG TOOL, not wired into pal/"
 echo "   main_loop.pal or default_op.txt - run manually to see the GL"
 echo "   mirror's actual pixels as a real PNG)"
 $CC $CFLAGS -I"ops/lib" -o ops/+x/dump_rgb_png.+x ops/dump_rgb_png.c
+echo "-- palnet_peer (local copy - reusable P2P companion process, see"
+echo "   PAL-NET-STANDARD.txt - launched by button.sh alongside"
+echo "   gl_mirror, not compiled into any GUI process directly)"
+$CC $CFLAGS -o ops/+x/palnet_peer.+x ops/palnet_peer.c
 
 echo "-- zoo_0000-specific ops"
 $CC $CFLAGS -o ops/+x/tick_pets.+x ops/tick_pets.c

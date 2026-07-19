@@ -26,6 +26,7 @@ xlector_input| shared-ops/xlector_input.c
 pet_export   | shared-ops/pet_export.c
 pet_import   | shared-ops/pet_import.c
 dump_rgb_png | shared-ops/dump_rgb_png.c
+palnet_peer  | shared-ops/palnet_peer.c
 
 # supporting headers (a directory, not a single file - sync_shared_op.sh
 # copies it recursively)
@@ -53,6 +54,15 @@ build.sh should read):
                          (prisc+x/keyboard_input are egg-pals' own local
                          forks - real Win32 support neither shared
                          version has, see pal-standards.txt sec. 1c)
+
+CONSUMERS AS OF 2026-07-19 (added mid-session, see
+PAL-NET-STANDARD.txt):
+  zoo_0000:              + palnet_peer (companion process to gl_mirror,
+                         launched by button.sh, not compiled into any
+                         GUI process directly)
+  egg-pals-13:           + palnet_peer (companion process launched by
+                         egg_window.c only for the duration of an
+                         active drag gesture)
 
 To re-sync a project after a canonical source change:
   bash sync_shared_op.sh <op_name> <target_project_dir>

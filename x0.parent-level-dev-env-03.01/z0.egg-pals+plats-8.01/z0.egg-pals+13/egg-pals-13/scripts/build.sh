@@ -97,5 +97,10 @@ $CC $CFLAGS -o ops/+x/train_pet.+x ops/train_pet.c
 $CC $CFLAGS -o ops/+x/export_card.+x ops/export_card.c
 $CC $CFLAGS -o ops/+x/destroy_card.+x ops/destroy_card.c
 $CC $CFLAGS -o ops/+x/list_processes.+x ops/list_processes.c
+echo "-- palnet_peer (local copy - reusable P2P companion process, see"
+echo "   yz.muchiverse/2.muchi-verse/PAL-NET-STANDARD.txt - launched by"
+echo "   egg_window.c only for the duration of an active drag gesture,"
+echo "   not a permanent process, not compiled into egg_window itself)"
+$CC $CFLAGS -o ops/+x/palnet_peer.+x ops/palnet_peer.c
 
 echo "build ok"
